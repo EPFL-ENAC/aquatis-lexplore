@@ -19,8 +19,6 @@ pre-commit:
       glob: "frontend/src/**/*.{js,ts,vue,scss,html,md,json}"
       exclude: "frontend/third-party/**"
       run: npx --no -- prettier --write {staged_files} --ignore-path .gitignore && git add {staged_files}
-    codespell:
-      run: npx codespell --skip="frontend/package-lock.json,frontend/src/i18n/fr/index.ts" --ignore-words-list="selectin" {staged_files}
 
 commit-msg:
   commands:
