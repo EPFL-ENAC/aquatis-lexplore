@@ -4,7 +4,7 @@ import { baseUrl, authFetch } from 'boot/api';
 import { Notify } from 'quasar';
 import type { UserReadWithStats, PaginatedResponse } from '../models';
 
-// Valid sort fields matching backend VALID_USER_SORT_FIELDS
+// Valid sort fields
 const VALID_SORT_FIELDS = [
   'full_name',
   'email',

@@ -18,6 +18,6 @@ jobs:
       token: ${{ secrets.CD_TOKEN }}
     with:
       # Optional inputs can be passed here
-      org: epfl-tech4dev
-      repo: hosm
-      build_context: '["./backend", "./frontend"]' # Optional"
+      org: aquatis
+      repo: lexplore
+      build_context: '["./frontend"]'

@@ -92,7 +92,7 @@ async function fetchTileConfig(endpoint: string): Promise<TileSourceConfig | nul
   try {
     const response = await authFetch(`${baseUrl}/map/${endpoint}/tiles`);
     if (response.status === 501) {
-      console.warn(`${endpoint.toUpperCase()} key not configured on backend`);
+      console.warn(`${endpoint.toUpperCase()} key not configured`);
       return null;
     }
     if (!response.ok) {
