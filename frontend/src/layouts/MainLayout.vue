@@ -40,9 +40,5 @@ const leftDrawerOpen = ref(false);
     .page-shell {
         padding: 36px 16px 24px;
     }
-
-    .qr-wrap {
-        padding-top: 72px;
-    }
 }
 </style>

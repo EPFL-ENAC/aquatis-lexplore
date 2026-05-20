@@ -38,4 +38,10 @@
     font-size: 0.95rem;
     font-weight: 500;
 }
+
+@media (max-width: 640px) {
+    .qr-wrap {
+        padding-top: 72px;
+    }
+}
 </style>

@@ -16,6 +16,10 @@ const routes: RouteRecordRaw[] = [
                         path: '',
                         component: () => import('pages/liveData/LiveDataPickerPage.vue'),
                     },
+                    {
+                        path: 'temperatureByDepth',
+                        component: () => import('pages/liveData/TemperatureByDepthPage.vue'),
+                    },
                 ],
             },
         ],

@@ -1,24 +1,20 @@
 <template>
-    <q-page class="leman-page text-white">
-        <div class="page-shell">
-            <PageHeader eyebrow="BIENVENUE" :level="2">
-                <template #default>
-                    Le Léman, en direct,
-                    <br />
-                    sous tes yeux.
-                </template>
+    <PageHeader eyebrow="BIENVENUE" :level="2">
+        <template #default>
+            Le Léman, en direct,
+            <br />
+            sous tes yeux.
+        </template>
 
-                <template #subtitle>
-                    Plonge à 100 mètres, suis le plancton heure par heure, et compare l'eau à l'air
-                    avec les données vraies de la plateforme scientifique Léxplore.
-                </template>
-            </PageHeader>
+        <template #subtitle>
+            Plonge à 100 mètres, suis le plancton heure par heure, et compare l'eau à l'air avec les
+            données vraies de la plateforme scientifique Léxplore.
+        </template>
+    </PageHeader>
 
-            <CardsMenu :items="items" />
+    <CardsMenu :items="items" />
 
-            <QrCode />
-        </div>
-    </q-page>
+    <QrCode />
 </template>
 
 <script setup lang="ts">
@@ -36,7 +32,7 @@ const items: CardMenuItem[] = [
         icon: 'waves',
         color: 'primary',
         textClass: 'text-primary',
-        href: '/live',
+        href: '/liveData',
     },
     {
         id: '02',
@@ -61,26 +57,4 @@ const items: CardMenuItem[] = [
 ];
 </script>
 
-<style scoped>
-.page-shell {
-    width: 100%;
-    max-width: 820px;
-    margin: 0 auto;
-    padding: 56px 28px 32px;
-}
-
-@media (max-width: 640px) {
-    .page-shell {
-        padding: 36px 16px 24px;
-    }
-
-    .hero-subtitle {
-        margin: 20px 0 36px;
-        font-size: 1.1rem;
-    }
-
-    .qr-wrap {
-        padding-top: 72px;
-    }
-}
-</style>
+<style scoped></style>
