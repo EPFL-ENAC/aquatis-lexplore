@@ -1,0 +1,210 @@
+<template>
+    <q-header class="header">
+        <div class="header__inner">
+            <div class="header__top">
+                <div class="header__logo">
+                    <div class="header__brand">AQUATIS</div>
+                    <div class="header__subtitle">
+                        AQUARIUM
+                        <br />
+                        VIVARIUM
+                        <br />
+                        LAUSANNE
+                    </div>
+                </div>
+
+                <q-btn-toggle
+                    v-model="locale"
+                    unelevated
+                    rounded
+                    no-caps
+                    class="header__langs"
+                    toggle-text-color="black"
+                    text-color="white"
+                    :options="languageOptions"
+                />
+            </div>
+
+            <q-separator dark class="header__separator" />
+
+            <div class="header__stats">
+                <div class="live">
+                    <span class="live__dot" />
+                    <span>LIVE</span>
+                    <span class="live__time">22:57</span>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat__label">TEMP AIR</div>
+                        <div class="stat__value">
+                            {{ formatNumber(lexplore.weatherData?.airTemperature) }}
+                            <span class="unit">°C</span>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__label">TEMP EAU</div>
+                        <div class="stat__value">
+                            {{ formatNumber(lexplore.lakeData?.waterTemperature) }}
+                            <span class="unit">°C</span>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__label">VENT</div>
+                        <div class="stat__value">
+                            {{
+                                getCardinalDirection(
+                                    lexplore.weatherData?.windDirectionDegrees ?? 0,
+                                ).toUpperCase()
+                            }}
+                            <span class="unit"
+                                >{{ formatNumber(lexplore.weatherData?.windSpeed) }}km/h</span
+                            >
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__label">VAGUE</div>
+                        <div class="stat__value">
+                            {{ formatNumber(lexplore.buoyData?.height) }}
+                            <span class="unit">m</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </q-header>
+</template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import useLexploreStore from 'src/stores/lexplore';
+import { getCardinalDirection } from 'src/utils/directions';
+
+const lexplore = useLexploreStore();
+const { locale } = useI18n();
+
+const languageOptions = [
+    { label: 'FR', value: 'fr' },
+    { label: 'EN', value: 'en' },
+    { label: 'DE', value: 'de' },
+    { label: 'IT', value: 'it' },
+];
+
+const numberFormatter = new Intl.NumberFormat(locale.value, {
+    maximumFractionDigits: 2,
+});
+
+function formatNumber(value: number | undefined): string {
+    if (value === undefined) {
+        return 'N/A';
+    }
+    return numberFormatter.format(value);
+}
+</script>
+
+<style scoped lang="scss">
+.header {
+    background: linear-gradient(90deg, #02181d, #05343c, #02181d);
+    color: white;
+}
+
+.header__inner {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.header__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.header__logo {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    color: #00c6df;
+}
+
+.header__brand {
+    font-weight: 700;
+    line-height: 1;
+}
+
+.header__subtitle {
+    line-height: 1.1;
+}
+
+.header__langs {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.header__separator {
+    opacity: 0.25;
+}
+
+.header__stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: center;
+}
+
+.live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    width: fit-content;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.live__dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: coral;
+}
+
+.live__time {
+    padding-left: 0.75rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat__label {
+    opacity: 0.6;
+    font-weight: 600;
+}
+
+.stat__value {
+    font-weight: 700;
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.unit {
+    font-weight: 400;
+    font-size: 1.1rem;
+    color: var(--q-primary);
+}
+</style>
