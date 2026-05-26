@@ -2,6 +2,7 @@
     <div class="qr-wrap">
         <div class="qr-card">
             <q-icon name="qr_code_2" size="60px" color="primary" />
+            <!-- TODO: Replace with actual QR code -->
             <div class="qr-label text-primary">En savoir plus</div>
         </div>
     </div>

@@ -38,7 +38,7 @@ const route = useRoute();
 
 const activeHref = computed(() => route.path);
 
-interface LiveDataTab {
+export interface LiveDataTab {
     label: string;
     icon: string;
     href: string;

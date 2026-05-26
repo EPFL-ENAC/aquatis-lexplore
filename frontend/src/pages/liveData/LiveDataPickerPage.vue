@@ -40,7 +40,7 @@ const items: CardMenuItem[] = [
         icon: 'device_thermostat',
         color: 'primary',
         textClass: 'text-primary',
-        href: '/liveData/temperatureByDepth',
+        href: '/liveData/temperatureOverDepth',
     },
     {
         id: '02',
@@ -50,17 +50,17 @@ const items: CardMenuItem[] = [
         icon: 'water',
         color: 'primary',
         textClass: 'text-primary',
-        href: '/liveData/zooplancton',
+        href: '/liveData/zooplanctonDepth',
     },
     {
         id: '03',
         kicker: 'Migration jour/nuit',
-        title: 'Concentration de Microalgues',
+        title: 'Concentration des microalgues',
         subtitle: '',
         icon: 'grass',
         color: 'primary',
         textClass: 'text-primary',
-        href: '/liveData/microalgues',
+        href: '/liveData/algaeConcentrationOverDepth',
     },
 ];
 </script>

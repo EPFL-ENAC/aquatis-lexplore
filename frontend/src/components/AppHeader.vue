@@ -38,14 +38,14 @@
                     <div class="stat">
                         <div class="stat__label">TEMP AIR</div>
                         <div class="stat__value">
-                            {{ formatNumber(lexplore.weatherData?.airTemperature) }}
+                            {{ formatNumber(weatherStore.data?.airTemperature, locale) }}
                             <span class="unit">°C</span>
                         </div>
                     </div>
                     <div class="stat">
                         <div class="stat__label">TEMP EAU</div>
                         <div class="stat__value">
-                            {{ formatNumber(lexplore.lakeData?.waterTemperature) }}
+                            {{ formatNumber(lakeStore.data?.surfaceTemperature, locale) }}
                             <span class="unit">°C</span>
                         </div>
                     </div>
@@ -54,18 +54,18 @@
                         <div class="stat__value">
                             {{
                                 getCardinalDirection(
-                                    lexplore.weatherData?.windDirectionDegrees ?? 0,
+                                    weatherStore.data?.windDirectionDegrees ?? 0,
                                 ).toUpperCase()
                             }}
                             <span class="unit"
-                                >{{ formatNumber(lexplore.weatherData?.windSpeed) }}km/h</span
+                                >{{ formatNumber(weatherStore.data?.windSpeed, locale) }}km/h</span
                             >
                         </div>
                     </div>
                     <div class="stat">
                         <div class="stat__label">VAGUE</div>
                         <div class="stat__value">
-                            {{ formatNumber(lexplore.buoyData?.height) }}
+                            {{ formatNumber(buoyStore.data?.height, locale) }}
                             <span class="unit">m</span>
                         </div>
                     </div>
@@ -77,10 +77,13 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import useLexploreStore from 'src/stores/lexplore';
+import { useWeatherStore, useLakeStore, useBuoyStore } from 'src/stores/lexplore';
 import { getCardinalDirection } from 'src/utils/directions';
+import { formatNumber } from 'src/utils/format';
 
-const lexplore = useLexploreStore();
+const weatherStore = useWeatherStore();
+const lakeStore = useLakeStore();
+const buoyStore = useBuoyStore();
 const { locale } = useI18n();
 
 const languageOptions = [
@@ -89,17 +92,6 @@ const languageOptions = [
     { label: 'DE', value: 'de' },
     { label: 'IT', value: 'it' },
 ];
-
-const numberFormatter = new Intl.NumberFormat(locale.value, {
-    maximumFractionDigits: 2,
-});
-
-function formatNumber(value: number | undefined): string {
-    if (value === undefined) {
-        return 'N/A';
-    }
-    return numberFormatter.format(value);
-}
 </script>
 
 <style scoped lang="scss">

@@ -1,6 +1,6 @@
-# HOSM Nepal (tech4dev-hosm)
+# Aquatis Lexplore
 
-Dataset annotation tools for the Humanitarian OpenStreetMap - Nepal project
+Web app for Aquatis exhibition around Lexplore data
 
 ## Install the dependencies
 

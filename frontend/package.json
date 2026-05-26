@@ -1,9 +1,9 @@
 {
-  "name": "tech4dev-hosm",
+  "name": "aquatis-lexplore",
   "version": "0.0.1",
-  "description": "Dataset annotation tools for the Humanitarian OpenStreetMap - Nepal project",
-  "productName": "HOSM Nepal – Dataset annotation tools",
-  "author": "Son Pham-Ba <son.phamba@epfl.ch>",
+  "description": "Web app for Aquatis exhibition around Lexplore data",
+  "productName": "Aquatis Lexplore",
+  "author": "Cyprien Lengagne <cyprien.lengagne@epfl.ch>",
   "type": "module",
   "private": true,
   "scripts": {

@@ -31,9 +31,9 @@ const leftDrawerOpen = ref(false);
 
 .page-shell {
     width: 100%;
-    max-width: 820px;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 56px 28px 32px;
+    padding: 4rem;
 }
 
 @media (max-width: 640px) {

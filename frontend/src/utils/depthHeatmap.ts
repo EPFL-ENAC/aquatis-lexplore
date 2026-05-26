@@ -1,6 +1,13 @@
 import { arraysEqual, sortedArrayRange, uniqueSorted } from './array';
 import { Array2D } from './array2d';
-import { lerp } from './math';
+import { closestAboveSorted, closestBelowSorted, getInterpolationT, lerp } from './math';
+
+export interface DepthHeatmapSliceParams {
+    xStart?: number;
+    xEnd?: number;
+    yStart?: number;
+    yEnd?: number;
+}
 
 export class DepthHeatmap {
     readonly x: number[];
@@ -11,14 +18,45 @@ export class DepthHeatmap {
         this.x = [...(params?.x ?? [])];
         this.y = [...(params?.y ?? [])];
 
-        const zData =
-            params?.z instanceof Array2D
-                ? params.z.getData().map((row) => [...row])
-                : (params?.z ?? []).map((row) => [...row]);
-
-        this.z = new Array2D(zData);
+        if (params?.z instanceof Array2D) {
+            this.z = params.z;
+        } else {
+            const zData = (params?.z ?? []).map((row) => [...row]);
+            this.z = new Array2D(zData);
+        }
 
         this.validate();
+    }
+
+    at(xValue: number | 'rightmost', yValue: number): number | null {
+        const xIndex = xValue === 'rightmost' ? this.x.length - 1 : this.x.indexOf(xValue);
+        const yIndex = this.y.indexOf(yValue);
+
+        if (xIndex === -1 || yIndex === -1) {
+            return null;
+        }
+
+        return this.z.at(xIndex, yIndex) ?? null;
+    }
+
+    slice(params: DepthHeatmapSliceParams): DepthHeatmap {
+        const xStartValue = params.xStart ?? this.x[0] ?? 0;
+        const xEndValue = params.xEnd ?? this.x[this.x.length - 1] ?? 0;
+        const yStartValue = params.yStart ?? this.y[0] ?? 0;
+        const yEndValue = params.yEnd ?? this.y[this.y.length - 1] ?? 0;
+
+        const [minXIndex, maxXIndex] = sortedArrayRange(this.x, xStartValue, xEndValue);
+        const [minYIndex, maxYIndex] = sortedArrayRange(this.y, yStartValue, yEndValue);
+
+        const slicedX = this.x.slice(minXIndex, maxXIndex);
+        const slicedY = this.y.slice(minYIndex, maxYIndex);
+        const slicedZ = this.z.slice2D(minXIndex, maxXIndex, minYIndex, maxYIndex).slice;
+
+        return new DepthHeatmap({
+            x: slicedX,
+            y: slicedY,
+            z: slicedZ,
+        });
     }
 
     static fromArrays(x: number[], y: number[], z: number[][]): DepthHeatmap {
@@ -76,6 +114,15 @@ export class DepthHeatmap {
 
     size(): number {
         return this.x.length * this.y.length;
+    }
+
+    zValuesMinMax(): { min: number; max: number } | null {
+        const minmax = this.z.minMax();
+        if (!Number.isFinite(minmax.min.value) || !Number.isFinite(minmax.max.value)) {
+            return null;
+        }
+
+        return { min: minmax.min.value, max: minmax.max.value };
     }
 
     zScore(sample = false): DepthHeatmap {
@@ -189,6 +236,77 @@ export class DepthHeatmap {
         return points;
     }
 
+    public replaceDepthRangeByLerp(startDepth: number, endDepth: number): DepthHeatmap {
+        const startY = startDepth;
+        const endY = endDepth;
+
+        const newZ = this.z.replaceYRangeByLerp(
+            this.y.findIndex((y) => y >= startY),
+            this.y.findIndex((y) => y >= endY),
+        );
+
+        return new DepthHeatmap({
+            x: this.x,
+            y: this.y,
+            z: newZ,
+        });
+    }
+
+    public maxZValuePlot(): Record<number, { y: number; z: number }> {
+        const maxValues: Record<number, { y: number; z: number }> = {};
+
+        for (let i = 0; i < this.x.length; i++) {
+            const { yIndex, value } = this.z.maxAtX(i);
+            maxValues[this.x[i]!] = {
+                y: this.y[yIndex]!,
+                z: value,
+            };
+        }
+
+        return maxValues;
+    }
+
+    toInterpolated(
+        newXAxis: number[],
+        interpolationFunction: (min: number, max: number, t: number) => number = lerp,
+    ): DepthHeatmap {
+        const newZ = Array2D.zeros(newXAxis.length, this.y.length);
+
+        for (let i = 0; i < newXAxis.length; i++) {
+            const newX = newXAxis[i]!;
+
+            const closestBelow = closestBelowSorted(this.x, newX) ?? {
+                value: this.x[0]!,
+                index: 0,
+            };
+            const closestAbove = closestAboveSorted(this.x, newX) ?? {
+                value: this.x[this.x.length - 1]!,
+                index: this.x.length - 1,
+            };
+            const tx = getInterpolationT(closestBelow.value, closestAbove.value, newX);
+
+            if (tx < 0 || tx > 1) {
+                throw new Error(`Unexpected interpolation t value ${tx} for newX=${newX}.`);
+            }
+
+            newZ.setColumn(
+                i,
+                this.z.getInterpolatedColumn(
+                    closestBelow.index,
+                    closestAbove.index,
+                    tx,
+                    interpolationFunction,
+                ),
+            );
+        }
+
+        return new DepthHeatmap({
+            x: newXAxis,
+            y: this.y,
+            z: newZ,
+        });
+    }
+
     private static validateBridgeY(
         bridgeY: number[],
         leftEndY: number,
@@ -245,12 +363,6 @@ export class DepthHeatmap {
 
             if (row.length !== this.y.length) {
                 throw new Error(`z[${i}] must have length ${this.y.length} to match y.`);
-            }
-
-            for (let j = 0; j < row.length; j += 1) {
-                if (!Number.isFinite(row[j])) {
-                    throw new Error(`z[${i}][${j}] must be a finite number.`);
-                }
             }
         }
     }

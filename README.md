@@ -1,4 +1,4 @@
-# HOSM Nepal – Dataset annotation tools
+# Aquatis Lexplore
 
 ## Requirements
 
@@ -33,15 +33,3 @@ make run-frontend
 ```
 
 The website will be available at [http://localhost:9000](http://localhost:9000).
-
-
-## Development
-
-This project uses a [custom fork of Annotorious](https://github.com/EPFL-ENAC/annotorious) that adds undo functionality during polygon creation. To update and publish the Annotorious package:
-```bash
-# From the cloned Annotorious repository
-npm install
-npm run build
-npm pack --workspaces
-gh release create <tag> *.tgz
-```

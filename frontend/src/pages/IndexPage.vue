@@ -42,17 +42,17 @@ const items: CardMenuItem[] = [
         icon: 'show_chart',
         color: 'warning',
         textClass: 'text-warning',
-        href: '/decouverte',
+        href: '/changes',
     },
     {
         id: '03',
         kicker: 'JEUX',
-        title: 'Devient un Léxplorateur',
+        title: 'Deviens un Léxplorateur',
         subtitle: "L'aventure du plancton et Chaud-ou-Froid: deux jeux pour comprendre le lac.",
         icon: 'explore',
         color: 'negative',
         textClass: 'text-negative',
-        href: '/jeux',
+        href: '/games',
     },
 ];
 </script>

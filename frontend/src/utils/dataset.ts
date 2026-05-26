@@ -26,6 +26,16 @@ export interface DatasetMetadata {
 
 type DatasetAxisData = number[] | number[][];
 
+type DataTimePullParam =
+    | {
+          type: 'timeRange';
+          startTimestamp: number;
+          endTimestamp: number;
+      }
+    | {
+          type: 'latest';
+      };
+
 async function fetchJson<T>(url: string): Promise<T> {
     const response = await fetch(url);
 
@@ -146,13 +156,15 @@ export class Dataset {
     }
 
     async getData(
-        startTimestamp: number,
-        endTimestamp: number,
+        timePullParam: DataTimePullParam,
         axesLabels: string[],
         rename: boolean = true,
+        validate: boolean = true,
     ): Promise<DatasetData> {
-        if (endTimestamp < startTimestamp) {
-            throw new Error('endTimestamp must be greater than or equal to startTimestamp');
+        if (timePullParam.type === 'timeRange') {
+            if (timePullParam.endTimestamp < timePullParam.startTimestamp) {
+                throw new Error('endTimestamp must be greater than or equal to startTimestamp');
+            }
         }
 
         const nameToLabel: Record<string, string> = {};
@@ -162,7 +174,20 @@ export class Dataset {
             }
         }
 
-        const chunks = await this.metadata.files.getDataForTimeRange(startTimestamp, endTimestamp);
+        let chunks: DatasetFileDataChunk[] = [];
+
+        if (timePullParam.type === 'timeRange') {
+            chunks = await this.metadata.files.getDataForTimeRange(
+                timePullParam.startTimestamp,
+                timePullParam.endTimestamp,
+            );
+        } else if (timePullParam.type === 'latest') {
+            const latestData = await this.metadata.files.getLatestData();
+            if (latestData) {
+                chunks = [latestData];
+            }
+        }
+
         const data = mergeRequestedAxes(chunks, Object.keys(nameToLabel));
         if (!rename) {
             return data;
@@ -173,6 +198,16 @@ export class Dataset {
             const label = nameToLabel[name]!;
             renamedData[label] = data[name]!;
         }
+
+        if (validate) {
+            if (axesLabels.some((label) => !(label in renamedData))) {
+                throw new Error('Not all requested axes are available in the data');
+            }
+            if (renamedData[axesLabels[0]!]!.length === 0) {
+                throw new Error('No data available for the requested time range');
+            }
+        }
+
         return renamedData;
     }
 

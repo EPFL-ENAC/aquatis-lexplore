@@ -1,4 +1,4 @@
-import { clamp, median } from './math';
+import { arrayClamp, clamp, lerp, median } from './math';
 
 interface ValueWithIndex {
     value: number;
@@ -29,8 +29,31 @@ export class Array2D {
         return this.data.length > 0 ? this.data[0]!.length : 0;
     }
 
+    static zeros(width: number, height: number): Array2D {
+        const data = Array.from({ length: width }, () => Array.from({ length: height }, () => 0));
+        return new Array2D(data);
+    }
+
     public getData(): number[][] {
         return this.data;
+    }
+
+    public copy(): Array2D {
+        const newData = this.data.map((row) => [...row]);
+        return new Array2D(newData);
+    }
+
+    setColumn(x: number, columnData: number[]): void {
+        if (x < 0 || x >= this.width) {
+            throw new Error(`x index ${x} is out of bounds.`);
+        }
+        if (columnData.length !== this.height) {
+            throw new Error(
+                `Column data length ${columnData.length} does not match Array2D height ${this.height}.`,
+            );
+        }
+
+        this.data[x] = [...columnData];
     }
 
     at(x: number, y: number): number | undefined {
@@ -39,6 +62,49 @@ export class Array2D {
         }
 
         return this.data[x]?.[y];
+    }
+
+    static fromTransposed(data: number[][], flipY: boolean = false): Array2D {
+        const transposedData =
+            data[0]?.map((_, i) => {
+                const row = data.map((row) => row[i]!);
+                return flipY ? row.reverse() : row;
+            }) ?? [];
+        if (!transposedData) return new Array2D([]);
+
+        return new Array2D(transposedData);
+    }
+
+    public transpose(): Array2D {
+        if (this.width === 0 || this.height === 0) {
+            return new Array2D([]);
+        }
+
+        const newData = Array.from({ length: this.height }, (_, x) =>
+            Array.from({ length: this.width }, (_, y) => this.at(y, x)!),
+        );
+
+        return new Array2D(newData);
+    }
+
+    public min(): ValueWithIndex {
+        let min: ValueWithIndex = {
+            value: Infinity,
+            xIndex: -1,
+            yIndex: -1,
+        };
+
+        for (let x = 0; x < this.width; x += 1) {
+            for (let y = 0; y < this.height; y += 1) {
+                const value = this.at(x, y)!;
+
+                if (Number.isFinite(value) && value < min.value) {
+                    min = { value, xIndex: x, yIndex: y };
+                }
+            }
+        }
+
+        return min;
     }
 
     public max(): ValueWithIndex {
@@ -52,13 +118,47 @@ export class Array2D {
             for (let y = 0; y < this.height; y += 1) {
                 const value = this.at(x, y)!;
 
-                if (value > max.value) {
+                if (Number.isFinite(value) && value > max.value) {
                     max = { value, xIndex: x, yIndex: y };
                 }
             }
         }
 
         return max;
+    }
+
+    public minMax(): { min: ValueWithIndex; max: ValueWithIndex } {
+        let min: ValueWithIndex = {
+            value: Infinity,
+            xIndex: -1,
+            yIndex: -1,
+        };
+
+        let max: ValueWithIndex = {
+            value: -Infinity,
+            xIndex: -1,
+            yIndex: -1,
+        };
+
+        for (let x = 0; x < this.width; x += 1) {
+            for (let y = 0; y < this.height; y += 1) {
+                const value = this.at(x, y)!;
+
+                if (!Number.isFinite(value)) {
+                    continue;
+                }
+
+                if (value < min.value) {
+                    min = { value, xIndex: x, yIndex: y };
+                }
+
+                if (value > max.value) {
+                    max = { value, xIndex: x, yIndex: y };
+                }
+            }
+        }
+
+        return { min, max };
     }
 
     public mean(): number {
@@ -77,6 +177,27 @@ export class Array2D {
         }
 
         return sum / n;
+    }
+
+    public maxAtX(x: number): { yIndex: number; value: number } {
+        if (x < 0 || x >= this.width) {
+            throw new Error(`x index ${x} is out of bounds.`);
+        }
+
+        let max = {
+            value: -Infinity,
+            yIndex: -1,
+        };
+
+        for (let y = 0; y < this.height; y += 1) {
+            const value = this.at(x, y)!;
+
+            if (Number.isFinite(value) && value > max.value) {
+                max = { value, yIndex: y };
+            }
+        }
+
+        return max;
     }
 
     public standardDeviation(sample = false): number {
@@ -154,12 +275,17 @@ export class Array2D {
     }
 
     public slice2D(startX: number, endX: number, startY: number, endY: number): Slice2D {
-        const minX = clamp(Math.min(startX, endX), 0, this.width - 1);
-        const maxX = clamp(Math.max(startX, endX), 0, this.width - 1);
-        const minY = clamp(Math.min(startY, endY), 0, this.height - 1);
-        const maxY = clamp(Math.max(startY, endY), 0, this.height - 1);
+        const clampedStartX = arrayClamp(startX, this.width);
+        const clampedEndX = arrayClamp(endX, this.width);
+        const clampedStartY = arrayClamp(startY, this.height);
+        const clampedEndY = arrayClamp(endY, this.height);
 
-        const newData = this.data.slice(minX, maxX + 1).map((row) => row.slice(minY, maxY + 1));
+        const minX = Math.min(clampedStartX, clampedEndX);
+        const maxX = Math.max(clampedStartX, clampedEndX);
+        const minY = Math.min(clampedStartY, clampedEndY);
+        const maxY = Math.max(clampedStartY, clampedEndY);
+
+        const newData = this.data.slice(minX, maxX).map((row) => row.slice(minY, maxY));
 
         return { slice: new Array2D(newData), minX, minY, maxX, maxY };
     }
@@ -241,5 +367,39 @@ export class Array2D {
         topPercent?: number,
     ): number | null {
         return this.peakInRange(startX, endX, startY, endY, topPercent)?.value ?? null;
+    }
+
+    public replaceYRangeByLerp(startY: number, endY: number): Array2D {
+        const copy = this.copy();
+
+        for (let x = 0; x < this.width; x += 1) {
+            const startValue = copy.at(x, startY)!;
+            const endValue = copy.at(x, endY)!;
+
+            for (let y = startY; y <= endY; y += 1) {
+                const t = (y - startY) / (endY - startY);
+                const newValue = lerp(startValue, endValue, t);
+                copy.data[x]![y] = newValue;
+            }
+        }
+
+        return copy;
+    }
+
+    public getInterpolatedColumn(
+        xInterpolationA: number,
+        xInterpolationB: number,
+        t: number,
+        interpolationFunction: (min: number, max: number, t: number) => number = lerp,
+    ): number[] {
+        const interpolatedColumn: number[] = [];
+        for (let y = 0; y < this.height; y++) {
+            const valueA = this.at(xInterpolationA, y)!;
+            const valueB = this.at(xInterpolationB, y)!;
+            const newValue = interpolationFunction(valueA, valueB, t);
+            interpolatedColumn.push(newValue);
+        }
+
+        return interpolatedColumn;
     }
 }

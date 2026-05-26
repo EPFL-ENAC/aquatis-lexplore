@@ -17,8 +17,47 @@ const routes: RouteRecordRaw[] = [
                         component: () => import('pages/liveData/LiveDataPickerPage.vue'),
                     },
                     {
-                        path: 'temperatureByDepth',
-                        component: () => import('pages/liveData/TemperatureByDepthPage.vue'),
+                        path: 'temperatureOverDepth',
+                        component: () => import('pages/liveData/TemperatureOverDepthPage.vue'),
+                    },
+                    {
+                        path: 'zooplanctonDepth',
+                        component: () => import('pages/liveData/ZooplanctonDepthPage.vue'),
+                    },
+                    {
+                        path: 'algaeConcentrationOverDepth',
+                        component: () =>
+                            import('pages/liveData/AlgaeConcertrationOverDepthPage.vue'),
+                    },
+                ],
+            },
+            {
+                path: '/changes',
+                children: [
+                    {
+                        path: '',
+                        component: () => import('pages/changes/ChangesPickerPage.vue'),
+                    },
+                    {
+                        path: 'windChange',
+                        component: () => import('pages/changes/WindChangePage.vue'),
+                    },
+                ],
+            },
+            {
+                path: '/games',
+                children: [
+                    {
+                        path: '',
+                        component: () => import('pages/games/GamePickerPage.vue'),
+                    },
+                    {
+                        path: 'planctonGame',
+                        component: () => import('pages/games/PlanctonGamePage.vue'),
+                    },
+                    {
+                        path: 'temperatureOverDepthGame',
+                        component: () => import('pages/games/TemperatureOverDepthGame.vue'),
                     },
                 ],
             },

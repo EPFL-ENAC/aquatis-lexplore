@@ -8,20 +8,20 @@
             <div class="plot-track">
                 <div class="plot-fill" :style="{ width: `${getWidth(row.value)}%` }" />
                 <div class="plot-value" :style="{ left: `calc(${getWidth(row.value)}% + 8px)` }">
-                    <span class="plot-value-number">{{ row.value }}</span>
+                    <span class="plot-value-number">{{ formatNumber(row.value, locale) }}</span>
                     <span class="plot-value-unit">°c</span>
                 </div>
             </div>
         </div>
-
-        <p class="plot-meta">
-            Mesuré aujourd'hui à {{ measuredAt }} ·
-            <strong>{{ location }}</strong>
-        </p>
     </section>
 </template>
 
 <script setup lang="ts">
+import { formatNumber } from 'src/utils/format';
+import { useI18n } from 'vue-i18n';
+
+const { locale } = useI18n();
+
 interface PlotRow {
     label: string;
     value: number;
@@ -31,8 +31,6 @@ const props = withDefaults(
     defineProps<{
         rows: PlotRow[];
         maxValue?: number;
-        measuredAt: string;
-        location: string;
     }>(),
     {
         maxValue: 25,
@@ -102,12 +100,6 @@ const getWidth = (value: number) => {
     font-weight: 400;
     line-height: 1;
     color: #12cfe3;
-}
-
-.plot-meta {
-    margin-top: 2rem;
-    font-size: 1rem;
-    color: rgb(255 255 255 / 56%);
 }
 
 @media (max-width: 700px) {
