@@ -175,7 +175,7 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
 
         return new DepthHeatmap({
             x: data['time'] as number[],
-            y: data['depth'] as number[],
+            y: data['depth']?.reverse() as number[],
             z: Array2D.fromTransposed(data['Sv'] as number[][], true),
         });
     })();

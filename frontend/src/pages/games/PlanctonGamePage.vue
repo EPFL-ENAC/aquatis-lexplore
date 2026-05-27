@@ -29,8 +29,8 @@
 
             <TimestampSlider
                 v-model="selectedTimestamp"
-                :start-timestamp="range.start"
-                :end-timestamp="range.end"
+                :start-timestamp="range.start * 1000"
+                :end-timestamp="range.end * 1000"
             />
 
             <QuestionCardsRow :items="questions" />
@@ -52,40 +52,26 @@ import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 
 const zooplanctonDepthStore = useZooplanctonDepthStore();
 
-const now = Math.floor(Date.now() / 1000);
-
-const selectedTimestamp = ref<number>(now);
-
-const range = computed(() => ({
-    start: new Date(2026, 4, 22, 0, 0, 0).getTime(),
-    end: new Date(2026, 4, 22, 23, 59, 59).getTime(),
-})); // Placeholder range, replace with actual data
-
-// const sunriseSunset = computed(() => sunriseSunsetTimeTodaySwitzerland());
+const selectedTimestamp = ref<number>(Date.now() / 1000);
+const range = computed(() => zooplanctonDepthStore.lastFullDayOfDataTimestampRange); // Placeholder range, replace with actual data
 
 const samples = computed(() => {
-    const range = zooplanctonDepthStore.lastFullDayOfDataTimestampRange;
-
-    if (!zooplanctonDepthStore.zooplanctonDepthPlotByTimestamp || !range) {
+    if (!zooplanctonDepthStore.zooplanctonDepthPlotByTimestamp || !range.value) {
         return [];
     }
-
-    console.log(zooplanctonDepthStore.zooplanctonDepthPlotByTimestamp);
 
     const samples: DepthSample[] = [];
     for (const [t, values] of Object.entries(
         zooplanctonDepthStore.zooplanctonDepthPlotByTimestamp,
     )) {
         const timestamp = Number(t);
-        if (timestamp >= range.start && timestamp < range.end) {
+        if (timestamp >= range.value.start && timestamp < range.value.end) {
             samples.push({
                 timestamp,
                 depth: values.y,
             });
         }
     }
-
-    console.log(samples.map((s) => ({ timestamp: new Date(s.timestamp * 1000), depth: s.depth }))); // --- IGNORE ---
 
     return samples;
 });

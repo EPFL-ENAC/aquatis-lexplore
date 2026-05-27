@@ -45,8 +45,8 @@
             <div class="timeline-panel">
                 <TimestampSlider
                     v-model="currentTimestamp"
-                    :start-timestamp="startTimestamp"
-                    :end-timestamp="endTimestamp"
+                    :start-timestamp="startTimestamp * 1000"
+                    :end-timestamp="endTimestamp * 1000"
                 />
             </div>
         </section>
