@@ -23,46 +23,13 @@
         </template>
     </PageHeader>
 
-    <CardsMenu :items="items" />
+    <CardsNavMenu :items="liveDataItems" />
 </template>
 
 <script setup lang="ts">
 import PageHeader from 'src/components/PageHeader.vue';
-import CardsMenu from 'src/components/CardsMenu.vue';
-import type { CardMenuItem } from 'src/components/componentTypes';
-
-const items: CardMenuItem[] = [
-    {
-        id: '01',
-        kicker: 'Air → 100m',
-        title: 'Température en profondeur',
-        subtitle: '',
-        icon: 'device_thermostat',
-        color: 'primary',
-        textClass: 'text-primary',
-        href: '/liveData/temperatureOverDepth',
-    },
-    {
-        id: '02',
-        kicker: 'Migration jour/nuit',
-        title: 'Profondeur du Zooplancton',
-        subtitle: '',
-        icon: 'water',
-        color: 'primary',
-        textClass: 'text-primary',
-        href: '/liveData/zooplanctonDepth',
-    },
-    {
-        id: '03',
-        kicker: 'Migration jour/nuit',
-        title: 'Concentration des microalgues',
-        subtitle: '',
-        icon: 'grass',
-        color: 'primary',
-        textClass: 'text-primary',
-        href: '/liveData/algaeConcentrationOverDepth',
-    },
-];
+import CardsNavMenu from 'src/components/CardsNavMenu.vue';
+import { liveDataItems } from './liveDataNavGroups';
 </script>
 
 <style scoped>

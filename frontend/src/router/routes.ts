@@ -42,6 +42,10 @@ const routes: RouteRecordRaw[] = [
                         path: 'windChange',
                         component: () => import('pages/changes/WindChangePage.vue'),
                     },
+                    {
+                        path: 'chlorophyllChange',
+                        component: () => import('pages/changes/ChlorophyllChangePage.vue'),
+                    },
                 ],
             },
             {

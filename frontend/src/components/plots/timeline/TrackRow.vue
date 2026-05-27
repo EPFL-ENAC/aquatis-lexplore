@@ -35,7 +35,6 @@
             :track-top="0"
             :track-height="height"
             :gap="barGap"
-            :color="color"
         />
 
         <TrackLine
@@ -45,7 +44,6 @@
             :track-top="0"
             :track-height="height"
             :stroke-width="lineStrokeWidth"
-            :color="color"
         />
     </svg>
 </template>
@@ -63,7 +61,6 @@ defineProps<{
     xForTimestamp: (timestamp: number) => number;
     barGap: number;
     lineStrokeWidth: number;
-    color: string;
 }>();
 </script>
 

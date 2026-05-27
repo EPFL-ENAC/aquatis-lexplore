@@ -24,6 +24,7 @@ export interface TrackProperties {
     title: string;
     type: TrackType;
     data: TrackPoint[];
+    color?: string;
     stepMs?: number;
 }
 
@@ -31,6 +32,8 @@ export class Track {
     private _title: string;
     private _type: TrackType;
     private _data: TrackPoint[];
+    private _color: string;
+
     private _min: number = 0;
     private _max: number = 1;
     private _stepMs: number = HOUR_MS;
@@ -38,6 +41,7 @@ export class Track {
     constructor(props: TrackProperties) {
         this._title = props.title;
         this._type = props.type;
+        this._color = props.color ?? 'cyan';
         this._data = [...props.data].sort((a, b) => a.timestamp - b.timestamp);
         this._stepMs = props.stepMs ?? HOUR_MS;
 
@@ -92,6 +96,10 @@ export class Track {
 
     get stepMs(): number {
         return this._stepMs;
+    }
+
+    get color(): string {
+        return this._color;
     }
 
     getTimeRange(): { min: number; max: number } {

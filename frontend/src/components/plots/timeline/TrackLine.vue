@@ -3,7 +3,7 @@
         <path
             v-if="pathD"
             :d="pathD"
-            :stroke="color"
+            :stroke="track.color"
             :stroke-width="strokeWidth"
             fill="none"
             stroke-linejoin="round"
@@ -15,7 +15,7 @@
             :cx="singlePoint.x"
             :cy="singlePoint.y"
             :r="(strokeWidth ?? 0) + 1"
-            :fill="color"
+            :fill="track.color"
         />
     </g>
 </template>
@@ -31,7 +31,6 @@ const props = defineProps<{
     xForTimestamp: (timestamp: number) => number;
     trackTop: number;
     trackHeight: number;
-    color?: string;
     strokeWidth?: number;
 }>();
 

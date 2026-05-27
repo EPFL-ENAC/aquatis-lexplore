@@ -1,7 +1,7 @@
 <template>
     <q-page class="leman-page text-white">
         <div class="page-shell">
-            <TopPageNav :tabs="liveDataPageGroups" back-to="/liveData" back-label="Retour" />
+            <TopPageNav :tabs="liveDataItems" back-to="/liveData" back-label="Retour" />
 
             <PageHeader eyebrow="01 · LIVE - Concentration des Microalgues" :level="1">
                 <template #default>
@@ -34,7 +34,7 @@ import PageHeader from 'src/components/PageHeader.vue';
 import DepthProfilePlot, { type DepthLevel } from 'src/components/plots/DepthProfilePlot.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
-import { liveDataPageGroups } from './liveDataNavGroups';
+import { liveDataItems } from './liveDataNavGroups';
 import { computed } from 'vue';
 import { useAlgaeStore } from 'src/stores/lexplore';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
@@ -72,7 +72,7 @@ const maxDepth = computed(() => {
     return Math.ceil(maxDepthValue / 10) * 10; // Round up to nearest 10 for better visualization
 });
 
-const measuredAt = computed(() => algaeStore.data?.timestampOfMeasurementSeconds);
+const measuredAt = computed(() => algaeStore.data?.timestamps.at(-1));
 
 const questionCards = [
     {

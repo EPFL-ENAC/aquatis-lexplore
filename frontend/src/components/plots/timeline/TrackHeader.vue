@@ -108,6 +108,7 @@ function formatValueTick(value: number): string {
 
 .timeline-chart__track-title {
     position: absolute;
+    max-width: calc(100% - 64px);
     left: 12px;
     top: 10px;
     right: 12px;

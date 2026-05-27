@@ -145,11 +145,15 @@ export class ColorMap {
 
     public static heat(): ColorMap {
         return new ColorMap([
-            { t: 0.0, color: [40, 0, 120] },
-            { t: 0.25, color: [40, 120, 255] },
-            { t: 0.5, color: [80, 200, 120] },
-            { t: 0.75, color: [255, 220, 80] },
-            { t: 1.0, color: [220, 40, 40] },
+            { t: 0.0, color: [0, 0, 20] },
+            { t: 0.12, color: [0, 16, 92] },
+            { t: 0.28, color: [31, 47, 209] },
+            { t: 0.45, color: [29, 162, 255] },
+            { t: 0.6, color: [31, 212, 110] },
+            { t: 0.74, color: [231, 231, 26] },
+            { t: 0.86, color: [255, 152, 0] },
+            { t: 0.94, color: [255, 50, 0] },
+            { t: 1.0, color: [214, 0, 0] },
         ]);
     }
 

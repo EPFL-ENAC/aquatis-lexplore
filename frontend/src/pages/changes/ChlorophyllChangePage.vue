@@ -1,13 +1,13 @@
 <template>
     <TopPageNav
         :tabs="changePages"
-        active-href="/changes/windChange"
+        active-href="/changes/chlorophyllChange"
         back-to="/changes"
         back-label="Retour à l'accueil"
     />
 
     <PageHeader eyebrow="02 · Découverte" eyebrow-class="text-warning" :level="1">
-        <template #default> L'effet du vent sur le lac. </template>
+        <template #default> La lumière et la chlorophylle dans le lac. </template>
     </PageHeader>
 
     <section class="chart-stage">
@@ -27,12 +27,9 @@
             </div>
 
             <div class="chart-card__legend">
-                <div v-for="track in tracks" :key="track.title" class="chart-card__legend-item">
-                    <span
-                        class="chart-card__legend-dot"
-                        :style="{ backgroundColor: track.color }"
-                    />
-                    <span>{{ track.title }}</span>
+                <div v-for="item in tracks" :key="item.title" class="chart-card__legend-item">
+                    <span class="chart-card__legend-dot" :style="{ backgroundColor: item.color }" />
+                    <span>{{ item.title }}</span>
                 </div>
             </div>
         </div>
@@ -47,14 +44,14 @@ import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import ScrollableTracksChart from 'src/components/plots/timeline/ScrollableTrackChart.vue';
-import { changePages } from './changesNavGroups';
 import { Timeline, Track } from 'src/components/plots/timeline/types';
-import { useBuoyStore, useLakeStore, useWeatherStore } from 'src/stores/lexplore';
+import { changePages } from './changesNavGroups';
+import { useAlgaeStore, useLakeStore, useWeatherStore } from 'src/stores/lexplore';
 import { useI18n } from 'vue-i18n';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
-const buoyStore = useBuoyStore();
+const algaeStore = useAlgaeStore();
 
 const { locale } = useI18n();
 
@@ -62,10 +59,48 @@ function toMs(timestamp: number): number {
     return timestamp * 1000;
 }
 
+const chlorophyll0to20 = computed(() => {
+    if (!algaeStore.data) {
+        return [];
+    }
+
+    const sliced = algaeStore.data.chlorophyllAOverDepth.slice({
+        yStart: 0,
+        yEnd: 20,
+    });
+
+    return algaeStore.data.timestamps
+        .map((timestamp) => {
+            const value = sliced.averageOverDepthAtTimestamp(timestamp);
+
+            if (value == null || !Number.isFinite(value)) {
+                return null;
+            }
+
+            return {
+                timestamp: toMs(timestamp),
+                value,
+            };
+        })
+        .filter((point): point is { timestamp: number; value: number } => point !== null);
+});
+
 const tracks = computed(() => {
     const result: Track[] = [];
 
     if (weatherStore.data) {
+        result.push(
+            new Track({
+                title: 'Irradiance',
+                type: 'line',
+                color: '#ffd54a',
+                data: weatherStore.data.timestamps.map((timestamp, index) => ({
+                    timestamp: toMs(timestamp),
+                    value: weatherStore.data!.irradiance[index]!,
+                })),
+            }),
+        );
+
         result.push(
             new Track({
                 title: "Température de l'air (°C)",
@@ -74,18 +109,6 @@ const tracks = computed(() => {
                 data: weatherStore.data.timestamps.map((timestamp, index) => ({
                     timestamp: toMs(timestamp),
                     value: weatherStore.data!.airTemperature[index]!,
-                })),
-            }),
-        );
-
-        result.push(
-            new Track({
-                title: 'Vitesse du vent (m/s)',
-                type: 'line',
-                color: '#7ed957',
-                data: weatherStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: weatherStore.data!.windSpeed[index]!,
                 })),
             }),
         );
@@ -105,16 +128,13 @@ const tracks = computed(() => {
         );
     }
 
-    if (buoyStore.data) {
+    if (chlorophyll0to20.value.length > 0) {
         result.push(
             new Track({
-                title: 'Hauteur des vagues (m)',
+                title: 'Chlorophylle A moyenne (0–20 m)',
                 type: 'line',
-                color: '#c08cff',
-                data: buoyStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: buoyStore.data!.height[index]!,
-                })),
+                color: '#5df2c1',
+                data: chlorophyll0to20.value,
             }),
         );
     }
@@ -128,17 +148,17 @@ const questions = [
     {
         id: '01',
         kicker: 'QUESTION',
-        title: "Est-ce plus chaud ou plus froid que l'eau",
+        title: 'Quand la chlorophylle A est-elle la plus élevée ?',
     },
     {
         id: '02',
         kicker: 'QUESTION',
-        title: 'À quelle profondeur vois-tu le plancton maintenant ?',
+        title: "Comment évolue la température de l'eau avec l'irradiance ?",
     },
     {
         id: '03',
         kicker: 'QUESTION',
-        title: "Est-ce que l'eau du lac se refroidit avec la pluie ?",
+        title: 'Vois-tu un lien entre lumière et chlorophylle près de la surface ?',
     },
 ];
 </script>

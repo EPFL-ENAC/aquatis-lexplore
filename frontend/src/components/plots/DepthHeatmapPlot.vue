@@ -17,6 +17,12 @@ interface Props {
     width?: number;
     height?: number;
     colorBarWidth?: number;
+    plotMargins?: {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
     precision?: number;
     xLabel?: string;
     yLabel?: string;
@@ -29,6 +35,12 @@ const props = withDefaults(defineProps<Props>(), {
     width: 760,
     height: 420,
     colorBarWidth: 90,
+    plotMargins: () => ({
+        top: 16,
+        right: 12,
+        bottom: 52,
+        left: 64,
+    }),
     precision: 2,
     xLabel: 'X',
     yLabel: 'Y',
@@ -39,13 +51,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const plotCanvas = ref<HTMLCanvasElement | null>(null);
 const colorBarCanvas = ref<HTMLCanvasElement | null>(null);
-
-const plotMargins = {
-    top: 16,
-    right: 12,
-    bottom: 52,
-    left: 64,
-};
 
 const barMargins = {
     top: 16,
@@ -129,10 +134,10 @@ function drawHeatmap(): void {
         return;
     }
 
-    const plotLeft = plotMargins.left;
-    const plotTop = plotMargins.top;
-    const plotWidth = props.width - plotMargins.left - plotMargins.right;
-    const plotHeight = props.height - plotMargins.top - plotMargins.bottom;
+    const plotLeft = props.plotMargins.left;
+    const plotTop = props.plotMargins.top;
+    const plotWidth = props.width - props.plotMargins.left - props.plotMargins.right;
+    const plotHeight = props.height - props.plotMargins.top - props.plotMargins.bottom;
 
     ctx.clearRect(0, 0, props.width, props.height);
 
@@ -174,12 +179,8 @@ function drawHeatmap(): void {
         ctx.stroke();
     }
 
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(plotLeft, plotTop, plotWidth, plotHeight);
-
     ctx.fillStyle = '#0f172a';
-    ctx.font = '12px sans-serif';
+    ctx.font = '13px "Google Sans Flex", sans-serif';
 
     const xStep = tickStep(heatmap.x.length, 8);
     ctx.textAlign = 'center';
@@ -205,7 +206,7 @@ function drawHeatmap(): void {
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.font = '13px sans-serif';
+    ctx.font = '13px "Google Sans Flex", sans-serif';
     ctx.fillText(props.xLabel, plotLeft + plotWidth / 2, props.height - 6);
 
     ctx.save();
@@ -296,6 +297,7 @@ watch(
         props.width,
         props.height,
         props.colorBarWidth,
+        props.plotMargins,
         props.precision,
         props.xLabel,
         props.yLabel,

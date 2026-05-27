@@ -169,10 +169,6 @@ function onInput(event: Event) {
 </script>
 
 <style scoped>
-.timestamp-slider {
-    margin-top: 1.5rem;
-}
-
 .slider-labels {
     display: flex;
     justify-content: space-between;

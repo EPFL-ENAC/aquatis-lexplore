@@ -12,7 +12,7 @@
         </template>
     </PageHeader>
 
-    <CardsMenu :items="items" />
+    <CardsNavMenu :items="items" />
 
     <QrCode />
 </template>
@@ -20,39 +20,42 @@
 <script setup lang="ts">
 import PageHeader from 'src/components/PageHeader.vue';
 import QrCode from 'src/components/QrCode.vue';
-import CardsMenu from 'src/components/CardsMenu.vue';
-import type { CardMenuItem } from 'src/components/componentTypes';
+import CardsNavMenu from 'src/components/CardsNavMenu.vue';
+import type { NavMenuItem } from 'src/navigation/navMenuItem';
 
-const items: CardMenuItem[] = [
+const items: NavMenuItem[] = [
     {
         id: '01',
-        kicker: 'LIVE',
+        shortLabel: 'LIVE',
+        label: 'Plus de données en LIVE',
         title: 'Plus de données en LIVE',
         subtitle: 'Température en profondeur, plancton, microalgues mesuré en direct.',
         icon: 'waves',
+        href: '/liveData',
         color: 'primary',
         textClass: 'text-primary',
-        href: '/liveData',
     },
     {
         id: '02',
-        kicker: 'DÉCOUVERTE',
+        shortLabel: 'DÉCOUVERTE',
+        label: 'Découvrez les changements du Léman',
         title: 'Découvrez les changements du Léman',
         subtitle: "Comment l'eau, l'air, les vagues ont bougé ces 10 derniers jours.",
         icon: 'show_chart',
+        href: '/changes',
         color: 'warning',
         textClass: 'text-warning',
-        href: '/changes',
     },
     {
         id: '03',
-        kicker: 'JEUX',
+        shortLabel: 'JEUX',
+        label: 'Deviens un Léxplorateur',
         title: 'Deviens un Léxplorateur',
         subtitle: "L'aventure du plancton et Chaud-ou-Froid: deux jeux pour comprendre le lac.",
         icon: 'explore',
+        href: '/games',
         color: 'negative',
         textClass: 'text-negative',
-        href: '/games',
     },
 ];
 </script>

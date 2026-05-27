@@ -23,7 +23,11 @@ export function formatDate(date: Date, locale: string | undefined = undefined): 
     return dateFormatter.format(date);
 }
 
-export function formatTime(timestamp: number, locale: string | undefined): string {
+export function formatTime(timestamp: number | undefined, locale: string | undefined): string {
+    if (timestamp === undefined) {
+        return 'N/A';
+    }
+
     return new Intl.DateTimeFormat(locale, {
         hour: '2-digit',
         minute: '2-digit',
@@ -32,7 +36,11 @@ export function formatTime(timestamp: number, locale: string | undefined): strin
     }).format(new Date(timestamp * 1000));
 }
 
-export function formatDateShort(timestamp: number, locale: string | undefined): string {
+export function formatDateShort(timestamp: number | undefined, locale: string | undefined): string {
+    if (timestamp === undefined) {
+        return 'N/A';
+    }
+
     return new Intl.DateTimeFormat(locale, {
         day: '2-digit',
         month: '2-digit',

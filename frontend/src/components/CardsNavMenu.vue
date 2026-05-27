@@ -30,7 +30,7 @@
                     </div>
 
                     <div v-else class="feature-icon" :class="item.textClass">
-                        <q-icon :name="item.icon" :size="item.iconSize ?? '28px'" />
+                        <q-icon :name="item.icon" size="48px" />
                     </div>
 
                     <div
@@ -55,11 +55,7 @@
                         :class="`bg-${item.actionColor ?? item.color}`"
                         aria-hidden="true"
                     >
-                        <q-icon
-                            :name="item.actionIcon ?? 'chevron_right'"
-                            size="24px"
-                            color="black"
-                        />
+                        <q-icon name="chevron_right" size="24px" color="black" />
                     </div>
                 </q-card-section>
             </q-card>
@@ -68,12 +64,12 @@
 </template>
 
 <script setup lang="ts">
+import type { NavMenuItem } from 'src/navigation/navMenuItem';
 import { RouterLink } from 'vue-router';
-import type { CardMenuItem } from './componentTypes';
 
 const props = withDefaults(
     defineProps<{
-        items: CardMenuItem[];
+        items: NavMenuItem[];
         showIdInKicker?: boolean;
         mediaWidth?: number;
     }>(),
@@ -83,17 +79,17 @@ const props = withDefaults(
     },
 );
 
-const hasImageMedia = (item: CardMenuItem) => Boolean(item.imageSrc);
+const hasImageMedia = (item: NavMenuItem) => Boolean(item.imageSrc);
 
-const formatKicker = (item: CardMenuItem) => {
+const formatKicker = (item: NavMenuItem) => {
     if (!props.showIdInKicker) {
-        return item.kicker;
+        return item.shortLabel;
     }
 
-    return `${item.id} · ${item.kicker}`;
+    return `${item.id} · ${item.shortLabel}`;
 };
 
-const isExternalLink = (item: CardMenuItem) => {
+const isExternalLink = (item: NavMenuItem) => {
     if (!item.href) {
         return false;
     }
@@ -106,11 +102,11 @@ const isExternalLink = (item: CardMenuItem) => {
     );
 };
 
-const getLinkComponent = (item: CardMenuItem) => {
+const getLinkComponent = (item: NavMenuItem) => {
     return isExternalLink(item) ? 'a' : RouterLink;
 };
 
-const getLinkProps = (item: CardMenuItem) => {
+const getLinkProps = (item: NavMenuItem) => {
     if (isExternalLink(item)) {
         return {
             href: item.href,

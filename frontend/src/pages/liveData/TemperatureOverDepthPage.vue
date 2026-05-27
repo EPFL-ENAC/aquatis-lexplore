@@ -1,5 +1,5 @@
 <template>
-    <TopPageNav :tabs="liveDataPageGroups" />
+    <TopPageNav :tabs="liveDataItems" />
 
     <PageHeader eyebrow="01 · LIVE - Température en profondeur" :level="1">
         <template #default>
@@ -9,8 +9,8 @@
         </template>
     </PageHeader>
 
-    <TemperatureDepthPlot :rows="temperatureRows" :max-value="25" />
-    <PlotAppendix :measured-at="lakeStore.data?.timestampOfMeasurementSeconds" />
+    <TemperatureDepthPlot :rows="temperatureRows" :max-value="maxValue" />
+    <PlotAppendix :measured-at="lakeStore.data?.timestamps.at(-1)" />
 
     <QuestionCardsRow :items="questionCards" />
 </template>
@@ -23,19 +23,24 @@ import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import { useWeatherStore, useLakeStore } from 'src/stores/lexplore';
 import { computed } from 'vue';
-import { liveDataPageGroups } from './liveDataNavGroups';
+import { liveDataItems } from './liveDataNavGroups';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
 
 const temperatureRows = computed(() => [
-    { label: 'Air', value: weatherStore.data?.airTemperature ?? 0 },
-    { label: '0m', value: lakeStore.data?.surfaceTemperature ?? 0 },
+    { label: 'Air', value: weatherStore.data?.airTemperature.at(-1) ?? 0 },
+    { label: '0m', value: lakeStore.data?.surfaceTemperature.at(-1) ?? 0 },
     { label: '24m', value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 24) ?? 0 },
     { label: '50m', value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 50) ?? 0 },
     { label: '75m', value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 75) ?? 0 },
     { label: '90m', value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 90) ?? 0 },
 ]);
+
+const maxValue = computed(() => {
+    const temps = temperatureRows.value.map((row) => row.value);
+    return Math.max(...temps, 20) + 5;
+});
 
 const questionCards = [
     {

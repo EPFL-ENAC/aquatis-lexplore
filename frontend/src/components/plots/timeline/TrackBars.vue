@@ -7,7 +7,7 @@
             :y="bar.y"
             :width="bar.width"
             :height="bar.height"
-            :fill="color"
+            :fill="track.color"
             :opacity="0.9"
             rx="1.5"
         />
@@ -26,11 +26,9 @@ const props = withDefaults(
         trackTop: number;
         trackHeight: number;
         gap?: number;
-        color?: string;
     }>(),
     {
         gap: 2,
-        color: '#b38d1b',
     },
 );
 

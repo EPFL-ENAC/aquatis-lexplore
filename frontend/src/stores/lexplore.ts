@@ -6,26 +6,26 @@ import { closestAboveSorted, closestBelowSorted, getInterpolationT, lerp } from 
 import { computed, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
 interface MeasurementData {
-    timestampOfMeasurementSeconds: number;
+    timestamps: number[];
 }
 
 // Dataset 459
 interface WeatherData extends MeasurementData {
-    airTemperature: number;
-    irradiance: number;
-    windSpeed: number;
-    windDirectionDegrees: number;
-    precipitation: number;
+    airTemperature: number[];
+    irradiance: number[];
+    windSpeed: number[];
+    windDirectionDegrees: number[];
+    precipitation: number[];
 }
 
 // Dataset 885
 interface BuoyData extends MeasurementData {
-    height: number;
+    height: number[];
 }
 
 // Dataset 448
 interface LakeData extends MeasurementData {
-    surfaceTemperature: number;
+    surfaceTemperature: number[];
     temperatureOverDepth: DepthHeatmap;
 }
 
@@ -116,12 +116,12 @@ export const useWeatherStore = makeLexploreDatasetStore<WeatherData>(459, async 
     ]);
 
     return {
-        timestampOfMeasurementSeconds: data['time']!.at(-1) as number,
-        airTemperature: data['AirTC']!.at(-1) as number,
-        irradiance: data['Slrw']!.at(-1) as number,
-        windSpeed: data['WS']!.at(-1) as number,
-        windDirectionDegrees: data['WindDir']!.at(-1) as number,
-        precipitation: data['Rain']!.at(-1) as number,
+        timestamps: data['time']! as number[],
+        airTemperature: data['AirTC']! as number[],
+        irradiance: data['Slrw']! as number[],
+        windSpeed: data['WS']! as number[],
+        windDirectionDegrees: data['WindDir']! as number[],
+        precipitation: data['Rain']! as number[],
     };
 });
 
@@ -132,8 +132,8 @@ export const useBuoyStore = makeLexploreDatasetStore<BuoyData>(885, async (datas
     ]);
 
     return {
-        timestampOfMeasurementSeconds: data['time']!.at(-1) as number,
-        height: data['hs']!.at(-1) as number,
+        timestamps: data['time']! as number[],
+        height: data['hs']! as number[],
     };
 });
 
@@ -146,8 +146,8 @@ export const useLakeStore = makeLexploreDatasetStore<LakeData>(448, async (datas
     ]);
 
     return {
-        timestampOfMeasurementSeconds: data['time']!.at(-1) as number,
-        surfaceTemperature: data['surfacetemp']!.at(-1) as number,
+        timestamps: data['time']! as number[],
+        surfaceTemperature: data['surfacetemp']! as number[],
         temperatureOverDepth: new DepthHeatmap({
             x: data['time'] as number[],
             y: data['depth'] as number[],
@@ -160,7 +160,7 @@ export const useAlgaeStore = makeLexploreDatasetStore<AlgaeData>(875, async (dat
     const data = await dataset.getData({ type: 'latest' }, ['time', 'depth', 'Chl_A']);
 
     return {
-        timestampOfMeasurementSeconds: data['time']!.at(-1) as number,
+        timestamps: data['time']! as number[],
         chlorophyllAOverDepth: new DepthHeatmap({
             x: data['time'] as number[],
             y: data['depth'] as number[],

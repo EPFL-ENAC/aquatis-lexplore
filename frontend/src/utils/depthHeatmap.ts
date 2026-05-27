@@ -307,6 +307,44 @@ export class DepthHeatmap {
         });
     }
 
+    averageOverDepthAtTimestamp(timestamp: number): number | null {
+        const xIndex = this.x.indexOf(timestamp);
+
+        if (xIndex === -1) {
+            return null;
+        }
+
+        const column = this.z.getData()[xIndex]!;
+        const validValues = column.filter((value) => Number.isFinite(value));
+
+        if (validValues.length === 0) {
+            return null;
+        }
+
+        const sum = validValues.reduce((acc, value) => acc + value, 0);
+        return sum / validValues.length;
+    }
+
+    averageOverTimeAtDepth(depth: number): number | null {
+        const yIndex = this.y.indexOf(depth);
+
+        if (yIndex === -1) {
+            return null;
+        }
+
+        const data = this.z.getData();
+        const validValues = data
+            .map((row) => row[yIndex]!)
+            .filter((value) => Number.isFinite(value));
+
+        if (validValues.length === 0) {
+            return null;
+        }
+
+        const sum = validValues.reduce((acc, value) => acc + value, 0);
+        return sum / validValues.length;
+    }
+
     private static validateBridgeY(
         bridgeY: number[],
         leftEndY: number,
@@ -352,7 +390,7 @@ export class DepthHeatmap {
             throw new Error('z must have exactly one row per x value: z.width === x.length.');
         }
 
-        if (this.z.height !== this.y.length) {
+        if (this.z.width > 0 && this.z.height !== this.y.length) {
             throw new Error('z must have exactly one column per y value: z.height === y.length.');
         }
 

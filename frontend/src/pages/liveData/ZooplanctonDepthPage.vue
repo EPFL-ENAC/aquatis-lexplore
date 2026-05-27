@@ -1,7 +1,7 @@
 <template>
     <q-page class="leman-page text-white">
         <div class="page-shell">
-            <TopPageNav :tabs="liveDataPageGroups" back-to="/liveData" back-label="Retour" />
+            <TopPageNav :tabs="liveDataItems" back-to="/liveData" back-label="Retour" />
 
             <PageHeader eyebrow="01 · LIVE - Profondeur du Zooplancton" :level="1">
                 <template #default>
@@ -43,8 +43,8 @@ import DepthHeatmapPlot from 'src/components/plots/DepthHeatmapPlot.vue';
 // import ZooplanktonDepthPlot from 'src/components/live/ZooplanktonDepthPlot.vue';
 // import zooplanktonIcon from 'src/assets/zooplankton.png';
 import TopPageNav from 'src/components/TopPageNav.vue';
-import { liveDataPageGroups } from './liveDataNavGroups';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
+import { liveDataItems } from './liveDataNavGroups';
 
 const zooplanctonDepthStore = useZooplanctonDepthStore();
 

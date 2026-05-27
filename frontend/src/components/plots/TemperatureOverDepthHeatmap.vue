@@ -10,7 +10,7 @@ import { ColorMap } from 'src/utils/colors';
 import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 import { formatNumber } from 'src/utils/format';
 import { HeatmapRaster } from 'src/utils/heatmapRaster';
-import { lerp } from 'src/utils/math';
+import { clamp, lerp } from 'src/utils/math';
 import { computed, onMounted, ref, watch } from 'vue';
 
 interface Props {
@@ -24,6 +24,7 @@ interface Props {
     zLabel?: string;
     focusWindowCenter?: number | null;
     focusWindowWidth?: number | null;
+    plotMargins?: { top: number; right: number; bottom: number; left: number };
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -36,17 +37,11 @@ const props = withDefaults(defineProps<Props>(), {
     zLabel: 'Temperature',
     focusWindowCenter: null,
     focusWindowWidth: null,
+    plotMargins: () => ({ top: 16, right: 12, bottom: 52, left: 64 }),
 });
 
 const plotCanvas = ref<HTMLCanvasElement | null>(null);
 const colorBarCanvas = ref<HTMLCanvasElement | null>(null);
-
-const plotMargins = {
-    top: 16,
-    right: 12,
-    bottom: 52,
-    left: 64,
-};
 
 const barMargins = {
     top: 16,
@@ -55,17 +50,7 @@ const barMargins = {
     left: 18,
 };
 
-const temperatureColorMap = new ColorMap([
-    { t: 0.0, color: [0, 0, 20] },
-    { t: 0.12, color: [0, 16, 92] },
-    { t: 0.28, color: [31, 47, 209] },
-    { t: 0.45, color: [29, 162, 255] },
-    { t: 0.6, color: [31, 212, 110] },
-    { t: 0.74, color: [231, 231, 26] },
-    { t: 0.86, color: [255, 152, 0] },
-    { t: 0.94, color: [255, 50, 0] },
-    { t: 1.0, color: [214, 0, 0] },
-]);
+const temperatureColorMap = ColorMap.heat();
 
 const heatmapRaster = new HeatmapRaster(temperatureColorMap);
 const extent = computed(() => props.heatmap?.zValuesMinMax());
@@ -91,10 +76,6 @@ function resizeCanvas(
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     return ctx;
-}
-
-function clamp(value: number, min: number, max: number): number {
-    return Math.min(max, Math.max(min, value));
 }
 
 function formatTick(value: number): string {
@@ -292,10 +273,10 @@ function drawHeatmap(): void {
         return;
     }
 
-    const plotLeft = plotMargins.left;
-    const plotTop = plotMargins.top;
-    const plotWidth = props.width - plotMargins.left - plotMargins.right;
-    const plotHeight = props.height - plotMargins.top - plotMargins.bottom;
+    const plotLeft = props.plotMargins.left;
+    const plotTop = props.plotMargins.top;
+    const plotWidth = props.width - props.plotMargins.left - props.plotMargins.right;
+    const plotHeight = props.height - props.plotMargins.top - props.plotMargins.bottom;
 
     ctx.clearRect(0, 0, props.width, props.height);
 
@@ -310,26 +291,11 @@ function drawHeatmap(): void {
 
     drawFocusWindowOverlay(ctx, heatmap.x, plotLeft, plotTop, plotWidth, plotHeight);
 
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(plotLeft, plotTop, plotWidth, plotHeight);
-
     ctx.fillStyle = '#0f172a';
-    ctx.font = '12px sans-serif';
+    ctx.font = '13px "Google Sans Flex", sans-serif';
+    ctx.fillStyle = 'white';
 
-    const cellWidth = plotWidth / heatmap.x.length;
     const cellHeight = plotHeight / heatmap.y.length;
-
-    const xStep = tickStep(heatmap.x.length, 8);
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-
-    for (let x = 0; x < heatmap.x.length; x += xStep) {
-        const centerX = plotLeft + (x + 0.5) * cellWidth;
-        const label = formatTick(heatmap.x[x]!);
-
-        ctx.fillText(label, centerX, plotTop + plotHeight + 8);
-    }
 
     const yStep = tickStep(heatmap.y.length, 8);
     ctx.textAlign = 'right';
@@ -344,7 +310,7 @@ function drawHeatmap(): void {
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.font = '13px sans-serif';
+    ctx.font = '13px "Google Sans Flex", sans-serif';
     ctx.fillText(props.xLabel, plotLeft + plotWidth / 2, props.height - 6);
 
     ctx.save();

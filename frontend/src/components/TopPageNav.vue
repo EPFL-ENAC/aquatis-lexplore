@@ -31,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import type { NavMenuItem } from 'src/navigation/navMenuItem';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -38,15 +39,9 @@ const route = useRoute();
 
 const activeHref = computed(() => route.path);
 
-export interface LiveDataTab {
-    label: string;
-    icon: string;
-    href: string;
-}
-
 withDefaults(
     defineProps<{
-        tabs: LiveDataTab[];
+        tabs: NavMenuItem[];
         backTo?: string;
         backLabel?: string;
         activeColor?: string;

@@ -3,14 +3,7 @@
         <div class="header__inner">
             <div class="header__top">
                 <div class="header__logo">
-                    <div class="header__brand">AQUATIS</div>
-                    <div class="header__subtitle">
-                        AQUARIUM
-                        <br />
-                        VIVARIUM
-                        <br />
-                        LAUSANNE
-                    </div>
+                    <img src="/logo.svg" alt="AQUATIS logo" />
                 </div>
 
                 <q-btn-toggle
@@ -31,21 +24,23 @@
                 <div class="live">
                     <span class="live__dot" />
                     <span>LIVE</span>
-                    <span class="live__time">22:57</span>
+                    <span class="live__time">{{
+                        formatTime(weatherStore.data?.timestamps.at(-1), locale)
+                    }}</span>
                 </div>
 
                 <div class="stats">
                     <div class="stat">
                         <div class="stat__label">TEMP AIR</div>
                         <div class="stat__value">
-                            {{ formatNumber(weatherStore.data?.airTemperature, locale) }}
+                            {{ formatNumber(weatherStore.data?.airTemperature.at(-1), locale) }}
                             <span class="unit">°C</span>
                         </div>
                     </div>
                     <div class="stat">
                         <div class="stat__label">TEMP EAU</div>
                         <div class="stat__value">
-                            {{ formatNumber(lakeStore.data?.surfaceTemperature, locale) }}
+                            {{ formatNumber(lakeStore.data?.surfaceTemperature.at(-1), locale) }}
                             <span class="unit">°C</span>
                         </div>
                     </div>
@@ -54,18 +49,20 @@
                         <div class="stat__value">
                             {{
                                 getCardinalDirection(
-                                    weatherStore.data?.windDirectionDegrees ?? 0,
+                                    weatherStore.data?.windDirectionDegrees.at(-1) ?? 0,
                                 ).toUpperCase()
                             }}
                             <span class="unit"
-                                >{{ formatNumber(weatherStore.data?.windSpeed, locale) }}km/h</span
+                                >{{
+                                    formatNumber(weatherStore.data?.windSpeed.at(-1), locale)
+                                }}km/h</span
                             >
                         </div>
                     </div>
                     <div class="stat">
                         <div class="stat__label">VAGUE</div>
                         <div class="stat__value">
-                            {{ formatNumber(buoyStore.data?.height, locale) }}
+                            {{ formatNumber(buoyStore.data?.height.at(-1), locale) }}
                             <span class="unit">m</span>
                         </div>
                     </div>
@@ -79,7 +76,7 @@
 import { useI18n } from 'vue-i18n';
 import { useWeatherStore, useLakeStore, useBuoyStore } from 'src/stores/lexplore';
 import { getCardinalDirection } from 'src/utils/directions';
-import { formatNumber } from 'src/utils/format';
+import { formatNumber, formatTime } from 'src/utils/format';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
@@ -163,6 +160,19 @@ const languageOptions = [
     height: 0.75rem;
     border-radius: 50%;
     background: coral;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .live__time {

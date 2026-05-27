@@ -2,13 +2,17 @@
     <q-page class="leman-page text-white">
         <div v-if="range" class="page-shell">
             <TopPageNav
-                :tabs="gamesPageGroups"
+                :tabs="gamesNavGroups"
                 active-href="/games/planctonGame"
                 back-to="/games"
                 back-label="Retour"
             />
 
-            <PageHeader eyebrow="01 · L'aventure du Plancton" :level="1">
+            <PageHeader
+                eyebrow="01 · L'aventure du Plancton"
+                eyebrow-class="text-negative"
+                :level="1"
+            >
                 <template #default> Bouge le curseur rouge. </template>
 
                 <template #subtitle>
@@ -43,7 +47,7 @@ import PlanktonAdventurePlot, {
 import TimestampSlider from 'src/components/TimestampSlider.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
-import { gamesPageGroups } from './gamesNavGroups';
+import { gamesNavGroups } from './gamesNavGroups';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 
 const zooplanctonDepthStore = useZooplanctonDepthStore();

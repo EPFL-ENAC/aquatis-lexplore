@@ -18,7 +18,7 @@
                 </div>
             </div>
 
-            <div class="timeline-chart__right-scroller">
+            <div ref="rightScroller" class="timeline-chart__right-scroller">
                 <div class="timeline-chart__plot-stack" :style="{ width: `${plotWidth}px` }">
                     <svg
                         :width="plotWidth"
@@ -70,7 +70,6 @@
                         :x-for-timestamp="xForTimestamp"
                         :bar-gap="barGap"
                         :line-stroke-width="lineStrokeWidth"
-                        :color="trackColor(track, index)"
                     />
                 </div>
             </div>
@@ -79,12 +78,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, nextTick, onMounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import TrackHeader from './TrackHeader.vue';
 import TrackRow from './TrackRow.vue';
-import { HOUR_MS, type Timeline, type Track } from './types';
+import { HOUR_MS, type Timeline } from './types';
 
 const props = withDefaults(
     defineProps<{
@@ -96,7 +95,6 @@ const props = withDefaults(
         barGap?: number;
         lineStrokeWidth?: number;
         backgroundColor?: string;
-        trackColors?: string[];
         leftGutterWidth?: number;
         valueTickCount?: number;
     }>(),
@@ -108,13 +106,31 @@ const props = withDefaults(
         barGap: 2,
         lineStrokeWidth: 3,
         backgroundColor: '#182535',
-        leftGutterWidth: 96,
+        leftGutterWidth: 144,
         valueTickCount: 4,
-        trackColors: () => ['#b58f1b', '#ff5e66', '#57c7ff', '#72d572'],
     },
 );
 
+defineExpose({
+    scrollToRightEnd,
+});
+
+const rightScroller = useTemplateRef<HTMLDivElement>('rightScroller');
+
+function scrollToRightEnd() {
+    const scroller = rightScroller.value;
+
+    if (scroller) {
+        scroller.scrollLeft = scroller.scrollWidth;
+    }
+}
+
 const { locale } = useI18n();
+
+onMounted(async () => {
+    await nextTick();
+    scrollToRightEnd();
+});
 
 const domain = computed(() => props.timeline.getDomain());
 const ticks = computed(() => props.timeline.getTicks(props.tickEveryMinutes, locale.value));
@@ -130,16 +146,6 @@ function xForTimestamp(timestamp: number): number {
     const ratio = (timestamp - domain.value.start) / duration;
 
     return ratio * plotWidth.value;
-}
-
-function trackColor(track: Track, index: number): string {
-    const configured = props.trackColors[index];
-
-    if (configured) {
-        return configured;
-    }
-
-    return track.type === 'bar' ? '#b58f1b' : '#ff5e66';
 }
 </script>
 

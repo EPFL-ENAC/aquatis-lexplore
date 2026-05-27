@@ -1,6 +1,8 @@
 <template>
     <header :style="{ '--title-scale': titleScale }">
-        <div class="eyebrow text-primary">{{ props.eyebrow }}</div>
+        <div class="eyebrow" :class="props.eyebrowClass">
+            {{ props.eyebrow }}
+        </div>
         <h1 class="hero-title">
             <slot />
         </h1>
@@ -13,10 +15,16 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const props = defineProps<{
-    eyebrow: string;
-    level: 1 | 2;
-}>();
+const props = withDefaults(
+    defineProps<{
+        eyebrow: string;
+        eyebrowClass?: string;
+        level: 1 | 2;
+    }>(),
+    {
+        eyebrowClass: 'text-primary',
+    },
+);
 
 const titleScale = computed(() => (props.level === 1 ? 1 : 0.8));
 </script>
