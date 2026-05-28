@@ -1,7 +1,7 @@
 <template>
     <section class="questions-grid">
-        <article v-for="item in items" :key="item.id" class="question-card">
-            <p class="question-kicker">
+        <article v-for="item in props.items" :key="item.id" class="question-card">
+            <p class="question-kicker" :class="props.kickerClass">
                 {{ item.kicker }}
             </p>
 
@@ -19,9 +19,15 @@ interface QuestionCardItem {
     title: string;
 }
 
-defineProps<{
-    items: QuestionCardItem[];
-}>();
+const props = withDefaults(
+    defineProps<{
+        items: QuestionCardItem[];
+        kickerClass?: string;
+    }>(),
+    {
+        kickerClass: 'text-primary',
+    },
+);
 </script>
 
 <style scoped>
@@ -45,7 +51,6 @@ defineProps<{
     margin: 0 0 1rem;
     font-size: 0.95rem;
     font-weight: 800;
-    color: var(--q-primary);
     text-transform: uppercase;
 }
 

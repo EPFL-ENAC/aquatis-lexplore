@@ -38,8 +38,8 @@ const items: NavMenuItem[] = [
     {
         id: '02',
         shortLabel: 'DÉCOUVERTE',
-        label: 'Découvrez les changements du Léman',
-        title: 'Découvrez les changements du Léman',
+        label: 'Découvre les changements du Léman',
+        title: 'Découvre les changements du Léman',
         subtitle: "Comment l'eau, l'air, les vagues ont bougé ces 10 derniers jours.",
         icon: 'show_chart',
         href: '/changes',

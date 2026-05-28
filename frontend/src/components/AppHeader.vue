@@ -46,6 +46,10 @@
                     </div>
                     <div class="stat">
                         <div class="stat__label">VENT</div>
+                        <!-- <WindCompass
+                            :wind-direction-deg="weatherStore.data?.windDirectionDegrees.at(-1) ?? 0"
+                            :wind-speed="weatherStore.data?.windSpeed.at(-1) ?? 0"
+                        /> -->
                         <div class="stat__value">
                             {{
                                 getCardinalDirection(
@@ -77,6 +81,7 @@ import { useI18n } from 'vue-i18n';
 import { useWeatherStore, useLakeStore, useBuoyStore } from 'src/stores/lexplore';
 import { getCardinalDirection } from 'src/utils/directions';
 import { formatNumber, formatTime } from 'src/utils/format';
+// import WindCompass from './WindCompass.vue';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();

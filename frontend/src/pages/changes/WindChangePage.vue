@@ -38,7 +38,7 @@
         </div>
     </section>
 
-    <QuestionCardsRow :items="questions" />
+    <QuestionCardsRow :items="questions" kickerClass="text-warning" />
 </template>
 
 <script setup lang="ts">
@@ -77,18 +77,6 @@ const tracks = computed(() => {
                 })),
             }),
         );
-
-        result.push(
-            new Track({
-                title: 'Vitesse du vent (m/s)',
-                type: 'line',
-                color: '#7ed957',
-                data: weatherStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: weatherStore.data!.windSpeed[index]!,
-                })),
-            }),
-        );
     }
 
     if (lakeStore.data) {
@@ -100,6 +88,20 @@ const tracks = computed(() => {
                 data: lakeStore.data.timestamps.map((timestamp, index) => ({
                     timestamp: toMs(timestamp),
                     value: lakeStore.data!.surfaceTemperature[index]!,
+                })),
+            }),
+        );
+    }
+
+    if (weatherStore.data) {
+        result.push(
+            new Track({
+                title: 'Vitesse du vent (m/s)',
+                type: 'line',
+                color: '#7ed957',
+                data: weatherStore.data.timestamps.map((timestamp, index) => ({
+                    timestamp: toMs(timestamp),
+                    value: weatherStore.data!.windSpeed[index]!,
                 })),
             }),
         );
@@ -128,17 +130,12 @@ const questions = [
     {
         id: '01',
         kicker: 'QUESTION',
-        title: "Est-ce plus chaud ou plus froid que l'eau",
+        title: 'Observes-tu des changements ces derniers jours ?',
     },
     {
         id: '02',
         kicker: 'QUESTION',
-        title: 'À quelle profondeur vois-tu le plancton maintenant ?',
-    },
-    {
-        id: '03',
-        kicker: 'QUESTION',
-        title: "Est-ce que l'eau du lac se refroidit avec la pluie ?",
+        title: "L'air est-il plus chaud ou plus froid que l'eau ?",
     },
 ];
 </script>

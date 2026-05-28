@@ -35,7 +35,7 @@
         </div>
     </section>
 
-    <QuestionCardsRow :items="questions" />
+    <QuestionCardsRow :items="questions" kickerClass="text-warning" />
 </template>
 
 <script setup lang="ts">
@@ -148,17 +148,12 @@ const questions = [
     {
         id: '01',
         kicker: 'QUESTION',
-        title: 'Quand la chlorophylle A est-elle la plus élevée ?',
+        title: "Est-ce que l'eau se refroidit avec la pluie ?",
     },
     {
         id: '02',
         kicker: 'QUESTION',
-        title: "Comment évolue la température de l'eau avec l'irradiance ?",
-    },
-    {
-        id: '03',
-        kicker: 'QUESTION',
-        title: 'Vois-tu un lien entre lumière et chlorophylle près de la surface ?',
+        title: "L'air est-il plus chaud ou plus froid que l'eau ?",
     },
 ];
 </script>
