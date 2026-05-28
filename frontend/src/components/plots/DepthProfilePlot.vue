@@ -4,7 +4,7 @@
             class="plot-svg"
             :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
             preserveAspectRatio="none"
-            aria-label="Graphique de profil en profondeur"
+            :aria-label="t('plotDepthProfileAria')"
             role="img"
             :style="{ '--svg-width': svgWidth, '--svg-height': svgHeight }"
         >
@@ -50,6 +50,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 export interface DepthLevel {
     label: string;

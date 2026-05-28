@@ -1,149 +1,162 @@
 export default {
-  appTitle: 'Annotation de jeux de données',
+    // --- Common ---
+    backToHome: "Retour à l'accueil",
+    back: 'Retour',
+    live: 'LIVE',
+    question: 'QUESTION',
 
-  import: 'Importer',
-  export: 'Exporter',
-  tutorial: 'Tutoriel',
-  about: 'À propos',
+    // --- 404 ---
+    notFoundMessage: 'Oups, rien ici...',
+    goHome: "Retour à l'accueil",
 
-  sidebarTitle: 'Images annotées',
-  noImages: 'Aucune image pour le moment',
-  markAsCompleted: 'Marquer comme terminé',
-  markAsIncomplete: 'Marquer comme non terminé',
-  completionMarkRemoved: "L'image n'est plus marquée comme terminée",
-  ensureNoUnsetDamage:
-    "Assurez-vous d'avoir défini un niveau de dégats pour toutes les annotations",
-  ensureAllBuildingsAnnotated: 'Assurez-vous que tous les bâtiments sont annotés',
-  annotateNew: 'Annoter nouvelle image',
-  noImageSelected: 'Aucune image sélectionnée',
-  noImageSelectedMessage:
-    'Utilisez la barre latérale pour ajouter une image et commencer à annoter.',
+    // --- Header ---
+    headerAirTemp: 'TEMP AIR',
+    headerWaterTemp: 'TEMP EAU',
+    headerWind: 'VENT',
+    headerWave: 'VAGUE',
 
-  image: '0 image | 1 image | {n} images',
-  annotation: '0 annotation | 1 annotation | {n} annotations',
+    // --- Home page ---
+    homeEyebrow: 'BIENVENUE',
+    homeTitle: 'Le Léman, en direct, sous tes yeux.',
+    homeSubtitle:
+        "Plonge à 100 mètres, suis le plancton heure par heure, et compare l'eau à l'air avec les données vraies de la plateforme scientifique Léxplore.",
 
-  deleteImage: "Supprimer l'image",
-  deleteImageMessage:
-    'Êtes-vous sûr de vouloir supprimer cette image ? Cela supprimera également toutes les annotations liées à cette image. Cette action est irréversible.',
-  deleteImageSkipMessage: 'Ne plus demander durant cette session',
-  deleteImageFailed: "Échec de suppression de l'image",
+    // --- Home nav cards ---
+    homeLiveLabel: 'LIVE',
+    homeLiveTitle: 'Plus de données en LIVE',
+    homeLiveSubtitle: 'Température en profondeur, plancton, microalgues mesurés en direct.',
+    homeDiscoveryLabel: 'DÉCOUVERTE',
+    homeDiscoveryTitle: 'Découvre les changements du Léman',
+    homeDiscoverySubtitle: "Comment l'eau, l'air, les vagues ont bougé ces 10 derniers jours.",
+    homeGamesLabel: 'JEUX',
+    homeGamesTitle: 'Deviens un Léxplorateur',
+    homeGamesSubtitle:
+        "L'aventure du plancton et Chaud-ou-Froid : deux jeux pour comprendre le lac.",
 
-  noMoreImages: 'Aucune image supplémentaire disponible pour annotation.',
-  annotationsCopied: 'Annotations copiées depuis {filename}.',
+    // --- Live Data Picker ---
+    livePickerEyebrow: '01 · LIVE',
+    livePickerTitle: "Teste d'autres\ndonnées en live!",
+    livePickerSubtitle:
+        'Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en ce moment par la plateforme Léxplore.',
 
-  skip: 'Passer',
-  tutorialTitle: 'Tutoriel',
-  tutorialSteps: [
-    'Cliquez sur "Annoter nouvelle image" dans la barre latérale pour obtenir une nouvelle image à annoter.',
-    'Cliquez sur "Ajouter annotation" ou appuyez sur la touche [N] pour ajouter une nouvelle annotation.',
-    "Cliquez pour commencer à dessiner un polygone autour des bâtiments et pour ajouter des points. Double-cliquez pour terminer. <b>Incluez les façades, et ne vous préocupez pas des parties en dehors de l'image.</b>",
-    'Cliquez pour définir le niveau de dégats, ou utilisez les touches [1] et [2]. <b>Plusieurs bâtiments partageant le même niveau de dégats peuvent être inclus dans un même polygone.</b>',
-    "Cliquez sur 'Montrer carte' pour afficher une carte de référence. Assurez-vous de l'orienter correctement.",
-    "Marquez comme terminé une fois que tous les bâtiments ont été annotés et les niveaux de dégats définis, ou s'il n'y a aucun bâtiment sur l'image.",
-  ],
-  next: 'Suivant',
-  finish: 'Terminer',
+    // --- Live Data nav ---
+    liveNavTempDepth: 'Température en profondeur',
+    liveNavTempDepthShort: 'Air → 100m',
+    liveNavZooDepth: 'Profondeur du Zooplancton',
+    liveNavZooDepthShort: 'Migration jour/nuit',
+    liveNavAlgaeConc: 'Concentration des microalgues',
 
-  aboutTitle: 'À propos',
-  aboutJointEffort:
-    "Cette interface est le fruit d'un travail commun entre la Humanitarian OpenStreetMap Team (HOT), NAXA, et l'EPFL.",
-  aboutDevelopment: 'Le développement a été réalisé par {link}.',
-  aboutRepository: 'Dépôt : {link}',
+    // --- Temperature Over Depth (Live) ---
+    tempDepthEyebrow: '01 · LIVE - Température en profondeur',
+    tempDepthTitle: "Plus on descend,\nplus l'eau refroidit.",
+    tempDepthAir: 'Air',
+    tempDepthQ1: "Observes-tu une différence entre l'air et l'eau ?",
+    tempDepthQ2: "Est-ce qu'il fait plus froid à 50 m ou à 100 m ?",
 
-  addAnnotation: 'Ajouter annotation',
-  abort: 'Interrompre',
-  damageLevel: 'Niveau de dégats',
-  damageLevel_unset: 'Non défini',
-  damageLevel_undamaged: 'Non endommagé',
-  damageLevel_damaged: 'Endommagé',
-  delete: 'Supprimer',
-  showReferenceMap: 'Montrer carte',
-  recenter: 'Recentrer',
-  hideReferenceMap: 'Cacher carte',
-  changeSource: 'Changer source',
-  referenceMapUnavailable: 'Carte de référence indisponible',
-  captionDrawMode:
-    ' Clic : démarrer nouvelle annotation et ajouter points. [Ctrl+Z] supprimer point. Double-clic : placer dernier point. Clic + glisser : déplacer. [Échap] pour interrompre.',
-  captionSelectMoveMode:
-    'Clic : sélectionner. Clic + glisser : déplacer. [N] pour ajouter nouvelle annotation.',
-  captionDelete: "[Suppr] pour supprimer l'annotation sélectionnée.",
-  escKey: 'Échap',
-  deleteKey: 'Suppr',
+    // --- Zooplankton Depth (Live) ---
+    zooDepthEyebrow: '01 · LIVE - Profondeur du Zooplancton',
+    zooDepthTitle: 'Il monte la nuit,\nil descend le jour.',
+    zooDepthSubtitle:
+        'Le plancton animal bouge entre le fond et la surface pour manger et pour se cacher des poissons.',
+    zooDepthQ1: 'À quelle profondeur vois-tu le plancton maintenant ?',
 
-  // Login page
-  login: 'Connexion',
-  logout: 'Déconnexion',
-  emailLabel: 'Adresse e-mail',
-  emailRequired: "L'adresse e-mail est requise",
-  emailInvalid: 'Entrez une adresse e-mail valide',
-  fullNameLabel: 'Nom complet',
-  fullNameRequired: 'Le nom complet est requis',
-  codeLabel: 'Code',
-  codeRequired: 'Le code est requis',
-  welcomeMessage: 'Bienvenue, {name} !',
-  loginFailed: 'Échec de la connexion',
-  emailExistsNameMismatch: 'Un compte existe déjà avec cet e-mail. Veuillez saisir le nom correct.',
+    // --- Algae Concentration (Live) ---
+    algaeConcEyebrow: '01 · LIVE - Concentration des Microalgues',
+    algaeConcTitle: 'Des forêts\nmicroscopiques.',
+    algaeConcSubtitle:
+        'Les microalgues du Léman sont appelées phytoplancton. La concentration grimpe en été, avec la lumière et la chaleur du soleil.',
+    algaeConcQ1: 'À quelle profondeur la concentration de plancton est la plus haute ?',
 
-  // Admin page
-  adminPageTitle: 'Tableau de bord',
-  usersTableTitle: 'Utilisateurs',
-  userName: 'Nom',
-  userEmail: 'E-mail',
-  userRole: 'Rôle',
-  userAccountCreated: 'Compte créé',
-  userLastAction: 'Dernière action',
-  lastActionNow: 'maintenant',
-  lastActionMinutesAgo: 'il y a {minutes}min',
-  lastActionHoursAgo: 'il y a {hours}h',
-  lastActionDaysAgo: 'il y a {days}j.',
-  never: 'Jamais',
-  annotatedImages: 'Images annotées',
-  nonReviewedImages: 'Images non-évaluées',
-  totalAnnotations: 'Annotations totales',
-  roleAnnotator: 'Annotateur',
-  roleReviewer: 'Évaluateur',
-  noUsersFound: 'Aucun utilisateur trouvé',
-  errorLoadingUsers: 'Erreur de chargement des utilisateurs',
-  refresh: 'Actualiser',
-  page: 'Page',
-  of: 'sur',
-  itemsPerPage: 'Éléments par page',
-  review: 'Évaluer',
-  toAnnotationPage: "Interface d'annotation",
+    // --- Changes Picker ---
+    changesPickerEyebrow: '02 · CHANGEMENTS',
+    changesPickerTitle: 'Les changements\ndans le Léman',
+    changesPickerSubtitle: 'Choisis ce que tu veux observer dans le lac.',
 
-  // Review page
-  reviewPageTitle: 'Évaluation des annotations',
-  backToAdminPage: 'Page admin',
-  validate: 'Valider',
-  reject: 'Rejeter',
-  nextImage: 'Image suivante',
-  noMoreImagesToReview: 'Aucune image supplémentaire à évaluer.',
+    // --- Changes nav ---
+    changesNavWindTitle: "L'effet du vent sur le lac",
+    changesNavWindShort: 'Vent',
+    changesNavWindSubtitle:
+        "Découvre comment le vent influence les mouvements de l'eau à la surface du Léman.",
+    changesNavGrowthTitle: 'Est-ce que ça pousse?',
+    changesNavGrowthShort: 'Croissance',
+    changesNavGrowthSubtitle:
+        'Observe comment la vie dans le lac évolue et si certains organismes se développent.',
 
-  // 404 page
-  notFoundMessage: 'Oups, rien à voir ici...',
-  goHome: 'Accueil',
+    // --- Wind Change Page ---
+    windChangeEyebrow: '02 · Découverte',
+    windChangeTitle: "L'effet du vent sur le lac.",
+    windChangeTrackAirTemp: "Température de l'air (°C)",
+    windChangeTrackWaterTemp: "Température de l'eau (°C)",
+    windChangeTrackWindSpeed: 'Vitesse du vent (m/s)',
+    windChangeTrackWaveHeight: 'Hauteur des vagues (m)',
+    windChangeQ1: 'Observes-tu des changements ces derniers jours ?',
+    windChangeQ2: "L'air est-il plus chaud ou plus froid que l'eau ?",
 
-  // Table header tooltips
-  tooltipImageName: "Nom de l'image",
-  tooltipAnnotationsCount: "Nombre d'annotations'image",
-  tooltipCompletionStatus: 'Statut de complétion',
-  tooltipValidationStatus: 'Statut de validation',
+    // --- Chlorophyll Change Page ---
+    chloroChangeEyebrow: '02 · Découverte',
+    chloroChangeTitle: 'La lumière et la chlorophylle dans le lac.',
+    chloroChangeTrackIrradiance: 'Irradiance',
+    chloroChangeTrackAirTemp: "Température de l'air (°C)",
+    chloroChangeTrackWaterTemp: "Température de l'eau (°C)",
+    chloroChangeTrackChlorophyll: 'Chlorophylle A moyenne (0–20 m)',
+    chloroChangeQ1: "Est-ce que l'eau se refroidit avec la pluie ?",
+    chloroChangeQ2: "L'air est-il plus chaud ou plus froid que l'eau ?",
 
-  // Export dialog
-  exportAnnotations: 'Exporter les annotations',
+    // --- Game Picker ---
+    gamePickerEyebrow: '03 · JEUX',
+    gamePickerTitle: 'Jeu sur la vie\ndans le Léman',
+    gamePickerSubtitle:
+        'Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en ce moment par la plateforme Léxplore.',
 
-  // Annotation errors (map + store)
-  selectAnnotationToEnable: 'Sélectionnez une annotation pour activer',
-  errorLoadingImageTitle: "Erreur de chargement de l'image",
-  errorLoadingImageMessage:
-    "Impossible de charger l'image. Veuillez essayer de sélectionner une autre image.",
-  failedToAddAnnotation: "Échec de l'ajout de l'annotation",
-  failedToUpdateAnnotation: "Échec de la mise à jour de l'annotation",
-  failedToDeleteAnnotation: "Échec de la suppression de l'annotation",
-  failedToUpdateDamageLevel: 'Échec de la mise à jour du niveau de dégats',
-  failedToLoadAnnotations: 'Échec du chargement des annotations',
-  failedToAddImage: "Échec de l'ajout de l'image",
-  failedToRemoveImage: "Échec de la suppression de l'image",
-  failedToUpdateCompleted: "Échec de la mise à jour du statut de l'image",
-  failedToUpdateValidationStatus: "Échec de la mise à jour du statut de validation de l'image",
+    // --- Game nav ---
+    gameNavPlanctonTitle: "L'aventure du Plancton",
+    gameNavPlanctonShort: 'Migration jour/nuit',
+    gameNavPlanctonSubtitle:
+        'Suis le zooplancton qui monte et descend dans le lac, heure après heure.',
+    gameNavTempTitle: 'Chaud ou Froid?',
+    gameNavTempSubtitle:
+        '3 mois de température, par profondeur. Trouve la zone qui ne se réchauffe jamais.',
+
+    // --- Temperature Game ---
+    tempGameEyebrow: '02 · Chaud ou Froid?',
+    tempGameTitle: '2 ans de Léman,\npar profondeur.',
+    tempGameSubtitle: 'Glisse sur la grille pour explorer.',
+    tempGameProfileKicker: 'Au curseur → temp par profondeur',
+    tempGameLoading: 'Chargement des températures…',
+    tempGameQ1: 'Quelle est la période la plus chaude en profondeur?',
+    tempGameQ2: "À quelle profondeur l'eau reste toujours plus froide que 10°C?",
+
+    // --- Plankton Game ---
+    planctonGameEyebrow: "01 · L'aventure du Plancton",
+    planctonGameTitle: 'Bouge le curseur rouge.',
+    planctonGameSubtitle: 'Observe le mouvement du zooplancton à travers la journée.',
+    planctonGameQ1: "Est-ce qu'il est plus proche de la surface vers midi ou vers minuit ?",
+
+    // --- Plots ---
+    plotDepthProfileAria: 'Graphique de profil en profondeur',
+    plotPlanktonAria: 'Profondeur du zooplancton',
+    plotSurface: 'Surface',
+    plotNoHeatmapData: 'Aucune donnée de carte thermique',
+    plotDepthLabel: 'Profondeur',
+    plotTemperatureLabel: 'Température',
+
+    // --- PlotAppendix ---
+    plotMeasuredOn: 'Mesuré le',
+    plotLocation: 'Lac Léman',
+
+    // --- QrCode ---
+    qrLabel: 'En savoir plus',
+
+    // --- Format fallbacks ---
+    na: 'N/A',
+
+    // --- Institutions ---
+    instEawag: 'Eawag',
+    instUnil: 'UNIL',
+    instEpfl: 'EPFL',
+    instUnige: 'Université de Genève',
+    instCarrtel: 'CARRTEL',
+
+    // --- PlanktonAdventurePlot depth labels ---
+    planktonDepthSurface: 'Surface',
 };

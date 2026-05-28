@@ -1,69 +1,70 @@
 <template>
     <section class="plot-card">
-        <div class="plot-frame">
-            <svg
-                class="plot-svg"
-                viewBox="0 0 1000 600"
-                preserveAspectRatio="none"
-                aria-label="Profondeur du zooplancton"
-                role="img"
-            >
-                <defs>
-                    <linearGradient id="plankton-plot-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="rgb(255 255 255 / 10%)" />
-                        <stop offset="100%" stop-color="rgb(255 255 255 / 2%)" />
-                    </linearGradient>
-                </defs>
+        <svg
+            class="plot-svg"
+            :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
+            preserveAspectRatio="none"
+            :aria-label="t('plotPlanktonAria')"
+            role="img"
+        >
+            <defs>
+                <linearGradient id="plankton-plot-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="rgb(255 255 255 / 10%)" />
+                    <stop offset="100%" stop-color="rgb(255 255 255 / 2%)" />
+                </linearGradient>
+            </defs>
 
-                <rect
-                    x="0"
-                    y="0"
-                    width="1000"
-                    height="600"
-                    rx="28"
-                    ry="28"
-                    fill="url(#plankton-plot-bg)"
+            <rect
+                x="0"
+                y="0"
+                width="1000"
+                height="600"
+                rx="28"
+                ry="28"
+                fill="url(#plankton-plot-bg)"
+            />
+
+            <g v-for="level in levels" :key="level.depth">
+                <line
+                    :x1="gridLeft"
+                    :x2="gridRight"
+                    :y1="toSvgY(level.depth)"
+                    :y2="toSvgY(level.depth)"
+                    class="plot-grid-line"
                 />
 
-                <g v-for="level in levels" :key="level.label">
-                    <line
-                        :x1="gridLeft"
-                        :x2="gridRight"
-                        :y1="toSvgY(level.depth)"
-                        :y2="toSvgY(level.depth)"
-                        class="plot-grid-line"
-                    />
+                <text :x="labelX" :y="toSvgY(level.depth) + 7" class="plot-label">
+                    {{ level.label }}
+                </text>
+            </g>
+        </svg>
 
-                    <text :x="labelX" :y="toSvgY(level.depth) + 7" class="plot-label">
-                        {{ level.label }}
-                    </text>
-                </g>
-            </svg>
-
-            <div class="organisms-layer">
-                <img
-                    v-for="organism in organisms"
-                    :key="organism.id"
-                    :src="iconSrc"
-                    alt=""
-                    aria-hidden="true"
-                    draggable="false"
-                    class="organism"
-                    :style="{
-                        left: `${organism.left}%`,
-                        top: `${organism.top}%`,
-                        width: `${organism.size}px`,
-                        transform: `translate(-50%, -50%) rotate(${organism.rotation}deg)`,
-                    }"
-                />
-            </div>
+        <div class="organisms-layer">
+            <img
+                v-for="organism in organisms"
+                :key="organism.id"
+                :src="iconSrc"
+                alt=""
+                aria-hidden="true"
+                draggable="false"
+                class="organism"
+                :style="{
+                    left: `${organism.left}%`,
+                    top: `${organism.top}%`,
+                    width: `${organism.size}px`,
+                    transform: `translate(-50%, -50%) rotate(${organism.rotation}deg)`,
+                }"
+            />
         </div>
     </section>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { lerp } from 'src/utils/math';
+
+const { t } = useI18n();
 
 export interface DepthSample {
     timestamp: number;
@@ -89,13 +90,13 @@ const props = withDefaults(
     },
 );
 
-const levels: DepthLevel[] = [
-    { label: 'Surface', depth: 0 },
+const levels = computed<DepthLevel[]>(() => [
+    { label: t('planktonDepthSurface'), depth: 0 },
     { label: '20m', depth: 20 },
     { label: '50m', depth: 50 },
     { label: '75m', depth: 75 },
     { label: '100m', depth: 100 },
-];
+]);
 
 const svgWidth = 1000;
 const svgHeight = 600;
@@ -107,7 +108,6 @@ const paddingLeft = 126;
 const gridLeft = paddingLeft;
 const gridRight = svgWidth - paddingRight;
 const labelX = 34;
-// const plotWidth = gridRight - gridLeft;
 const plotHeight = svgHeight - paddingTop - paddingBottom;
 
 const toSvgY = (depth: number) => {

@@ -1,7 +1,7 @@
 <template>
     <p class="plot-meta" v-if="props.measuredAt">
-        Mesuré le {{ formatDate(new Date(props.measuredAt * 1000), locale) }} ·
-        <strong>{{ location }}</strong>
+        {{ t('plotMeasuredOn') }} {{ formatDate(new Date(props.measuredAt * 1000), locale) }} ·
+        <strong>{{ t('plotLocation') }}</strong>
     </p>
 </template>
 
@@ -9,7 +9,7 @@
 import { formatDate } from 'src/utils/format';
 import { useI18n } from 'vue-i18n';
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const props = withDefaults(
     defineProps<{
@@ -17,7 +17,7 @@ const props = withDefaults(
         location?: string;
     }>(),
     {
-        location: 'Lac Léman',
+        location: '',
     },
 );
 </script>

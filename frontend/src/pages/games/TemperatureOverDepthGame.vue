@@ -3,17 +3,17 @@
         :tabs="gamesNavGroups"
         active-href="/games/temperatureOverDepth"
         back-to="/games"
-        back-label="Retour"
+        :back-label="t('back')"
     />
 
-    <PageHeader eyebrow="02 · Chaud ou Froid?" eyebrow-class="text-negative" :level="1">
+    <PageHeader :eyebrow="t('tempGameEyebrow')" eyebrow-class="text-negative" :level="1">
         <template #default>
-            2 ans de Léman,
+            {{ t('tempGameTitle').replace('\n', '') }}
             <br />
-            par profondeur.
+            {{ t('tempGameTitle').split('\n')[1] }}
         </template>
 
-        <template #subtitle> Glisse sur la grille pour explorer. </template>
+        <template #subtitle> {{ t('tempGameSubtitle') }} </template>
     </PageHeader>
 
     <template v-if="heatmap">
@@ -52,7 +52,7 @@
         </section>
 
         <section class="glass-panel profile-panel">
-            <div class="profile-kicker">Au curseur → temp par profondeur</div>
+            <div class="profile-kicker">{{ t('tempGameProfileKicker') }}</div>
 
             <div class="profile-grid">
                 <div
@@ -64,7 +64,7 @@
 
                     <div class="profile-value">
                         <span class="profile-number">
-                            {{ item.value == null ? '—' : item.value.toFixed(1) }}
+                            {{ item.value == null ? '\u2014' : item.value.toFixed(1) }}
                         </span>
                         <span v-if="item.value != null" class="profile-unit"> °c </span>
                     </div>
@@ -75,21 +75,24 @@
         <QuestionCardsRow :items="questions" />
     </template>
 
-    <section v-else class="glass-panel loading-panel">Chargement des températures…</section>
+    <section v-else class="glass-panel loading-panel">{{ t('tempGameLoading') }}</section>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TemperatureOverDepthHeatmap from 'src/components/plots/TemperatureOverDepthHeatmap.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import TimestampSlider from 'src/components/TimestampSlider.vue';
-import { gamesNavGroups } from './gamesNavGroups';
+import { getGamesNavGroups } from './gamesNavGroups';
 import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 import { useLakeStore } from 'src/stores/lexplore';
 
+const { t } = useI18n();
 const lakeStore = useLakeStore();
+const gamesNavGroups = computed(() => getGamesNavGroups(t));
 
 const heatmap = computed<DepthHeatmap | null>(() => {
     return (lakeStore.data?.temperatureOverDepth ?? null) as DepthHeatmap | null;
@@ -192,18 +195,18 @@ const temperatureAtReferenceDepths = computed(() => {
     }));
 });
 
-const questions = [
+const questions = computed(() => [
     {
         id: '01',
-        kicker: 'QUESTION #1',
-        title: 'Quelle est la période la plus chaude en profondeur?',
+        kicker: `${t('question')} #1`,
+        title: t('tempGameQ1'),
     },
     {
         id: '02',
-        kicker: 'QUESTION #2',
-        title: 'À quelle profondeur l’eau reste toujours plus froide que 10°C?',
+        kicker: `${t('question')} #2`,
+        title: t('tempGameQ2'),
     },
-];
+]);
 </script>
 
 <style scoped>

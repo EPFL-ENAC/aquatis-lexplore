@@ -1,18 +1,17 @@
 <template>
     <q-page class="leman-page text-white">
         <div class="page-shell">
-            <TopPageNav :tabs="liveDataItems" back-to="/liveData" back-label="Retour" />
+            <TopPageNav :tabs="liveDataItems" back-to="/liveData" :back-label="t('back')" />
 
-            <PageHeader eyebrow="01 · LIVE - Concentration des Microalgues" :level="1">
+            <PageHeader :eyebrow="t('algaeConcEyebrow')" :level="1">
                 <template #default>
-                    Des forêts
+                    {{ t('algaeConcTitle').replace('\n', '') }}
                     <br />
-                    microscopiques.
+                    {{ t('algaeConcTitle').split('\n')[1] }}
                 </template>
 
                 <template #subtitle>
-                    Les microalgues du Léman sont appelées phytoplancton. La concentration grimpe en
-                    été, avec la lumière et la chaleur du soleil.
+                    {{ t('algaeConcSubtitle') }}
                 </template>
             </PageHeader>
 
@@ -30,16 +29,19 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import DepthProfilePlot, { type DepthLevel } from 'src/components/plots/DepthProfilePlot.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
-import { liveDataItems } from './liveDataNavGroups';
+import { getLiveDataItems } from './liveDataNavGroups';
 import { computed } from 'vue';
 import { useAlgaeStore } from 'src/stores/lexplore';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 
+const { t } = useI18n();
 const algaeStore = useAlgaeStore();
+const liveDataItems = computed(() => getLiveDataItems(t));
 
 function makeLevel(depth: number): DepthLevel {
     return {
@@ -69,18 +71,18 @@ const maxX = computed(() => {
 
 const maxDepth = computed(() => {
     const maxDepthValue = Math.max(...dataPoints.value.map((p) => p.depth));
-    return Math.ceil(maxDepthValue / 10) * 10; // Round up to nearest 10 for better visualization
+    return Math.ceil(maxDepthValue / 10) * 10;
 });
 
 const measuredAt = computed(() => algaeStore.data?.timestamps.at(-1));
 
-const questionCards = [
+const questionCards = computed(() => [
     {
         id: '01',
-        kicker: 'QUESTION #1',
-        title: 'À quelle profondeur la concentration de plancton est la plus haute ?',
+        kicker: `${t('question')} #1`,
+        title: t('algaeConcQ1'),
     },
-];
+]);
 </script>
 
 <style scoped></style>

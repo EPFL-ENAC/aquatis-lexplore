@@ -1,11 +1,11 @@
 <template>
     <TopPageNav :tabs="liveDataItems" />
 
-    <PageHeader eyebrow="01 · LIVE - Température en profondeur" :level="1">
+    <PageHeader :eyebrow="t('tempDepthEyebrow')" :level="1">
         <template #default>
-            Plus on descend,
+            {{ t('tempDepthTitle').replace('\n', '') }}
             <br />
-            plus l'eau refroidit.
+            {{ t('tempDepthTitle').split('\n')[1] }}
         </template>
     </PageHeader>
 
@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import TemperatureOverDepthPlot from 'src/components/plots/TemperatureOverDepthPlot.vue';
@@ -23,14 +24,16 @@ import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import { useWeatherStore, useLakeStore } from 'src/stores/lexplore';
 import { computed } from 'vue';
-import { liveDataItems } from './liveDataNavGroups';
+import { getLiveDataItems } from './liveDataNavGroups';
 
+const { t } = useI18n();
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
+const liveDataItems = computed(() => getLiveDataItems(t));
 
 const temperatureRows = computed(() => [
     {
-        label: 'Air',
+        label: t('tempDepthAir'),
         depth: -15,
         value: weatherStore.data?.airTemperature.at(-1) ?? 0,
     },
@@ -56,18 +59,18 @@ const temperatureRows = computed(() => [
     },
 ]);
 
-const questionCards = [
+const questionCards = computed(() => [
     {
         id: '01',
-        kicker: 'QUESTION #1',
-        title: "Observes-tu une différence entre l'air et l'eau ?",
+        kicker: `${t('question')} #1`,
+        title: t('tempDepthQ1'),
     },
     {
         id: '02',
-        kicker: 'QUESTION #2',
-        title: "Est-ce qu'il fait plus froid à 50 m ou à 100 m ?",
+        kicker: `${t('question')} #2`,
+        title: t('tempDepthQ2'),
     },
-];
+]);
 </script>
 
 <style scoped></style>

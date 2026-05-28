@@ -5,18 +5,18 @@
                 :tabs="gamesNavGroups"
                 active-href="/games/planctonGame"
                 back-to="/games"
-                back-label="Retour"
+                :back-label="t('back')"
             />
 
             <PageHeader
-                eyebrow="01 · L'aventure du Plancton"
+                :eyebrow="t('planctonGameEyebrow')"
                 eyebrow-class="text-negative"
                 :level="1"
             >
-                <template #default> Bouge le curseur rouge. </template>
+                <template #default> {{ t('planctonGameTitle') }} </template>
 
                 <template #subtitle>
-                    Observe le mouvement du zooplancton à travers la journée.
+                    {{ t('planctonGameSubtitle') }}
                 </template>
             </PageHeader>
 
@@ -40,6 +40,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import PlanktonAdventurePlot, {
     type DepthSample,
@@ -47,22 +48,24 @@ import PlanktonAdventurePlot, {
 import TimestampSlider from 'src/components/TimestampSlider.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
-import { gamesNavGroups } from './gamesNavGroups';
+import { getGamesNavGroups } from './gamesNavGroups';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 
-const zooplanctonDepthStore = useZooplanctonDepthStore();
+const { t } = useI18n();
+const zooplanktonDepthStore = useZooplanctonDepthStore();
+const gamesNavGroups = computed(() => getGamesNavGroups(t));
 
 const selectedTimestamp = ref<number>(Date.now() / 1000);
-const range = computed(() => zooplanctonDepthStore.lastFullDayOfDataTimestampRange); // Placeholder range, replace with actual data
+const range = computed(() => zooplanktonDepthStore.lastFullDayOfDataTimestampRange);
 
 const samples = computed(() => {
-    if (!zooplanctonDepthStore.zooplanctonDepthPlotByTimestamp || !range.value) {
+    if (!zooplanktonDepthStore.zooplanctonDepthPlotByTimestamp || !range.value) {
         return [];
     }
 
     const samples: DepthSample[] = [];
     for (const [t, values] of Object.entries(
-        zooplanctonDepthStore.zooplanctonDepthPlotByTimestamp,
+        zooplanktonDepthStore.zooplanctonDepthPlotByTimestamp,
     )) {
         const timestamp = Number(t);
         if (timestamp >= range.value.start && timestamp < range.value.end) {
@@ -76,11 +79,11 @@ const samples = computed(() => {
     return samples;
 });
 
-const questions = [
+const questions = computed(() => [
     {
         id: '01',
-        kicker: 'QUESTION',
-        title: "Est-ce qu'il est plus proche de la surface vers midi ou vers minuit ?",
+        kicker: t('question'),
+        title: t('planctonGameQ1'),
     },
-];
+]);
 </script>

@@ -5,7 +5,7 @@
             rounded
             no-caps
             icon="chevron_left"
-            :label="backLabel"
+            :label="displayBackLabel"
             class="back-btn"
             color="white"
             :to="backTo"
@@ -33,13 +33,15 @@
 <script setup lang="ts">
 import type { NavMenuItem } from 'src/navigation/navMenuItem';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
+const { t } = useI18n();
 const route = useRoute();
 
 const activeHref = computed(() => route.path);
 
-withDefaults(
+const props = withDefaults(
     defineProps<{
         tabs: NavMenuItem[];
         backTo?: string;
@@ -48,10 +50,12 @@ withDefaults(
     }>(),
     {
         backTo: '/liveData',
-        backLabel: 'Retour',
+        backLabel: '',
         activeColor: 'primary',
     },
 );
+
+const displayBackLabel = computed(() => props.backLabel || t('back'));
 </script>
 
 <style scoped>

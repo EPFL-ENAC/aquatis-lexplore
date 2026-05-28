@@ -6,22 +6,21 @@
                 rounded
                 no-caps
                 icon="home"
-                label="Retour à l’accueil"
+                :label="t('backToHome')"
                 class="back-btn"
                 color="white"
                 to="/"
             />
 
-            <PageHeader eyebrow="03 · JEUX" eyebrow-class="text-negative" :level="1">
+            <PageHeader :eyebrow="t('gamePickerEyebrow')" eyebrow-class="text-negative" :level="1">
                 <template #default>
-                    Jeu sur la vie
+                    {{ t('gamePickerTitle').replace('\n', '') }}
                     <br />
-                    dans le Léman
+                    {{ t('gamePickerTitle').split('\n')[1] }}
                 </template>
 
                 <template #subtitle>
-                    Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en
-                    ce moment par la plateforme Léxplore.
+                    {{ t('gamePickerSubtitle') }}
                 </template>
             </PageHeader>
 
@@ -31,9 +30,14 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import CardsNavMenu from 'src/components/CardsNavMenu.vue';
 import PageHeader from 'src/components/PageHeader.vue';
-import { gamesNavGroups } from './gamesNavGroups';
+import { getGamesNavGroups } from './gamesNavGroups';
+
+const { t } = useI18n();
+const gamesNavGroups = computed(() => getGamesNavGroups(t));
 </script>
 
 <style scoped>

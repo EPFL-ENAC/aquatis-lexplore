@@ -3,11 +3,11 @@
         :tabs="changePages"
         active-href="/changes/chlorophyllChange"
         back-to="/changes"
-        back-label="Retour à l'accueil"
+        :back-label="t('backToHome')"
     />
 
-    <PageHeader eyebrow="02 · Découverte" eyebrow-class="text-warning" :level="1">
-        <template #default> La lumière et la chlorophylle dans le lac. </template>
+    <PageHeader :eyebrow="t('chloroChangeEyebrow')" eyebrow-class="text-warning" :level="1">
+        <template #default> {{ t('chloroChangeTitle') }} </template>
     </PageHeader>
 
     <section class="chart-stage">
@@ -40,20 +40,21 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import ScrollableTracksChart from 'src/components/plots/timeline/ScrollableTrackChart.vue';
 import { Timeline, Track } from 'src/components/plots/timeline/types';
-import { changePages } from './changesNavGroups';
+import { getChangePages } from './changesNavGroups';
 import { useAlgaeStore, useLakeStore, useWeatherStore } from 'src/stores/lexplore';
-import { useI18n } from 'vue-i18n';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
 const algaeStore = useAlgaeStore();
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
+const changePages = computed(() => getChangePages(t));
 
 function toMs(timestamp: number): number {
     return timestamp * 1000;
@@ -91,7 +92,7 @@ const tracks = computed(() => {
     if (weatherStore.data) {
         result.push(
             new Track({
-                title: 'Irradiance',
+                title: t('chloroChangeTrackIrradiance'),
                 type: 'line',
                 color: '#ffd54a',
                 data: weatherStore.data.timestamps.map((timestamp, index) => ({
@@ -103,7 +104,7 @@ const tracks = computed(() => {
 
         result.push(
             new Track({
-                title: "Température de l'air (°C)",
+                title: t('chloroChangeTrackAirTemp'),
                 type: 'line',
                 color: '#ff5e66',
                 data: weatherStore.data.timestamps.map((timestamp, index) => ({
@@ -117,7 +118,7 @@ const tracks = computed(() => {
     if (lakeStore.data) {
         result.push(
             new Track({
-                title: "Température de l'eau (°C)",
+                title: t('chloroChangeTrackWaterTemp'),
                 type: 'line',
                 color: '#4db8ff',
                 data: lakeStore.data.timestamps.map((timestamp, index) => ({
@@ -131,7 +132,7 @@ const tracks = computed(() => {
     if (chlorophyll0to20.value.length > 0) {
         result.push(
             new Track({
-                title: 'Chlorophylle A moyenne (0–20 m)',
+                title: t('chloroChangeTrackChlorophyll'),
                 type: 'line',
                 color: '#5df2c1',
                 data: chlorophyll0to20.value,
@@ -144,18 +145,18 @@ const tracks = computed(() => {
 
 const timeline = computed(() => new Timeline(tracks.value));
 
-const questions = [
+const questions = computed(() => [
     {
         id: '01',
-        kicker: 'QUESTION',
-        title: "Est-ce que l'eau se refroidit avec la pluie ?",
+        kicker: t('question'),
+        title: t('chloroChangeQ1'),
     },
     {
         id: '02',
-        kicker: 'QUESTION',
-        title: "L'air est-il plus chaud ou plus froid que l'eau ?",
+        kicker: t('question'),
+        title: t('chloroChangeQ2'),
     },
-];
+]);
 </script>
 
 <style scoped>
