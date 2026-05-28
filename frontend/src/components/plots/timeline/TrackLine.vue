@@ -37,11 +37,12 @@ const props = defineProps<{
 function yForValue(value: number): number {
     const innerTop = props.trackTop + 8;
     const innerHeight = Math.max(1, props.trackHeight - 16);
-    const range = Math.max(1, props.track.max - props.track.min);
-    const ratio = clamp((value - props.track.min) / range, 0, 1);
+    const ratio = clamp(prettyRange.value.normalizedValue(value), 0, 1);
 
     return innerTop + innerHeight - ratio * innerHeight;
 }
+const prettyRange = computed(() => props.track.getValueRangePretty());
+
 const pathD = computed(() => {
     if (props.track.data.length === 0) {
         return '';

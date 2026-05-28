@@ -8,12 +8,12 @@
                     v-for="(track, index) in props.timeline.tracks"
                     :key="`meta-${index}`"
                     class="timeline-chart__left-row"
-                    :style="{ height: `${trackHeight}px` }"
+                    :style="{ height: `${trackHeightAdjusted(track)}px` }"
                 >
                     <TrackHeader
                         :track="track"
                         :leftGutterWidth="leftGutterWidth"
-                        :trackHeight="trackHeight"
+                        :trackHeight="trackHeightAdjusted(track)"
                     />
                 </div>
             </div>
@@ -65,7 +65,7 @@
                         :key="`row-${index}`"
                         :track="track"
                         :width="plotWidth"
-                        :height="trackHeight"
+                        :height="trackHeightAdjusted(track)"
                         :ticks="ticks"
                         :x-for-timestamp="xForTimestamp"
                         :bar-gap="barGap"
@@ -83,7 +83,7 @@ import { useI18n } from 'vue-i18n';
 
 import TrackHeader from './TrackHeader.vue';
 import TrackRow from './TrackRow.vue';
-import { HOUR_MS, type Timeline } from './types';
+import { HOUR_MS, type Track, type Timeline } from './types';
 
 const props = withDefaults(
     defineProps<{
@@ -146,6 +146,14 @@ function xForTimestamp(timestamp: number): number {
     const ratio = (timestamp - domain.value.start) / duration;
 
     return ratio * plotWidth.value;
+}
+
+function trackHeightAdjusted(track: Track): number {
+    if (track.type === 'wind') {
+        return 80;
+    }
+
+    return props.trackHeight;
 }
 </script>
 

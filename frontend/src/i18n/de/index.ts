@@ -88,6 +88,7 @@ export default {
     windChangeTitle: 'Der Effekt des Winds auf den See.',
     windChangeTrackAirTemp: 'Lufttemperatur (°C)',
     windChangeTrackWaterTemp: 'Wassertemperatur (°C)',
+    windChangeTrackWindDirection: 'Windrichtung',
     windChangeTrackWindSpeed: 'Windgeschwindigkeit (m/s)',
     windChangeTrackWaveHeight: 'Wellenhöhe (m)',
     windChangeQ1: 'Bemerkst du in den letzten Tagen Veränderungen?',

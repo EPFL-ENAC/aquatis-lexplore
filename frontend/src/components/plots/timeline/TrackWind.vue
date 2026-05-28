@@ -1,16 +1,22 @@
 <template>
     <g>
-        <rect
+        <foreignObject
             v-for="(bar, index) in bars"
             :key="index"
-            :x="bar.x"
-            :y="bar.y"
-            :width="bar.width"
-            :height="bar.height"
-            :fill="track.color"
+            :x="bar.x - compassSize / 2"
+            :y="0"
+            :width="200"
+            :height="trackHeight"
             :opacity="0.9"
-            rx="1.5"
-        />
+        >
+            <WindCompass
+                :wind-direction-deg="bar.height"
+                :wind-speed="0.5"
+                :size="compassSize"
+                :max-visual-speed="1"
+                :min-triangle-radius-ratio="0.4"
+            />
+        </foreignObject>
     </g>
 </template>
 
@@ -18,6 +24,7 @@
 import { computed } from 'vue';
 import type { Track } from './types';
 import { clamp } from 'src/utils/math';
+import WindCompass from 'src/components/WindCompass.vue';
 
 const props = withDefaults(
     defineProps<{
@@ -38,6 +45,8 @@ interface Bar {
     width: number;
     height: number;
 }
+
+const compassSize = computed(() => props.trackHeight - 4);
 
 const bars = computed<Bar[]>(() => {
     const innerTop = props.trackTop + 8;

@@ -6,57 +6,59 @@
             role="img"
             :aria-label="`Wind ${cardinalLabel}, ${displaySpeed}`"
         >
-            <!-- Outer ring -->
-            <circle class="ring ring-main" cx="50" cy="50" r="36" />
+            <path class="ring ring-main" :d="quarterRing(0)" />
+            <path class="ring ring-main" :d="quarterRing(1)" />
+            <path class="ring ring-main" :d="quarterRing(2)" />
+            <path class="ring ring-main" :d="quarterRing(3)" />
 
-            <!-- Cardinal labels -->
-            <text class="label label-n" x="50" y="8">N</text>
-            <text class="label" x="92" y="50">E</text>
-            <text class="label" x="50" y="92">S</text>
-            <text class="label" x="8" y="50">W</text>
+            <text class="label label-n" :x="labelPositions.n.x" :y="labelPositions.n.y">N</text>
+            <text class="label" :x="labelPositions.e.x" :y="labelPositions.e.y">E</text>
+            <text class="label" :x="labelPositions.s.x" :y="labelPositions.s.y">S</text>
+            <text class="label" :x="labelPositions.w.x" :y="labelPositions.w.y">W</text>
 
-            <!-- Direction arrow -->
-            <g class="arrow-group" :transform="`rotate(${normalizedDeg} 0 0)`">
-                <line
-                    class="arrow-shaft"
-                    x1="50"
-                    y1="50"
-                    x2="50"
-                    :y2="50 - arrowLength + 5"
-                    :style="{ strokeWidth: `${arrowStroke}` }"
-                />
-                <path class="arrow-head" :d="arrowHeadPath" />
+            <g :transform="`rotate(${normalizedDeg} 50 50)`">
+                <path class="wind-triangle" :d="trianglePath" />
             </g>
 
-            <!-- Center dot -->
-            <circle class="center-dot" cx="50" cy="50" r="2.8" />
+            <circle class="center-dot" cx="50" cy="50" r="2" />
         </svg>
-
-        <div class="wind-meta" v-if="showText">
-            <div class="wind-dir">{{ cardinalLabel }}</div>
-            <div class="wind-speed">{{ displaySpeed }}</div>
-        </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { describeArc, polarToCartesian } from 'src/utils/svg';
 import { computed } from 'vue';
 
 interface Props {
     windDirectionDeg: number;
     windSpeed: number;
     size?: number;
-    showText?: boolean;
     speedUnit?: string;
     maxVisualSpeed?: number;
+    minTriangleRadiusRatio?: number;
+    maxTriangleRadiusRatio?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     size: 96,
-    showText: false,
     speedUnit: 'km/h',
     maxVisualSpeed: 30,
+    minTriangleRadiusRatio: 0.3,
+    maxTriangleRadiusRatio: 0.6,
 });
+
+const CENTER = 50;
+const RING_DEMI_RADIUS = 36;
+const LABEL_RADIUS = RING_DEMI_RADIUS;
+
+function quarterRing(multiplier: number) {
+    const factor = 0.8;
+
+    const startAngle = 90 * (multiplier + (1 - factor) / 2);
+    const endAngle = 90 * (multiplier + 1 + (factor - 1) / 2);
+
+    return describeArc(CENTER, CENTER, RING_DEMI_RADIUS, startAngle, endAngle);
+}
 
 const normalizedDeg = computed(() => {
     const deg = props.windDirectionDeg % 360;
@@ -73,35 +75,48 @@ const cardinalLabel = computed(() => {
     return dirs[index];
 });
 
-/**
- * Speed mapped to arrow size:
- * slow wind => shorter arrow
- * fast wind => longer + slightly thicker arrow
- */
 const speedRatio = computed(() => {
     const ratio = props.windSpeed / props.maxVisualSpeed;
-    return Math.max(0.15, Math.min(ratio, 1));
+    return Math.max(0, Math.min(ratio, 1));
 });
 
-const arrowLength = computed(() => {
-    return 12 + speedRatio.value * 16;
+const triangleRadiusRatio = computed(() => {
+    const min = Math.max(0, props.minTriangleRadiusRatio);
+    const max = Math.max(min, props.maxTriangleRadiusRatio);
+    return min + (max - min) * speedRatio.value;
 });
 
-const arrowStroke = computed(() => {
-    return 1.8 + speedRatio.value * 1.8;
+const labelPositions = computed(() => ({
+    n: polarToCartesian(CENTER, CENTER, LABEL_RADIUS, 0),
+    e: polarToCartesian(CENTER, CENTER, LABEL_RADIUS, 90),
+    s: polarToCartesian(CENTER, CENTER, LABEL_RADIUS, 180),
+    w: polarToCartesian(CENTER, CENTER, LABEL_RADIUS, 270),
+}));
+
+/**
+ * Triangle is centered at the compass midpoint.
+ * Height grows from 50% to 80% of the ring radius by default.
+ */
+const triangleHeight = computed(() => {
+    return RING_DEMI_RADIUS * triangleRadiusRatio.value * 2;
 });
 
-const arrowHeadPath = computed(() => {
-    const tipY = 50 - arrowLength.value;
-    const baseY = tipY + 7;
-    const headHalfWidth = 3.5 + speedRatio.value * 2.5;
+const triangleHalfWidth = computed(() => {
+    return triangleHeight.value * 0.34;
+});
 
-    return [
-        `M 50 ${tipY}`,
-        `L ${50 - headHalfWidth} ${baseY}`,
-        `L ${50 + headHalfWidth} ${baseY}`,
-        'Z',
-    ].join(' ');
+const trianglePath = computed(() => {
+    const h = triangleHeight.value;
+    const halfW = triangleHalfWidth.value;
+
+    const topY = CENTER - (2 * h) / 3;
+    const bottomY = CENTER + h / 3;
+    const leftX = CENTER - halfW;
+    const rightX = CENTER + halfW;
+
+    return [`M ${CENTER} ${topY}`, `L ${leftX} ${bottomY}`, `L ${rightX} ${bottomY}`, 'Z'].join(
+        ' ',
+    );
 });
 </script>
 
@@ -130,25 +145,6 @@ const arrowHeadPath = computed(() => {
     stroke-width: 1.4;
 }
 
-.ring-subtle {
-    stroke: rgba(120, 232, 255, 0.12);
-    stroke-width: 1;
-}
-
-.tick {
-    stroke-linecap: round;
-}
-
-.tick-major {
-    stroke: rgba(255, 255, 255, 0.62);
-    stroke-width: 1.4;
-}
-
-.tick-minor {
-    stroke: rgba(255, 255, 255, 0.28);
-    stroke-width: 1;
-}
-
 .label {
     fill: rgba(255, 255, 255, 0.7);
     font-size: 7px;
@@ -162,23 +158,9 @@ const arrowHeadPath = computed(() => {
     fill: #5fe3ff;
 }
 
-.arrow-group {
-    transform-origin: 50px 50px;
-    transition:
-        transform 240ms ease,
-        opacity 240ms ease;
-}
-
-.arrow-shaft {
-    stroke: #5fe3ff;
-    stroke-linecap: round;
-    transition:
-        stroke-width 240ms ease,
-        opacity 240ms ease;
-}
-
-.arrow-head {
+.wind-triangle {
     fill: #5fe3ff;
+    opacity: 0.95;
     transition: d 240ms ease;
 }
 

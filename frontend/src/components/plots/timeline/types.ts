@@ -18,7 +18,7 @@ export interface TimelineTick {
     isDayStart: boolean;
 }
 
-export type TrackType = 'bar' | 'line';
+export type TrackType = 'bar' | 'line' | 'wind';
 
 export interface TrackProperties {
     title: string;
@@ -26,6 +26,29 @@ export interface TrackProperties {
     data: TrackPoint[];
     color?: string;
     stepMs?: number;
+}
+
+export class Range {
+    public constructor(
+        public min: number,
+        public max: number,
+    ) {
+        if (max < min) {
+            throw new Error('Range max must be greater than or equal to min');
+        }
+    }
+
+    get length(): number {
+        return this.max - this.min;
+    }
+
+    normalizedValue(value: number): number {
+        if (this.length === 0) {
+            return 0;
+        }
+
+        return (value - this.min) / this.length;
+    }
 }
 
 export class Track {
@@ -115,6 +138,78 @@ export class Track {
         }
 
         return { min, max };
+    }
+
+    getValueRangePretty(minResolution: number | undefined = undefined): Range {
+        if (minResolution === undefined) {
+            // undefined means autodetect
+            const rawRange = this._max - this._min;
+            if (rawRange <= 1) {
+                minResolution = 0.1;
+            } else if (rawRange <= 5) {
+                minResolution = 1;
+            } else if (rawRange <= 20) {
+                minResolution = 5;
+            } else if (rawRange <= 100) {
+                minResolution = 10;
+            } else if (rawRange <= 500) {
+                minResolution = 50;
+            } else if (rawRange <= 2000) {
+                minResolution = 100;
+            } else {
+                minResolution = 500;
+            }
+        }
+
+        const minPretty = Math.floor(this._min / minResolution) * minResolution;
+        const maxPretty = Math.ceil(this._max / minResolution) * minResolution;
+
+        return new Range(minPretty, maxPretty);
+    }
+
+    static buckets(
+        props: Omit<TrackProperties, 'data' | 'stepMs'>,
+        rawData: TrackPoint[],
+        bucketDurationMs: number,
+    ): Track {
+        if (rawData.length === 0) {
+            return new Track({
+                ...props,
+                data: [],
+                stepMs: bucketDurationMs,
+            });
+        }
+
+        const sortedData = [...rawData].sort((a, b) => a.timestamp - b.timestamp);
+        const startTime = sortedData[0]!.timestamp;
+
+        const buckets: Map<number, { sum: number; count: number }> = new Map();
+
+        for (const point of sortedData) {
+            const bucketIndex = Math.floor((point.timestamp - startTime) / bucketDurationMs);
+            const bucketStart = startTime + bucketIndex * bucketDurationMs;
+
+            if (!buckets.has(bucketStart)) {
+                buckets.set(bucketStart, { sum: 0, count: 0 });
+            }
+
+            const bucket = buckets.get(bucketStart)!;
+            bucket.sum += point.value;
+            bucket.count += 1;
+        }
+
+        const bucketedData: TrackPoint[] = Array.from(buckets.entries()).map(
+            ([timestamp, { sum, count }]) => ({
+                timestamp,
+                value: sum / count,
+            }),
+        );
+
+        return new Track({
+            ...props,
+            data: bucketedData,
+            stepMs: bucketDurationMs,
+        });
     }
 }
 

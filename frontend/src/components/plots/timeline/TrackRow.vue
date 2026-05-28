@@ -38,18 +38,28 @@
         />
 
         <TrackLine
-            v-else
+            v-else-if="track.type === 'line'"
             :track="track"
             :x-for-timestamp="xForTimestamp"
             :track-top="0"
             :track-height="height"
             :stroke-width="lineStrokeWidth"
         />
+
+        <TrackWind
+            v-else-if="track.type === 'wind'"
+            :track="track"
+            :x-for-timestamp="xForTimestamp"
+            :track-top="0"
+            :track-height="height"
+            :gap="barGap"
+        />
     </svg>
 </template>
 
 <script setup lang="ts">
 import TrackBars from './TrackBars.vue';
+import TrackWind from './TrackWind.vue';
 import TrackLine from './TrackLine.vue';
 import type { TimelineTick, Track } from './types';
 

@@ -4,6 +4,7 @@
     </div>
 
     <svg
+        v-if="track.type !== 'wind'"
         class="timeline-chart__track-scale"
         :width="leftGutterWidth"
         :height="trackHeight"
@@ -33,6 +34,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { Track } from './types';
+import { useI18n } from 'vue-i18n';
+import { formatNumber } from 'src/utils/format';
 
 const props = withDefaults(
     defineProps<{
@@ -50,6 +53,8 @@ const props = withDefaults(
     },
 );
 
+const { locale } = useI18n();
+
 const valueTicks = computed(() => {
     const top = props.topMargin;
     const innerHeight = Math.max(1, props.trackHeight - props.topMargin - props.bottomMargin);
@@ -63,9 +68,11 @@ const valueTicks = computed(() => {
         ];
     }
 
+    const range = props.track.getValueRangePretty();
+
     return Array.from({ length: props.tickCount }, (_, index) => {
         const ratio = index / (props.tickCount - 1);
-        const value = props.track.max - ratio * (props.track.max - props.track.min);
+        const value = range.max - ratio * range.length;
         const y = top + ratio * innerHeight;
 
         return { value, y };
@@ -73,7 +80,7 @@ const valueTicks = computed(() => {
 });
 
 function formatValueTick(value: number): string {
-    return Number.isInteger(value) ? String(value) : value.toFixed(1);
+    return formatNumber(value, locale.value);
 }
 </script>
 

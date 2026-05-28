@@ -17,7 +17,8 @@
             <div class="chart-card__inner">
                 <ScrollableTracksChart
                     :timeline="timeline"
-                    :px-per-hour="88"
+                    :px-per-hour="10"
+                    :tick-every-minutes="8 * 60"
                     :track-height="128"
                     :axis-height="58"
                     :bar-gap="2"
@@ -91,15 +92,18 @@ const tracks = computed(() => {
 
     if (weatherStore.data) {
         result.push(
-            new Track({
-                title: t('chloroChangeTrackIrradiance'),
-                type: 'line',
-                color: '#ffd54a',
-                data: weatherStore.data.timestamps.map((timestamp, index) => ({
+            Track.buckets(
+                {
+                    title: t('chloroChangeTrackIrradiance'),
+                    color: '#ffd54a',
+                    type: 'bar',
+                },
+                weatherStore.data.timestamps.map((timestamp, index) => ({
                     timestamp: toMs(timestamp),
                     value: weatherStore.data!.irradiance[index]!,
                 })),
-            }),
+                3 * 60 * 60 * 1000,
+            ),
         );
 
         result.push(
@@ -131,12 +135,15 @@ const tracks = computed(() => {
 
     if (chlorophyll0to20.value.length > 0) {
         result.push(
-            new Track({
-                title: t('chloroChangeTrackChlorophyll'),
-                type: 'line',
-                color: '#5df2c1',
-                data: chlorophyll0to20.value,
-            }),
+            Track.buckets(
+                {
+                    title: t('chloroChangeTrackChlorophyll'),
+                    color: '#5df2c1',
+                    type: 'bar',
+                },
+                chlorophyll0to20.value,
+                3 * 60 * 60 * 1000,
+            ),
         );
     }
 

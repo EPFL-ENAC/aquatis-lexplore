@@ -7,7 +7,7 @@ export function formatNumber(
     }
 
     const numberFormatter = new Intl.NumberFormat(locale, {
-        maximumFractionDigits: 2,
+        maximumFractionDigits: 1,
     });
     return numberFormatter.format(value);
 }

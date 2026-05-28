@@ -17,7 +17,8 @@
             <div class="chart-card__inner">
                 <ScrollableTracksChart
                     :timeline="timeline"
-                    :px-per-hour="88"
+                    :px-per-hour="10"
+                    :tick-every-minutes="8 * 60"
                     :track-height="128"
                     :axis-height="58"
                     :bar-gap="2"
@@ -27,7 +28,11 @@
             </div>
 
             <div class="chart-card__legend">
-                <div v-for="track in tracks" :key="track.title" class="chart-card__legend-item">
+                <div
+                    v-for="track in tracksInLegend"
+                    :key="track.title"
+                    class="chart-card__legend-item"
+                >
                     <span
                         class="chart-card__legend-dot"
                         :style="{ backgroundColor: track.color }"
@@ -96,6 +101,20 @@ const tracks = computed(() => {
 
     if (weatherStore.data) {
         result.push(
+            Track.buckets(
+                {
+                    title: t('windChangeTrackWindDirection'),
+                    type: 'wind',
+                    color: '#7ed957',
+                },
+                weatherStore.data.timestamps.map((timestamp, index) => ({
+                    timestamp: toMs(timestamp),
+                    value: weatherStore.data!.windDirectionDegrees[index]!,
+                })),
+                8 * 60 * 60 * 1000,
+            ),
+        );
+        result.push(
             new Track({
                 title: t('windChangeTrackWindSpeed'),
                 type: 'line',
@@ -110,15 +129,18 @@ const tracks = computed(() => {
 
     if (buoyStore.data) {
         result.push(
-            new Track({
-                title: t('windChangeTrackWaveHeight'),
-                type: 'line',
-                color: '#c08cff',
-                data: buoyStore.data.timestamps.map((timestamp, index) => ({
+            Track.buckets(
+                {
+                    title: t('windChangeTrackWaveHeight'),
+                    color: '#c08cff',
+                    type: 'bar',
+                },
+                buoyStore.data.timestamps.map((timestamp, index) => ({
                     timestamp: toMs(timestamp),
                     value: buoyStore.data!.height[index]!,
                 })),
-            }),
+                3 * 60 * 60 * 1000,
+            ),
         );
     }
 
@@ -126,6 +148,8 @@ const tracks = computed(() => {
 });
 
 const timeline = computed(() => new Timeline(tracks.value));
+
+const tracksInLegend = computed(() => tracks.value.filter((track) => track.type !== 'wind'));
 
 const questions = computed(() => [
     {

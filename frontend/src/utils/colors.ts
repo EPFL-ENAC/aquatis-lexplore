@@ -157,6 +157,30 @@ export class ColorMap {
         ]);
     }
 
+    public static stylizedHeat(): ColorMap {
+        return new ColorMap([
+            // { t: 0.0, color: [0, 169, 185] },
+            // { t: 0.5, color: [0, 169, 185] },
+            { t: 0.0, color: [95, 227, 255] },
+            { t: 0.5, color: [95, 227, 255] },
+            { t: 0.8, color: [242, 192, 55] },
+            { t: 1.0, color: [255, 109, 74] },
+        ]);
+    }
+
+    public static stylizedHeatHardStops(): ColorMap {
+        return new ColorMap([
+            // { t: 0.0, color: [0, 169, 185] },
+            // { t: 0.5, color: [0, 169, 185] },
+            { t: 0.0, color: [95, 227, 255] },
+            { t: 0.5, color: [95, 227, 255] },
+            { t: 0.5001, color: [242, 192, 55] },
+            { t: 0.8, color: [242, 192, 55] },
+            { t: 0.8001, color: [255, 109, 74] },
+            { t: 1.0, color: [255, 109, 74] },
+        ]);
+    }
+
     private static toRgba(color: Rgb | Rgba): Rgba {
         if (color.length === 4) {
             return color;

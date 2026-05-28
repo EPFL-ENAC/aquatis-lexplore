@@ -86,6 +86,7 @@ export default {
     windChangeTitle: "L'effetto del vento sul lago.",
     windChangeTrackAirTemp: "Temperatura dell'aria (°C)",
     windChangeTrackWaterTemp: "Temperatura dell'acqua (°C)",
+    windChangeTrackWindDirection: 'Direzione del vento',
     windChangeTrackWindSpeed: 'Velocità del vento (m/s)',
     windChangeTrackWaveHeight: 'Altezza delle onde (m)',
     windChangeQ1: 'Noti dei cambiamenti negli ultimi giorni?',

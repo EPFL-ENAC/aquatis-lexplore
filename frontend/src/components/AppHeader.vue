@@ -32,43 +32,48 @@
                 <div class="stats">
                     <div class="stat">
                         <div class="stat__label">{{ t('headerAirTemp') }}</div>
-                        <div class="stat__value">
-                            {{ formatNumber(weatherStore.data?.airTemperature.at(-1), locale) }}
-                            <span class="unit">°C</span>
-                        </div>
+                        <DialValue
+                            :value="weatherStore.data?.airTemperature.at(-1) ?? 0"
+                            :size="104"
+                            :min-value="-10"
+                            :max-value="30"
+                            unit="°C"
+                        />
                     </div>
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWaterTemp') }}</div>
-                        <div class="stat__value">
-                            {{ formatNumber(lakeStore.data?.surfaceTemperature.at(-1), locale) }}
-                            <span class="unit">°C</span>
-                        </div>
+                        <DialValue
+                            :value="lakeStore.data?.surfaceTemperature.at(-1) ?? 0"
+                            :size="104"
+                            :min-value="-10"
+                            :max-value="30"
+                            unit="°C"
+                        />
                     </div>
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWind') }}</div>
-                        <!-- <WindCompass
-                            :wind-direction-deg="weatherStore.data?.windDirectionDegrees.at(-1) ?? 0"
-                            :wind-speed="weatherStore.data?.windSpeed.at(-1) ?? 0"
-                        /> -->
-                        <div class="stat__value">
-                            {{
-                                getCardinalDirection(
-                                    weatherStore.data?.windDirectionDegrees.at(-1) ?? 0,
-                                ).toUpperCase()
-                            }}
-                            <span class="unit"
-                                >{{
-                                    formatNumber(weatherStore.data?.windSpeed.at(-1), locale)
-                                }}km/h</span
-                            >
+                        <div class="stat__row">
+                            <WindCompass
+                                :wind-direction-deg="
+                                    weatherStore.data?.windDirectionDegrees.at(-1) ?? 0
+                                "
+                                :wind-speed="weatherStore.data?.windSpeed.at(-1) ?? 0"
+                                :size="104"
+                            />
+                            <DialValue
+                                :value="weatherStore.data?.windSpeed.at(-1) ?? 0"
+                                :size="104"
+                            />
                         </div>
                     </div>
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWave') }}</div>
-                        <div class="stat__value">
-                            {{ formatNumber(buoyStore.data?.height.at(-1), locale) }}
-                            <span class="unit">m</span>
-                        </div>
+                        <DialValue
+                            :value="(buoyStore.data?.height.at(-1) ?? 0) * 100"
+                            :size="104"
+                            :max-value="25"
+                            unit="cm"
+                        />
                     </div>
                 </div>
             </div>
@@ -79,9 +84,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useWeatherStore, useLakeStore, useBuoyStore } from 'src/stores/lexplore';
-import { getCardinalDirection } from 'src/utils/directions';
-import { formatNumber, formatTime } from 'src/utils/format';
-// import WindCompass from './WindCompass.vue';
+import { formatTime } from 'src/utils/format';
+import WindCompass from './WindCompass.vue';
+import DialValue from './DialValue.vue';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
@@ -195,6 +200,12 @@ const languageOptions = [
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+}
+
+.stat__row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
 }
 
 .stat__label {
