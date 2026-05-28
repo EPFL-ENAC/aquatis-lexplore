@@ -1,14 +1,13 @@
 <template>
-    <PageHeader eyebrow="BIENVENUE" :level="2">
+    <PageHeader :eyebrow="t('homeEyebrow')" :level="2">
         <template #default>
-            Le Léman, en direct,
+            {{ t('homeTitle').replace('\n', '') }}
             <br />
-            sous tes yeux.
+            {{ t('homeTitle').split('\n')[1] }}
         </template>
 
         <template #subtitle>
-            Plonge à 100 mètres, suis le plancton heure par heure, et compare l'eau à l'air avec les
-            données vraies de la plateforme scientifique Léxplore.
+            {{ t('homeSubtitle') }}
         </template>
     </PageHeader>
 
@@ -18,18 +17,22 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QrCode from 'src/components/QrCode.vue';
 import CardsNavMenu from 'src/components/CardsNavMenu.vue';
 import type { NavMenuItem } from 'src/navigation/navMenuItem';
 
-const items: NavMenuItem[] = [
+const { t } = useI18n();
+
+const items = computed<NavMenuItem[]>(() => [
     {
         id: '01',
-        shortLabel: 'LIVE',
-        label: 'Plus de données en LIVE',
-        title: 'Plus de données en LIVE',
-        subtitle: 'Température en profondeur, plancton, microalgues mesuré en direct.',
+        shortLabel: t('homeLiveLabel'),
+        label: t('homeLiveTitle'),
+        title: t('homeLiveTitle'),
+        subtitle: t('homeLiveSubtitle'),
         icon: 'waves',
         href: '/liveData',
         color: 'primary',
@@ -37,10 +40,10 @@ const items: NavMenuItem[] = [
     },
     {
         id: '02',
-        shortLabel: 'DÉCOUVERTE',
-        label: 'Découvre les changements du Léman',
-        title: 'Découvre les changements du Léman',
-        subtitle: "Comment l'eau, l'air, les vagues ont bougé ces 10 derniers jours.",
+        shortLabel: t('homeDiscoveryLabel'),
+        label: t('homeDiscoveryTitle'),
+        title: t('homeDiscoveryTitle'),
+        subtitle: t('homeDiscoverySubtitle'),
         icon: 'show_chart',
         href: '/changes',
         color: 'warning',
@@ -48,16 +51,16 @@ const items: NavMenuItem[] = [
     },
     {
         id: '03',
-        shortLabel: 'JEUX',
-        label: 'Deviens un Léxplorateur',
-        title: 'Deviens un Léxplorateur',
-        subtitle: "L'aventure du plancton et Chaud-ou-Froid: deux jeux pour comprendre le lac.",
+        shortLabel: t('homeGamesLabel'),
+        label: t('homeGamesTitle'),
+        title: t('homeGamesTitle'),
+        subtitle: t('homeGamesSubtitle'),
         icon: 'explore',
         href: '/games',
         color: 'negative',
         textClass: 'text-negative',
     },
-];
+]);
 </script>
 
 <style scoped></style>

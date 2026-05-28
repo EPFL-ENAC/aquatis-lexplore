@@ -4,29 +4,34 @@
         rounded
         no-caps
         icon="home"
-        label="Retour à l’accueil"
+        :label="t('backToHome')"
         class="back-btn"
         color="white"
         to="/"
     />
 
-    <PageHeader eyebrow="02 · CHANGEMENTS" eyebrow-class="text-warning" :level="1">
+    <PageHeader :eyebrow="t('changesPickerEyebrow')" eyebrow-class="text-warning" :level="1">
         <template #default>
-            Les changements
+            {{ t('changesPickerTitle').replace('\n', '') }}
             <br />
-            dans le Léman
+            {{ t('changesPickerTitle').split('\n')[1] }}
         </template>
 
-        <template #subtitle> Choisis ce que tu veux observer dans le lac. </template>
+        <template #subtitle> {{ t('changesPickerSubtitle') }} </template>
     </PageHeader>
 
     <CardsNavMenu :items="changePages" :show-id-in-kicker="false" :media-width="128" />
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import CardsNavMenu from 'src/components/CardsNavMenu.vue';
 import PageHeader from 'src/components/PageHeader.vue';
-import { changePages } from './changesNavGroups';
+import { getChangePages } from './changesNavGroups';
+
+const { t } = useI18n();
+const changePages = computed(() => getChangePages(t));
 </script>
 
 <style scoped>

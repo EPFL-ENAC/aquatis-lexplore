@@ -3,11 +3,11 @@
         :tabs="changePages"
         active-href="/changes/windChange"
         back-to="/changes"
-        back-label="Retour à l'accueil"
+        :back-label="t('backToHome')"
     />
 
-    <PageHeader eyebrow="02 · Découverte" eyebrow-class="text-warning" :level="1">
-        <template #default> L'effet du vent sur le lac. </template>
+    <PageHeader :eyebrow="t('windChangeEyebrow')" eyebrow-class="text-warning" :level="1">
+        <template #default> {{ t('windChangeTitle') }} </template>
     </PageHeader>
 
     <section class="chart-stage">
@@ -43,20 +43,21 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import ScrollableTracksChart from 'src/components/plots/timeline/ScrollableTrackChart.vue';
-import { changePages } from './changesNavGroups';
+import { getChangePages } from './changesNavGroups';
 import { Timeline, Track } from 'src/components/plots/timeline/types';
 import { useBuoyStore, useLakeStore, useWeatherStore } from 'src/stores/lexplore';
-import { useI18n } from 'vue-i18n';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
 const buoyStore = useBuoyStore();
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
+const changePages = computed(() => getChangePages(t));
 
 function toMs(timestamp: number): number {
     return timestamp * 1000;
@@ -68,7 +69,7 @@ const tracks = computed(() => {
     if (weatherStore.data) {
         result.push(
             new Track({
-                title: "Température de l'air (°C)",
+                title: t('windChangeTrackAirTemp'),
                 type: 'line',
                 color: '#ff5e66',
                 data: weatherStore.data.timestamps.map((timestamp, index) => ({
@@ -82,7 +83,7 @@ const tracks = computed(() => {
     if (lakeStore.data) {
         result.push(
             new Track({
-                title: "Température de l'eau (°C)",
+                title: t('windChangeTrackWaterTemp'),
                 type: 'line',
                 color: '#4db8ff',
                 data: lakeStore.data.timestamps.map((timestamp, index) => ({
@@ -96,7 +97,7 @@ const tracks = computed(() => {
     if (weatherStore.data) {
         result.push(
             new Track({
-                title: 'Vitesse du vent (m/s)',
+                title: t('windChangeTrackWindSpeed'),
                 type: 'line',
                 color: '#7ed957',
                 data: weatherStore.data.timestamps.map((timestamp, index) => ({
@@ -110,7 +111,7 @@ const tracks = computed(() => {
     if (buoyStore.data) {
         result.push(
             new Track({
-                title: 'Hauteur des vagues (m)',
+                title: t('windChangeTrackWaveHeight'),
                 type: 'line',
                 color: '#c08cff',
                 data: buoyStore.data.timestamps.map((timestamp, index) => ({
@@ -126,18 +127,18 @@ const tracks = computed(() => {
 
 const timeline = computed(() => new Timeline(tracks.value));
 
-const questions = [
+const questions = computed(() => [
     {
         id: '01',
-        kicker: 'QUESTION',
-        title: 'Observes-tu des changements ces derniers jours ?',
+        kicker: t('question'),
+        title: t('windChangeQ1'),
     },
     {
         id: '02',
-        kicker: 'QUESTION',
-        title: "L'air est-il plus chaud ou plus froid que l'eau ?",
+        kicker: t('question'),
+        title: t('windChangeQ2'),
     },
-];
+]);
 </script>
 
 <style scoped>

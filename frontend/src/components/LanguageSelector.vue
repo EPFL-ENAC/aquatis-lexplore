@@ -1,17 +1,17 @@
 <template>
-  <q-select
-    v-model="selectedLang"
-    :options="langOptions"
-    option-value="value"
-    option-label="label"
-    emit-value
-    map-options
-    outlined
-    dense
-    class="lang-select q-ml-md"
-    popup-content-class="lang-select-options"
-    @update:model-value="changeLocale"
-  />
+    <q-select
+        v-model="selectedLang"
+        :options="langOptions"
+        option-value="value"
+        option-label="label"
+        emit-value
+        map-options
+        outlined
+        dense
+        class="lang-select q-ml-md"
+        popup-content-class="lang-select-options"
+        @update:model-value="changeLocale"
+    />
 </template>
 
 <script setup lang="ts">
@@ -21,20 +21,22 @@ import { useI18n } from 'vue-i18n';
 const { locale } = useI18n();
 
 const langOptions = [
-  { label: 'EN', value: 'en-US' },
-  { label: 'FR', value: 'fr' },
+    { label: 'EN', value: 'en-US' },
+    { label: 'FR', value: 'fr' },
+    { label: 'DE', value: 'de' },
+    { label: 'IT', value: 'it' },
 ];
 
 const selectedLang = ref(locale.value);
 
 watch(locale, (newLocale) => {
-  selectedLang.value = newLocale;
+    selectedLang.value = newLocale;
 });
 
 function changeLocale(newLocale: string) {
-  locale.value = newLocale;
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('app-locale', newLocale);
-  }
+    locale.value = newLocale;
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('app-locale', newLocale);
+    }
 }
 </script>

@@ -1,18 +1,17 @@
 <template>
     <q-page class="leman-page text-white">
         <div class="page-shell">
-            <TopPageNav :tabs="liveDataItems" back-to="/liveData" back-label="Retour" />
+            <TopPageNav :tabs="liveDataItems" back-to="/liveData" :back-label="t('back')" />
 
-            <PageHeader eyebrow="01 · LIVE - Profondeur du Zooplancton" :level="1">
+            <PageHeader :eyebrow="t('zooDepthEyebrow')" :level="1">
                 <template #default>
-                    Il monte la nuit,
+                    {{ t('zooDepthTitle').replace('\n', '') }}
                     <br />
-                    il descend le jour.
+                    {{ t('zooDepthTitle').split('\n')[1] }}
                 </template>
 
                 <template #subtitle>
-                    Le plancton animal bouge entre le fond et la surface pour manger et pour se
-                    cacher des poissons.
+                    {{ t('zooDepthSubtitle') }}
                 </template>
             </PageHeader>
 
@@ -24,12 +23,12 @@
             /> -->
 
             <DepthHeatmapPlot
-                v-if="zooplanctonDepthStore.processedBackscatterHeatmap"
-                :heatmap="zooplanctonDepthStore.processedBackscatterHeatmap"
+                v-if="zooplanktonDepthStore.processedBackscatterHeatmap"
+                :heatmap="zooplanktonDepthStore.processedBackscatterHeatmap"
                 :highlight-column-maxima="true"
             />
 
-            <pre>{{ zooplanctonDepthStore.processedBackscatterHeatmap?.zValuesMinMax() }}</pre>
+            <pre>{{ zooplanktonDepthStore.processedBackscatterHeatmap?.zValuesMinMax() }}</pre>
 
             <QuestionCardsRow :items="questionCards" :columns="1" />
         </div>
@@ -37,6 +36,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import DepthHeatmapPlot from 'src/components/plots/DepthHeatmapPlot.vue';
@@ -44,17 +45,19 @@ import DepthHeatmapPlot from 'src/components/plots/DepthHeatmapPlot.vue';
 // import zooplanktonIcon from 'src/assets/zooplankton.png';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
-import { liveDataItems } from './liveDataNavGroups';
+import { getLiveDataItems } from './liveDataNavGroups';
 
-const zooplanctonDepthStore = useZooplanctonDepthStore();
+const { t } = useI18n();
+const zooplanktonDepthStore = useZooplanctonDepthStore();
+const liveDataItems = computed(() => getLiveDataItems(t));
 
-const questionCards = [
+const questionCards = computed(() => [
     {
         id: '01',
-        kicker: 'QUESTION #1',
-        title: 'À quelle profondeur vois-tu le plancton maintenant ?',
+        kicker: `${t('question')} #1`,
+        title: t('zooDepthQ1'),
     },
-];
+]);
 </script>
 
 <style scoped></style>

@@ -3,12 +3,16 @@
         <div class="qr-card">
             <q-icon name="qr_code_2" size="60px" color="primary" />
             <!-- TODO: Replace with actual QR code -->
-            <div class="qr-label text-primary">En savoir plus</div>
+            <div class="qr-label text-primary">{{ t('qrLabel') }}</div>
         </div>
     </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+</script>
 
 <style scoped>
 .qr-wrap {

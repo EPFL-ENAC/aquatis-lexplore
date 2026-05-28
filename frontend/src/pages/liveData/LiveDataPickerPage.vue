@@ -4,22 +4,21 @@
         rounded
         no-caps
         icon="home"
-        label="Retour à l’accueil"
+        :label="t('backToHome')"
         class="back-btn"
         color="white"
         to="/"
     />
 
-    <PageHeader eyebrow="01 · LIVE" :level="1">
+    <PageHeader :eyebrow="t('livePickerEyebrow')" :level="1">
         <template #default>
-            Teste d’autres
+            {{ t('livePickerTitle').replace('\n', '') }}
             <br />
-            données en live!
+            {{ t('livePickerTitle').split('\n')[1] }}
         </template>
 
         <template #subtitle>
-            Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en ce
-            moment par la plateforme Léxplore.
+            {{ t('livePickerSubtitle') }}
         </template>
     </PageHeader>
 
@@ -27,9 +26,14 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import CardsNavMenu from 'src/components/CardsNavMenu.vue';
-import { liveDataItems } from './liveDataNavGroups';
+import { getLiveDataItems } from './liveDataNavGroups';
+
+const { t } = useI18n();
+const liveDataItems = computed(() => getLiveDataItems(t));
 </script>
 
 <style scoped>

@@ -23,7 +23,7 @@
             <div class="header__stats">
                 <div class="live">
                     <span class="live__dot" />
-                    <span>LIVE</span>
+                    <span>{{ t('live') }}</span>
                     <span class="live__time">{{
                         formatTime(weatherStore.data?.timestamps.at(-1), locale)
                     }}</span>
@@ -31,21 +31,21 @@
 
                 <div class="stats">
                     <div class="stat">
-                        <div class="stat__label">TEMP AIR</div>
+                        <div class="stat__label">{{ t('headerAirTemp') }}</div>
                         <div class="stat__value">
                             {{ formatNumber(weatherStore.data?.airTemperature.at(-1), locale) }}
                             <span class="unit">°C</span>
                         </div>
                     </div>
                     <div class="stat">
-                        <div class="stat__label">TEMP EAU</div>
+                        <div class="stat__label">{{ t('headerWaterTemp') }}</div>
                         <div class="stat__value">
                             {{ formatNumber(lakeStore.data?.surfaceTemperature.at(-1), locale) }}
                             <span class="unit">°C</span>
                         </div>
                     </div>
                     <div class="stat">
-                        <div class="stat__label">VENT</div>
+                        <div class="stat__label">{{ t('headerWind') }}</div>
                         <!-- <WindCompass
                             :wind-direction-deg="weatherStore.data?.windDirectionDegrees.at(-1) ?? 0"
                             :wind-speed="weatherStore.data?.windSpeed.at(-1) ?? 0"
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <div class="stat">
-                        <div class="stat__label">VAGUE</div>
+                        <div class="stat__label">{{ t('headerWave') }}</div>
                         <div class="stat__value">
                             {{ formatNumber(buoyStore.data?.height.at(-1), locale) }}
                             <span class="unit">m</span>
@@ -86,11 +86,11 @@ import { formatNumber, formatTime } from 'src/utils/format';
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
 const buoyStore = useBuoyStore();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const languageOptions = [
     { label: 'FR', value: 'fr' },
-    { label: 'EN', value: 'en' },
+    { label: 'EN', value: 'en-US' },
     { label: 'DE', value: 'de' },
     { label: 'IT', value: 'it' },
 ];

@@ -1,146 +1,160 @@
 export default {
-  appTitle: 'Dataset annotation',
+    // --- Common ---
+    backToHome: 'Back to Home',
+    back: 'Back',
+    live: 'LIVE',
+    question: 'QUESTION',
 
-  import: 'Import',
-  export: 'Export',
-  tutorial: 'Tutorial',
-  about: 'About',
+    // --- 404 ---
+    notFoundMessage: 'Oops, nothing here...',
+    goHome: 'Go Home',
 
-  sidebarTitle: 'Annotated images',
-  noImages: 'No images yet',
-  markAsCompleted: 'Mark as completed',
-  markAsIncomplete: 'Mark as incomplete',
-  completionMarkRemoved: 'Completion mark removed',
-  ensureNoUnsetDamage: 'Make sure all annotations have a damage level set',
-  ensureAllBuildingsAnnotated: 'Make sure all buildings are annotated',
-  annotateNew: 'Annotate new',
-  noImageSelected: 'No image selected',
-  noImageSelectedMessage: 'Use the sidebar to add an image and start annotating.',
+    // --- Header ---
+    headerAirTemp: 'AIR TEMP',
+    headerWaterTemp: 'WATER TEMP',
+    headerWind: 'WIND',
+    headerWave: 'WAVE',
 
-  image: '0 image | 1 image | {n} images',
-  annotation: '0 annotation | 1 annotation | {n} annotations',
+    // --- Home page ---
+    homeEyebrow: 'WELCOME',
+    homeTitle: 'Lake Geneva, live,\nright before your eyes.',
+    homeSubtitle:
+        'Dive to 100 meters, track plankton hour by hour, and compare water to air with real data from the Léxplore scientific platform.',
 
-  deleteImage: 'Delete Image',
-  deleteImageMessage:
-    'Are you sure you want to delete this image? This will also delete all annotation data for this image. This action cannot be undone.',
-  deleteImageSkipMessage: "Don't ask again during this session",
-  deleteImageFailed: 'Failed to delete image',
+    // --- Home nav cards ---
+    homeLiveLabel: 'LIVE',
+    homeLiveTitle: 'More Live Data',
+    homeLiveSubtitle: 'Temperature at depth, plankton, microalgae measured in real time.',
+    homeDiscoveryLabel: 'DISCOVERY',
+    homeDiscoveryTitle: "Discover Lake Geneva's Changes",
+    homeDiscoverySubtitle: 'How water, air, and waves have shifted over the past 10 days.',
+    homeGamesLabel: 'GAMES',
+    homeGamesTitle: 'Become a Léxplorer',
+    homeGamesSubtitle: 'The plankton adventure and Hot-or-Cold: two games to understand the lake.',
 
-  noMoreImages: 'No more images available to annotate.',
-  annotationsCopied: 'Copied annotations from {filename}.',
+    // --- Live Data Picker ---
+    livePickerEyebrow: '01 · LIVE',
+    livePickerTitle: 'Try other\nlive data!',
+    livePickerSubtitle:
+        'Choose what you want to observe in the lake. All values are currently measured by the Léxplore platform.',
 
-  skip: 'Skip',
-  tutorialTitle: 'Tutorial',
-  tutorialSteps: [
-    'Click "Annotate new" in the sidebar to get a new image to annotate.',
-    'Click "Add annotation" or press the [N] key to add a new annotation.',
-    "Click to start drawing a polygon around buildings and add points. Double-click to finalize. <b>Include facades, and don't worry about parts outside the image.</b>",
-    'Click to set the damage level, or use the [1] and [2] keys. <b>Multiple buildings sharing the same damage level can be enclosed in a single polygon.</b>',
-    'Click "Show map" to display a reference map. Make sure to orient it correctly.',
-    'Mark as completed once all buildings have been annotated and the damage levels set, or if there are no buildings on the image.',
-  ],
-  next: 'Next',
-  finish: 'Finish',
+    // --- Live Data nav ---
+    liveNavTempDepth: 'Temperature at Depth',
+    liveNavTempDepthShort: 'Air → 100m',
+    liveNavZooDepth: 'Zooplankton Depth',
+    liveNavZooDepthShort: 'Day/Night Migration',
+    liveNavAlgaeConc: 'Microalgae Concentration',
 
-  aboutTitle: 'About',
-  aboutJointEffort:
-    'This interface is a joint effort between the Humanitarian OpenStreetMap Team (HOT), NAXA, and EPFL.',
-  aboutDevelopment: 'The development was carried out by {link}.',
-  aboutRepository: 'Repository: {link}',
+    // --- Temperature Over Depth (Live) ---
+    tempDepthEyebrow: '01 · LIVE - Temperature at Depth',
+    tempDepthTitle: 'The deeper you go,\nthe colder the water.',
+    tempDepthAir: 'Air',
+    tempDepthQ1: 'Do you notice a difference between air and water?',
+    tempDepthQ2: 'Is it colder at 50m or at 100m?',
 
-  addAnnotation: 'Add annotation',
-  abort: 'Abort',
-  damageLevel: 'Damage level',
-  damageLevel_unset: 'Unset',
-  damageLevel_undamaged: 'Undamaged',
-  damageLevel_damaged: 'Damaged',
-  delete: 'Delete',
-  showReferenceMap: 'Show map',
-  recenter: 'Recenter',
-  hideReferenceMap: 'Hide map',
-  changeSource: 'Change source',
-  referenceMapUnavailable: 'Reference map unavailable',
-  captionDrawMode:
-    'Click to start new annotation and add points. [Ctrl+Z] to remove one point. Double-click to put last point. Clic and drag to move. [Esc] to abort.',
-  captionSelectMoveMode: 'Click to select. Click and drag to move. [N] to add new annotation.',
-  captionDelete: '[Delete] to delete selected. [1], [2], [3] to set damage level.',
-  escKey: 'Esc',
-  deleteKey: 'Delete',
+    // --- Zooplankton Depth (Live) ---
+    zooDepthEyebrow: '01 · LIVE - Zooplankton Depth',
+    zooDepthTitle: 'It rises at night,\nit sinks during the day.',
+    zooDepthSubtitle:
+        'Animal plankton moves between the bottom and the surface to feed and hide from fish.',
+    zooDepthQ1: 'At what depth do you see plankton now?',
 
-  // Login page
-  login: 'Login',
-  logout: 'Logout',
-  emailLabel: 'Email',
-  emailRequired: 'Email is required',
-  emailInvalid: 'Enter a valid email',
-  fullNameLabel: 'Full Name',
-  fullNameRequired: 'Full name is required',
-  codeLabel: 'Code',
-  codeRequired: 'Code is required',
-  welcomeMessage: 'Welcome, {name}!',
-  loginFailed: 'Login failed',
-  emailExistsNameMismatch:
-    'An account already exists with this email. Please enter the correct name.',
+    // --- Algae Concentration (Live) ---
+    algaeConcEyebrow: '01 · LIVE - Microalgae Concentration',
+    algaeConcTitle: 'Microscopic\nforests.',
+    algaeConcSubtitle:
+        "Lake Geneva's microalgae are called phytoplankton. Concentration peaks in summer, with sunlight and heat.",
+    algaeConcQ1: 'At what depth is plankton concentration the highest?',
 
-  // Admin page
-  adminPageTitle: 'Admin Dashboard',
-  usersTableTitle: 'Users',
-  userName: 'Name',
-  userEmail: 'Email',
-  userRole: 'Role',
-  userAccountCreated: 'Account Created',
-  userLastAction: 'Last Action',
-  lastActionNow: 'now',
-  lastActionMinutesAgo: '{minutes}min ago',
-  lastActionHoursAgo: '{hours}h ago',
-  lastActionDaysAgo: '{days}d. ago',
-  never: 'Never',
-  annotatedImages: 'Annotated Images',
-  nonReviewedImages: 'Non-reviewed images',
-  totalAnnotations: 'Total Annotations',
-  roleAnnotator: 'Annotator',
-  roleReviewer: 'Reviewer',
-  noUsersFound: 'No users found',
-  errorLoadingUsers: 'Error loading users',
-  refresh: 'Refresh',
-  page: 'Page',
-  of: 'of',
-  itemsPerPage: 'Items per page',
-  review: 'Review',
-  toAnnotationPage: 'Annotation Interface',
+    // --- Changes Picker ---
+    changesPickerEyebrow: '02 · CHANGES',
+    changesPickerTitle: 'Changes\nin Lake Geneva',
+    changesPickerSubtitle: 'Choose what you want to observe in the lake.',
 
-  // Review page
-  reviewPageTitle: 'Annotations Review',
-  backToAdminPage: 'Admin Page',
-  validate: 'Validate',
-  reject: 'Reject',
-  nextImage: 'Next image',
-  noMoreImagesToReview: 'No more images to review.',
+    // --- Changes nav ---
+    changesNavWindTitle: 'The Effect of Wind on the Lake',
+    changesNavWindShort: 'Wind',
+    changesNavWindSubtitle:
+        'Discover how wind influences water movement on the surface of Lake Geneva.',
+    changesNavGrowthTitle: 'Is It Growing?',
+    changesNavGrowthShort: 'Growth',
+    changesNavGrowthSubtitle:
+        'Observe how life in the lake evolves and whether certain organisms are developing.',
 
-  // 404 page
-  notFoundMessage: 'Oops, nothing here...',
-  goHome: 'Go Home',
+    // --- Wind Change Page ---
+    windChangeEyebrow: '02 · Discovery',
+    windChangeTitle: 'The effect of wind on the lake.',
+    windChangeTrackAirTemp: 'Air Temperature (°C)',
+    windChangeTrackWaterTemp: 'Water Temperature (°C)',
+    windChangeTrackWindSpeed: 'Wind Speed (m/s)',
+    windChangeTrackWaveHeight: 'Wave Height (m)',
+    windChangeQ1: 'Do you notice changes over the past few days?',
+    windChangeQ2: 'Is the air warmer or colder than the water?',
 
-  // Table header tooltips
-  tooltipImageName: 'Name of the image',
-  tooltipAnnotationsCount: 'Number of annotations',
-  tooltipCompletionStatus: 'Completion status',
-  tooltipValidationStatus: 'Validation status',
+    // --- Chlorophyll Change Page ---
+    chloroChangeEyebrow: '02 · Discovery',
+    chloroChangeTitle: 'Light and Chlorophyll in the Lake.',
+    chloroChangeTrackIrradiance: 'Irradiance',
+    chloroChangeTrackAirTemp: 'Air Temperature (°C)',
+    chloroChangeTrackWaterTemp: 'Water Temperature (°C)',
+    chloroChangeTrackChlorophyll: 'Average Chlorophyll A (0–20 m)',
+    chloroChangeQ1: 'Does the water cool down with rain?',
+    chloroChangeQ2: 'Is the air warmer or colder than the water?',
 
-  // Export dialog
-  exportAnnotations: 'Export Annotations',
+    // --- Game Picker ---
+    gamePickerEyebrow: '03 · GAMES',
+    gamePickerTitle: 'Games about life\nin Lake Geneva',
+    gamePickerSubtitle:
+        'Choose what you want to observe in the lake. All values are currently measured by the Léxplore platform.',
 
-  // Annotation errors (map + store)
-  selectAnnotationToEnable: 'Select an annotation to enable',
-  errorLoadingImageTitle: 'Error Loading Image',
-  errorLoadingImageMessage: 'Failed to load the image. Please try selecting a different image.',
-  failedToAddAnnotation: 'Failed to add annotation',
-  failedToUpdateAnnotation: 'Failed to update annotation',
-  failedToDeleteAnnotation: 'Failed to delete annotation',
-  failedToUpdateDamageLevel: 'Failed to update damage level',
-  failedToLoadAnnotations: 'Failed to load annotations',
-  failedToAddImage: 'Failed to add image',
-  failedToRemoveImage: 'Failed to remove image',
-  failedToUpdateCompleted: 'Failed to update image completed status',
-  failedToUpdateValidationStatus: 'Failed to update image validation status',
+    // --- Game nav ---
+    gameNavPlanctonTitle: 'The Plankton Adventure',
+    gameNavPlanctonShort: 'Day/Night Migration',
+    gameNavPlanctonSubtitle:
+        'Follow the zooplankton as it rises and falls in the lake, hour after hour.',
+    gameNavTempTitle: 'Hot or Cold?',
+    gameNavTempSubtitle: '3 months of temperature, by depth. Find the zone that never warms up.',
+
+    // --- Temperature Game ---
+    tempGameEyebrow: '02 · Hot or Cold?',
+    tempGameTitle: '2 years of Lake Geneva,\nby depth.',
+    tempGameSubtitle: 'Slide across the grid to explore.',
+    tempGameProfileKicker: 'At cursor → temp by depth',
+    tempGameLoading: 'Loading temperatures…',
+    tempGameQ1: 'What is the warmest period at depth?',
+    tempGameQ2: 'At what depth does the water always stay colder than 10°C?',
+
+    // --- Plankton Game ---
+    planctonGameEyebrow: '01 · The Plankton Adventure',
+    planctonGameTitle: 'Move the red cursor.',
+    planctonGameSubtitle: 'Observe the movement of zooplankton throughout the day.',
+    planctonGameQ1: 'Is it closer to the surface around noon or around midnight?',
+
+    // --- Plots ---
+    plotDepthProfileAria: 'Depth profile chart',
+    plotPlanktonAria: 'Zooplankton depth',
+    plotSurface: 'Surface',
+    plotNoHeatmapData: 'No heatmap data',
+    plotDepthLabel: 'Depth',
+    plotTemperatureLabel: 'Temperature',
+
+    // --- PlotAppendix ---
+    plotMeasuredOn: 'Measured on',
+    plotLocation: 'Lake Geneva',
+
+    // --- QrCode ---
+    qrLabel: 'Learn More',
+
+    // --- Format fallbacks ---
+    na: 'N/A',
+
+    // --- Institutions ---
+    instEawag: 'Eawag',
+    instUnil: 'UNIL',
+    instEpfl: 'EPFL',
+    instUnige: 'University of Geneva',
+    instCarrtel: 'CARRTEL',
+
+    // --- PlanktonAdventurePlot depth labels ---
+    planktonDepthSurface: 'Surface',
 };
