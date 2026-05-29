@@ -100,6 +100,8 @@ const tracks = computed(() => {
     }
 
     if (weatherStore.data) {
+        const bucketSizeMs = 8 * 60 * 60 * 1000;
+
         result.push(
             Track.buckets(
                 {
@@ -111,19 +113,23 @@ const tracks = computed(() => {
                     timestamp: toMs(timestamp),
                     value: weatherStore.data!.windDirectionDegrees[index]!,
                 })),
-                8 * 60 * 60 * 1000,
+                bucketSizeMs,
             ),
         );
+
         result.push(
-            new Track({
-                title: t('windChangeTrackWindSpeed'),
-                type: 'line',
-                color: '#7ed957',
-                data: weatherStore.data.timestamps.map((timestamp, index) => ({
+            Track.buckets(
+                {
+                    title: t('windChangeTrackWindSpeed'),
+                    type: 'number',
+                    color: '#7ed957',
+                },
+                weatherStore.data.timestamps.map((timestamp, index) => ({
                     timestamp: toMs(timestamp),
                     value: weatherStore.data!.windSpeed[index]!,
                 })),
-            }),
+                bucketSizeMs,
+            ),
         );
     }
 

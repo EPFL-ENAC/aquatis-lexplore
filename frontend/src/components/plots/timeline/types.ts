@@ -18,7 +18,7 @@ export interface TimelineTick {
     isDayStart: boolean;
 }
 
-export type TrackType = 'bar' | 'line' | 'wind';
+export type TrackType = 'bar' | 'line' | 'wind' | 'number';
 
 export interface TrackProperties {
     title: string;

@@ -15,11 +15,14 @@
                 </template>
             </PageHeader>
 
-            <DepthProfilePlot
-                :levels="levels"
-                :points="dataPoints"
-                :max-x="maxX"
-                :max-depth="maxDepth"
+            <ChlorophyllOverDepthPlot
+                v-if="dataPoints.length > 0"
+                :rows="dataPoints"
+                :value-end="maxX"
+                :margin-top="10"
+                :margin-bottom="10"
+                :depth-axis-x="132"
+                unit="µg/L"
             />
             <PlotAppendix :measured-at="measuredAt" />
 
@@ -31,7 +34,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
-import DepthProfilePlot, { type DepthLevel } from 'src/components/plots/DepthProfilePlot.vue';
+import ChlorophyllOverDepthPlot from 'src/components/plots/ChlorophyllOverDepthPlot.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import { getLiveDataItems } from './liveDataNavGroups';
@@ -43,35 +46,23 @@ const { t } = useI18n();
 const algaeStore = useAlgaeStore();
 const liveDataItems = computed(() => getLiveDataItems(t));
 
-function makeLevel(depth: number): DepthLevel {
-    return {
-        label: `${depth}m`,
-        depth,
-    };
-}
-
-const levels = computed(() => {
-    return [1, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100].map(makeLevel);
-});
-
 const dataPoints = computed(() => {
     if (!algaeStore.data) {
         return [];
     }
-    return levels.value.map((level) => ({
-        depth: level.depth,
-        value: (algaeStore.data!.chlorophyllAOverDepth.at('rightmost', level.depth) as number) ?? 0,
+
+    const levels = [2, 10, 20, 30, 40, 50, 60, 70, 80, 90];
+
+    return levels.map((level) => ({
+        label: `${level}m`,
+        depth: level,
+        value: (algaeStore.data!.chlorophyllAOverDepth.at('rightmost', level) as number) ?? 0,
     }));
 });
 
 const maxX = computed(() => {
     const maxValue = Math.max(...dataPoints.value.map((p) => p.value));
     return Math.ceil(maxValue);
-});
-
-const maxDepth = computed(() => {
-    const maxDepthValue = Math.max(...dataPoints.value.map((p) => p.depth));
-    return Math.ceil(maxDepthValue / 10) * 10;
 });
 
 const measuredAt = computed(() => algaeStore.data?.timestamps.at(-1));

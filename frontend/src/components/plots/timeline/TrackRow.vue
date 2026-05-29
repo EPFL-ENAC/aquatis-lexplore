@@ -54,6 +54,15 @@
             :track-height="height"
             :gap="barGap"
         />
+
+        <TrackNumber
+            v-else-if="track.type === 'number'"
+            :track="track"
+            :x-for-timestamp="xForTimestamp"
+            :track-top="0"
+            :track-height="height"
+            :gap="barGap"
+        />
     </svg>
 </template>
 
@@ -61,6 +70,7 @@
 import TrackBars from './TrackBars.vue';
 import TrackWind from './TrackWind.vue';
 import TrackLine from './TrackLine.vue';
+import TrackNumber from './TrackNumber.vue';
 import type { TimelineTick, Track } from './types';
 
 defineProps<{

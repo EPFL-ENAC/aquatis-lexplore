@@ -87,7 +87,7 @@ export default {
     windChangeTrackAirTemp: "Temperatura dell'aria (°C)",
     windChangeTrackWaterTemp: "Temperatura dell'acqua (°C)",
     windChangeTrackWindDirection: 'Direzione del vento',
-    windChangeTrackWindSpeed: 'Velocità del vento (m/s)',
+    windChangeTrackWindSpeed: 'Velocità del vento (km/h)', // TODO: Make sure this is km/h and not m/s
     windChangeTrackWaveHeight: 'Altezza delle onde (m)',
     windChangeQ1: 'Noti dei cambiamenti negli ultimi giorni?',
     windChangeQ2: "L'aria è più calda o più fredda dell'acqua?",

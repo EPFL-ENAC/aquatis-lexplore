@@ -260,11 +260,24 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
         return { start: lastFullDayStart, end: lastFullDayEnd };
     });
 
+    const lastRecordedDepth = computed(() => {
+        if (!zooplanctonDepthPlotByTimestamp.value) return null;
+
+        const timestamps = Object.keys(zooplanctonDepthPlotByTimestamp.value).map(Number);
+        if (timestamps.length === 0) {
+            return null;
+        }
+
+        const lastTimestamp = timestamps[timestamps.length - 1]!;
+        return zooplanctonDepthPlotByTimestamp.value[lastTimestamp]!.y;
+    });
+
     return {
         cleanBackscatterHeatmap,
         processedBackscatterHeatmap,
         zooplanctonDepthPlotByTimestamp,
         zooplanctonDepthAtTimestamp,
         lastFullDayOfDataTimestampRange,
+        lastRecordedDepth,
     };
 });

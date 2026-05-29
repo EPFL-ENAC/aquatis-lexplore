@@ -4,7 +4,7 @@
     </div>
 
     <svg
-        v-if="track.type !== 'wind'"
+        v-if="track.type !== 'wind' && track.type !== 'number'"
         class="timeline-chart__track-scale"
         :width="leftGutterWidth"
         :height="trackHeight"

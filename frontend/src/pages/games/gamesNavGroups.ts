@@ -13,6 +13,8 @@ export function getGamesNavGroups(t: (key: string) => string): NavMenuItem[] {
             color: 'negative',
             actionColor: 'negative',
             textClass: 'text-negative',
+            imageSrc: '/zooplankton.svg',
+            imageFit: 'contain',
         },
         {
             id: '02',

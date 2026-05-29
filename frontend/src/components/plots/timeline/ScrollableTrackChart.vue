@@ -151,6 +151,8 @@ function xForTimestamp(timestamp: number): number {
 function trackHeightAdjusted(track: Track): number {
     if (track.type === 'wind') {
         return 80;
+    } else if (track.type === 'number') {
+        return 50;
     }
 
     return props.trackHeight;

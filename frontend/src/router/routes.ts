@@ -65,6 +65,15 @@ const routes: RouteRecordRaw[] = [
                     },
                 ],
             },
+            {
+                path: '/debug',
+                children: [
+                    {
+                        path: 'planctonDepth',
+                        component: () => import('pages/debug/PlanctonDepthDebugPage.vue'),
+                    },
+                ],
+            },
         ],
     },
 

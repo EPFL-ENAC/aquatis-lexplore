@@ -37,7 +37,7 @@ import { useI18n } from 'vue-i18n';
 import { formatDateShort, formatTime } from 'src/utils/format';
 import { clamp } from 'src/utils/math';
 import { SWITZERLAND_LATITUDE, SWITZERLAND_LONGITUDE } from 'src/utils/countries';
-import { makeSunEventsLinearGradient } from 'src/utils/sunEvents';
+import { getSunEventsBetween, makeSunEventsBackground } from 'src/utils/sunEvents';
 import { toUnixSeconds } from 'src/utils/datetime';
 
 const { locale } = useI18n();
@@ -120,13 +120,14 @@ const selectedDateLabel = computed(() => {
 });
 
 const trackStyle = computed(() => {
+    const events = getSunEventsBetween(
+        props.startTimestamp,
+        props.endTimestamp,
+        SWITZERLAND_LATITUDE,
+        SWITZERLAND_LONGITUDE,
+    );
     return {
-        background: makeSunEventsLinearGradient(
-            props.startTimestamp,
-            props.endTimestamp,
-            SWITZERLAND_LATITUDE,
-            SWITZERLAND_LONGITUDE,
-        ),
+        ...makeSunEventsBackground(props.startTimestamp, props.endTimestamp, events),
     };
 });
 

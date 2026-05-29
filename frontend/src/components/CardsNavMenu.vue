@@ -8,16 +8,12 @@
             class="feature-card-link text-white"
         >
             <q-card flat bordered class="feature-card">
-                <q-card-section
-                    class="feature-row"
-                    :class="{ 'feature-row--with-media': hasImageMedia(item) }"
-                >
+                <q-card-section class="feature-row">
                     <div
                         v-if="hasImageMedia(item)"
                         class="feature-media"
                         :style="{
-                            width: `${mediaWidth}px`,
-                            minWidth: `${mediaWidth}px`,
+                            '--media-width': `${mediaWidth}px`,
                             background: item.mediaBackground,
                         }"
                     >
@@ -29,14 +25,11 @@
                         />
                     </div>
 
-                    <div v-else class="feature-icon" :class="item.textClass">
-                        <q-icon :name="item.icon" size="48px" />
+                    <div v-else class="feature-media" :class="item.textClass">
+                        <q-icon :name="item.icon" size="64px" />
                     </div>
 
-                    <div
-                        class="feature-content"
-                        :class="{ 'feature-content--with-media': hasImageMedia(item) }"
-                    >
+                    <div class="feature-content">
                         <div class="feature-kicker" :class="item.textClass">
                             {{ formatKicker(item) }}
                         </div>
@@ -168,28 +161,13 @@ const getLinkProps = (item: NavMenuItem) => {
     padding: 22px 20px 22px 24px;
 }
 
-.feature-row--with-media {
-    gap: 0;
-    padding: 0 20px 0 0;
-    align-items: stretch;
-    min-height: 132px;
-}
-
-.feature-icon {
-    width: 48px;
-    min-width: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .feature-media {
+    width: 96px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     align-self: stretch;
-    border-right: 1px solid rgb(255 255 255 / 10%);
 }
 
 .feature-media-image {

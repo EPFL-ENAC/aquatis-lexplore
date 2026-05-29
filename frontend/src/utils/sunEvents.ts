@@ -157,32 +157,35 @@ function getUtcDayOfYear(date: Date): number {
     return Math.floor((today - startOfYear) / DAY_MS);
 }
 
+const displayPropertyByType: Record<SunEvent['type'], { color: string; icon: string }> = {
+    dawn: {
+        color: '#6a8dff',
+        icon: `url("/icons/sunrise.svg")`,
+    },
+    sunrise: {
+        color: '#ffd166',
+        icon: `url("/icons/sun.svg")
+        `,
+    },
+    sunset: {
+        color: '#ff8c42',
+        icon: `url("/icons/sunrise.svg")`,
+    },
+    dusk: {
+        color: '#243b6b',
+        icon: `url("/icons/moon.svg")`,
+    },
+} as const;
+
 export function makeSunEventsLinearGradient(
-    tsA: number,
-    tsB: number,
-    lat: number,
-    lon: number,
+    start: number,
+    end: number,
+    events: SunEvent[],
     direction = 'to right',
 ): string {
-    const start = Math.min(tsA, tsB);
-    const end = Math.max(tsA, tsB);
-
-    if (start === end) {
-        return `linear-gradient(${direction}, #0b1020 0%, #0b1020 100%)`;
-    }
-
-    const events = getSunEventsBetween(start, end, lat, lon);
-
     if (events.length === 0) {
         return `linear-gradient(${direction}, #0b1020 0%, #0b1020 100%)`;
     }
-
-    const colorByType: Record<SunEvent['type'], string> = {
-        dawn: '#6a8dff',
-        sunrise: '#ffd166',
-        sunset: '#ff8c42',
-        dusk: '#243b6b',
-    };
 
     const startColor = edgeColorBefore(events[0]!.type);
     const endColor = edgeColorAfter(events[events.length - 1]!.type);
@@ -191,12 +194,70 @@ export function makeSunEventsLinearGradient(
 
     for (const event of events) {
         const pct = ((event.timestamp - start) / (end - start)) * 100;
-        stops.push(`${colorByType[event.type]} ${pct.toFixed(3)}%`);
+        stops.push(`${displayPropertyByType[event.type].color} ${pct.toFixed(3)}%`);
     }
 
     stops.push(`${endColor} 100%`);
 
     return `linear-gradient(${direction}, ${stops.join(', ')})`;
+}
+
+type BackgroundStyle = {
+    backgroundImage: string;
+    backgroundPosition: string;
+    backgroundRepeat: string;
+    backgroundSize: string;
+};
+
+function getEventMidpointTimestamp(events: SunEvent[], index: number, rangeEnd: number): number {
+    const eventStart = events[index]!.timestamp;
+    const eventEnd = events[index + 1]?.timestamp ?? rangeEnd;
+
+    return eventStart + (eventEnd - eventStart) / 2;
+}
+
+export function makeSunEventsBackground(
+    start: number,
+    end: number,
+    events: SunEvent[],
+    direction = 'to right',
+    iconSize = 32,
+): BackgroundStyle {
+    if (events.length === 0) {
+        return {
+            backgroundImage: `linear-gradient(${direction}, #0b1020 0%, #0b1020 100%)`,
+            backgroundPosition: '0 0',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '100% 100%',
+        };
+    }
+
+    const sorted = [...events].sort((a, b) => a.timestamp - b.timestamp);
+
+    const gradient = makeSunEventsLinearGradient(start, end, sorted, direction);
+
+    const iconLayers: string[] = [];
+    const positions: string[] = [];
+    const repeats: string[] = [];
+    const sizes: string[] = [];
+
+    for (const [index, event] of sorted.entries()) {
+        const midpoint = getEventMidpointTimestamp(sorted, index, end);
+
+        const pct = end === start ? 50 : ((midpoint - start) / (end - start)) * 100;
+
+        iconLayers.push(displayPropertyByType[event.type].icon);
+        positions.push(`${pct.toFixed(3)}% 50%`);
+        repeats.push('no-repeat');
+        sizes.push(`${iconSize}px ${iconSize}px`);
+    }
+
+    return {
+        backgroundImage: [...iconLayers, gradient].join(', '),
+        backgroundPosition: [...positions, '0 0'].join(', '),
+        backgroundRepeat: [...repeats, 'no-repeat'].join(', '),
+        backgroundSize: [...sizes, '100% 100%'].join(', '),
+    };
 }
 
 function edgeColorBefore(type: SunEvent['type']): string {
