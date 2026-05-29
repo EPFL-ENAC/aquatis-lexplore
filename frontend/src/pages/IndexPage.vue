@@ -1,9 +1,7 @@
 <template>
     <PageHeader :eyebrow="t('homeEyebrow')" :level="2">
         <template #default>
-            {{ t('homeTitle').replace('\n', '') }}
-            <br />
-            {{ t('homeTitle').split('\n')[1] }}
+            {{ t('homeTitle') }}
         </template>
 
         <template #subtitle>

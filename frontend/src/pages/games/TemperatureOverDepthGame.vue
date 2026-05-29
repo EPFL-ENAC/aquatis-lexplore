@@ -8,9 +8,7 @@
 
     <PageHeader :eyebrow="t('tempGameEyebrow')" eyebrow-class="text-negative" :level="1">
         <template #default>
-            {{ t('tempGameTitle').replace('\n', '') }}
-            <br />
-            {{ t('tempGameTitle').split('\n')[1] }}
+            {{ t('tempGameTitle') }}
         </template>
 
         <template #subtitle> {{ t('tempGameSubtitle') }} </template>

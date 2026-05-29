@@ -17,7 +17,7 @@ export default {
 
     // --- Home page ---
     homeEyebrow: 'BENVENUTO',
-    homeTitle: 'Il Lago di Ginevra, in diretta,\nsotto i tuoi occhi.',
+    homeTitle: 'Il Lago di Ginevra, in diretta, sotto i tuoi occhi.',
     homeSubtitle:
         "Immergiti a 100 metri, seguilo plancton ora per ora e confronta l'acqua con l'aria con i dati reali della piattaforma scientifica Léxplore.",
 
@@ -47,28 +47,28 @@ export default {
 
     // --- Temperature Over Depth (Live) ---
     tempDepthEyebrow: '01 · LIVE - Temperatura in profondità',
-    tempDepthTitle: "Più si scende,\npiù l'acqua si raffredda.",
+    tempDepthTitle: "Più si scende, più l'acqua si raffredda.",
     tempDepthAir: 'Aria',
     tempDepthQ1: "Noti una differenza tra l'aria e l'acqua?",
     tempDepthQ2: 'Fa più freddo a 50 m o a 100 m?',
 
     // --- Zooplankton Depth (Live) ---
     zooDepthEyebrow: '01 · LIVE - Profondità dello zooplancton',
-    zooDepthTitle: 'Sale di notte,\nscende di giorno.',
+    zooDepthTitle: 'Sale di notte, scende di giorno.',
     zooDepthSubtitle:
         'Il plancton animale si muove tra il fondo e la superficie per nutrirsi e nascondersi dai pesci.',
     zooDepthQ1: 'A quale profondità vedi il plancton adesso?',
 
     // --- Algae Concentration (Live) ---
     algaeConcEyebrow: '01 · LIVE - Concentrazione delle microalghe',
-    algaeConcTitle: 'Foreste\nmicroscopiche.',
+    algaeConcTitle: 'Foreste microscopiche.',
     algaeConcSubtitle:
         "Le microalghe del Lago di Ginevra sono chiamate fitoplancton. La concentrazione aumenta d'estate, con la luce e il calore del sole.",
     algaeConcQ1: 'A quale profondità la concentrazione di plancton è la più alta?',
 
     // --- Changes Picker ---
     changesPickerEyebrow: '02 · CAMBIAMENTI',
-    changesPickerTitle: 'I cambiamenti\nnel Lago di Ginevra',
+    changesPickerTitle: 'I cambiamenti nel Lago di Ginevra',
     changesPickerSubtitle: 'Scegli cosa vuoi osservare nel lago.',
 
     // --- Changes nav ---
@@ -104,7 +104,7 @@ export default {
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · GIOCHI',
-    gamePickerTitle: 'Giochi sulla vita\nnel Lago di Ginevra',
+    gamePickerTitle: 'Giochi sulla vita nel Lago di Ginevra',
     gamePickerSubtitle:
         'Scegli cosa vuoi osservare nel lago. Tutti i valori sono misurati in questo momento dalla piattaforma Léxplore.',
 
@@ -118,7 +118,7 @@ export default {
 
     // --- Temperature Game ---
     tempGameEyebrow: '02 · Caldo o Freddo?',
-    tempGameTitle: '2 anni di Lago di Ginevra,\nper profondità.',
+    tempGameTitle: '2 anni di Lago di Ginevra, per profondità.',
     tempGameSubtitle: 'Scorri sulla griglia per esplorare.',
     tempGameProfileKicker: 'Al cursore → temp. per profondità',
     tempGameLoading: 'Caricamento temperature…',

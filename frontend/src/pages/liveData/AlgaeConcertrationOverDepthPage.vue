@@ -5,9 +5,7 @@
 
             <PageHeader :eyebrow="t('algaeConcEyebrow')" :level="1">
                 <template #default>
-                    {{ t('algaeConcTitle').replace('\n', '') }}
-                    <br />
-                    {{ t('algaeConcTitle').split('\n')[1] }}
+                    {{ t('algaeConcTitle') }}
                 </template>
 
                 <template #subtitle>

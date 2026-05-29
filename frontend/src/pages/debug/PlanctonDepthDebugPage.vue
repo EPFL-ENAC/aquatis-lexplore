@@ -3,9 +3,7 @@
         <div class="page-shell">
             <PageHeader :eyebrow="t('zooDepthEyebrow')" :level="1">
                 <template #default>
-                    {{ t('zooDepthTitle').replace('\n', '') }}
-                    <br />
-                    {{ t('zooDepthTitle').split('\n')[1] }}
+                    {{ t('zooDepthTitle') }}
                 </template>
 
                 <template #subtitle>

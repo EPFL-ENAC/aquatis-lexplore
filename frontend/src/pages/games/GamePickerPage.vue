@@ -14,9 +14,7 @@
 
             <PageHeader :eyebrow="t('gamePickerEyebrow')" eyebrow-class="text-negative" :level="1">
                 <template #default>
-                    {{ t('gamePickerTitle').replace('\n', '') }}
-                    <br />
-                    {{ t('gamePickerTitle').split('\n')[1] }}
+                    {{ t('gamePickerTitle') }}
                 </template>
 
                 <template #subtitle>

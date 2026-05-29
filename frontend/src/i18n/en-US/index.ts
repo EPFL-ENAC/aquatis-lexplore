@@ -17,7 +17,7 @@ export default {
 
     // --- Home page ---
     homeEyebrow: 'WELCOME',
-    homeTitle: 'Lake Geneva, live,\nright before your eyes.',
+    homeTitle: 'Lake Geneva, live, right before your eyes.',
     homeSubtitle:
         'Dive to 100 meters, track plankton hour by hour, and compare water to air with real data from the Léxplore scientific platform.',
 
@@ -47,28 +47,28 @@ export default {
 
     // --- Temperature Over Depth (Live) ---
     tempDepthEyebrow: '01 · LIVE - Temperature at Depth',
-    tempDepthTitle: 'The deeper you go,\nthe colder the water.',
+    tempDepthTitle: 'The deeper you go, the colder the water.',
     tempDepthAir: 'Air',
     tempDepthQ1: 'Do you notice a difference between air and water?',
     tempDepthQ2: 'Is it colder at 50m or at 100m?',
 
     // --- Zooplankton Depth (Live) ---
     zooDepthEyebrow: '01 · LIVE - Zooplankton Depth',
-    zooDepthTitle: 'It rises at night,\nit sinks during the day.',
+    zooDepthTitle: 'It rises at night, it sinks during the day.',
     zooDepthSubtitle:
         'Animal plankton moves between the bottom and the surface to feed and hide from fish.',
     zooDepthQ1: 'At what depth do you see plankton now?',
 
     // --- Algae Concentration (Live) ---
     algaeConcEyebrow: '01 · LIVE - Microalgae Concentration',
-    algaeConcTitle: 'Microscopic\nforests.',
+    algaeConcTitle: 'Microscopic forests.',
     algaeConcSubtitle:
         "Lake Geneva's microalgae are called phytoplankton. Concentration peaks in summer, with sunlight and heat.",
     algaeConcQ1: 'At what depth is plankton concentration the highest?',
 
     // --- Changes Picker ---
     changesPickerEyebrow: '02 · CHANGES',
-    changesPickerTitle: 'Changes\nin Lake Geneva',
+    changesPickerTitle: 'Changes in Lake Geneva',
     changesPickerSubtitle: 'Choose what you want to observe in the lake.',
 
     // --- Changes nav ---
@@ -104,7 +104,7 @@ export default {
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · GAMES',
-    gamePickerTitle: 'Games about life\nin Lake Geneva',
+    gamePickerTitle: 'Games about life in Lake Geneva',
     gamePickerSubtitle:
         'Choose what you want to observe in the lake. All values are currently measured by the Léxplore platform.',
 
@@ -118,7 +118,7 @@ export default {
 
     // --- Temperature Game ---
     tempGameEyebrow: '02 · Hot or Cold?',
-    tempGameTitle: '2 years of Lake Geneva,\nby depth.',
+    tempGameTitle: '2 years of Lake Geneva, by depth.',
     tempGameSubtitle: 'Slide across the grid to explore.',
     tempGameProfileKicker: 'At cursor → temp by depth',
     tempGameLoading: 'Loading temperatures…',

@@ -12,9 +12,7 @@
 
     <PageHeader :eyebrow="t('changesPickerEyebrow')" eyebrow-class="text-warning" :level="1">
         <template #default>
-            {{ t('changesPickerTitle').replace('\n', '') }}
-            <br />
-            {{ t('changesPickerTitle').split('\n')[1] }}
+            {{ t('changesPickerTitle') }}
         </template>
 
         <template #subtitle> {{ t('changesPickerSubtitle') }} </template>

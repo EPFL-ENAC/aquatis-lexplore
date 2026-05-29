@@ -17,7 +17,7 @@ export default {
 
     // --- Home page ---
     homeEyebrow: 'WILLKOMMEN',
-    homeTitle: 'Der Genfersee, live,\nvor deinen Augen.',
+    homeTitle: 'Der Genfersee, live, vor deinen Augen.',
     homeSubtitle:
         'Tauche 100 Meter tief, verfolge Plankton stundenweise und vergleiche Wasser mit Luft mit Echtzeitdaten der wissenschaftlichen Plattform Léxplore.',
 
@@ -49,28 +49,28 @@ export default {
 
     // --- Temperature Over Depth (Live) ---
     tempDepthEyebrow: '01 · LIVE - Temperatur in der Tiefe',
-    tempDepthTitle: 'Je tiefer man geht,\nkälter wird das Wasser.',
+    tempDepthTitle: 'Je tiefer man geht, kälter wird das Wasser.',
     tempDepthAir: 'Luft',
     tempDepthQ1: 'Bemerkst du einen Unterschied zwischen Luft und Wasser?',
     tempDepthQ2: 'Ist es bei 50 m oder bei 100 m kälter?',
 
     // --- Zooplankton Depth (Live) ---
     zooDepthEyebrow: '01 · LIVE - Tiefe des Zooplanktons',
-    zooDepthTitle: 'Es steigt nachts auf,\nes sinkt tagsüber.',
+    zooDepthTitle: 'Es steigt nachts auf, es sinkt tagsüber.',
     zooDepthSubtitle:
         'Tierisches Plankton bewegt sich zwischen Grund und Oberfläche, um zu fressen und sich vor Fischen zu verstecken.',
     zooDepthQ1: 'In welcher Tiefe siehst du gerade Plankton?',
 
     // --- Algae Concentration (Live) ---
     algaeConcEyebrow: '01 · LIVE - Mikroalgenkonzentration',
-    algaeConcTitle: 'Mikroskopische\nWälder.',
+    algaeConcTitle: 'Mikroskopische Wälder.',
     algaeConcSubtitle:
         'Die Mikroalgen des Genfersees nennt man Phytoplankton. Die Konzentration steigt im Sommer, mit Licht und Wärme der Sonne.',
     algaeConcQ1: 'In welcher Tiefe ist die Planktonkonzentration am höchsten?',
 
     // --- Changes Picker ---
     changesPickerEyebrow: '02 · VERÄNDERUNGEN',
-    changesPickerTitle: 'Veränderungen\nim Genfersee',
+    changesPickerTitle: 'Veränderungen im Genfersee',
     changesPickerSubtitle: 'Wähle, was du im See beobachten möchtest.',
 
     // --- Changes nav ---
@@ -106,7 +106,7 @@ export default {
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · SPIELE',
-    gamePickerTitle: 'Spiele über das Leben\nim Genfersee',
+    gamePickerTitle: 'Spiele über das Leben im Genfersee',
     gamePickerSubtitle:
         'Wähle, was du im See beobachten möchtest. Alle Werte werden aktuell von der Plattform Léxplore gemessen.',
 
@@ -121,7 +121,7 @@ export default {
 
     // --- Temperature Game ---
     tempGameEyebrow: '02 · Heiss oder Kalt?',
-    tempGameTitle: '2 Jahre Genfersee,\nnach Tiefe.',
+    tempGameTitle: '2 Jahre Genfersee, nach Tiefe.',
     tempGameSubtitle: 'Schwimme über das Raster, um zu erkunden.',
     tempGameProfileKicker: 'Am Cursor → Temp. nach Tiefe',
     tempGameLoading: 'Temperaturen werden geladen…',

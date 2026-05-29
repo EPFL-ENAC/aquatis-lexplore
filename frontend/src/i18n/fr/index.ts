@@ -48,28 +48,28 @@ export default {
 
     // --- Temperature Over Depth (Live) ---
     tempDepthEyebrow: '01 · LIVE - Température en profondeur',
-    tempDepthTitle: "Plus on descend,\nplus l'eau refroidit.",
+    tempDepthTitle: "Plus on descend, plus l'eau refroidit.",
     tempDepthAir: 'Air',
     tempDepthQ1: "Observes-tu une différence entre l'air et l'eau ?",
     tempDepthQ2: "Est-ce qu'il fait plus froid à 50 m ou à 100 m ?",
 
     // --- Zooplankton Depth (Live) ---
     zooDepthEyebrow: '01 · LIVE - Profondeur du Zooplancton',
-    zooDepthTitle: 'Il monte la nuit,\nil descend le jour.',
+    zooDepthTitle: 'Il monte la nuit, il descend le jour.',
     zooDepthSubtitle:
         'Le plancton animal bouge entre le fond et la surface pour manger et pour se cacher des poissons.',
     zooDepthQ1: 'À quelle profondeur vois-tu le plancton maintenant ?',
 
     // --- Algae Concentration (Live) ---
     algaeConcEyebrow: '01 · LIVE - Concentration des Microalgues',
-    algaeConcTitle: 'Des forêts\nmicroscopiques.',
+    algaeConcTitle: 'Des forêts microscopiques.',
     algaeConcSubtitle:
         'Les microalgues du Léman sont appelées phytoplancton. La concentration grimpe en été, avec la lumière et la chaleur du soleil.',
     algaeConcQ1: 'À quelle profondeur la concentration de plancton est la plus haute ?',
 
     // --- Changes Picker ---
     changesPickerEyebrow: '02 · CHANGEMENTS',
-    changesPickerTitle: 'Les changements\ndans le Léman',
+    changesPickerTitle: 'Les changements dans le Léman',
     changesPickerSubtitle: 'Choisis ce que tu veux observer dans le lac.',
 
     // --- Changes nav ---
@@ -105,7 +105,7 @@ export default {
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · JEUX',
-    gamePickerTitle: 'Jeu sur la vie\ndans le Léman',
+    gamePickerTitle: 'Jeu sur la vie dans le Léman',
     gamePickerSubtitle:
         'Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en ce moment par la plateforme Léxplore.',
 
@@ -120,7 +120,7 @@ export default {
 
     // --- Temperature Game ---
     tempGameEyebrow: '02 · Chaud ou Froid?',
-    tempGameTitle: '2 ans de Léman,\npar profondeur.',
+    tempGameTitle: '2 ans de Léman, par profondeur.',
     tempGameSubtitle: 'Glisse sur la grille pour explorer.',
     tempGameProfileKicker: 'Au curseur → temp par profondeur',
     tempGameLoading: 'Chargement des températures…',

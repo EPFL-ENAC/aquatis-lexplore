@@ -3,9 +3,7 @@
 
     <PageHeader :eyebrow="t('tempDepthEyebrow')" :level="1">
         <template #default>
-            {{ t('tempDepthTitle').replace('\n', '') }}
-            <br />
-            {{ t('tempDepthTitle').split('\n')[1] }}
+            {{ t('tempDepthTitle') }}
         </template>
     </PageHeader>
 
