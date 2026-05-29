@@ -273,6 +273,8 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
     });
 
     return {
+        heatmapShallow,
+        heatmapDeep,
         cleanBackscatterHeatmap,
         processedBackscatterHeatmap,
         zooplanctonDepthPlotByTimestamp,

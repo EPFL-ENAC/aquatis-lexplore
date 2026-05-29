@@ -183,14 +183,28 @@ function drawHeatmap(): void {
     ctx.font = '13px "Google Sans Flex", sans-serif';
 
     const xStep = tickStep(heatmap.x.length, 8);
-    ctx.textAlign = 'center';
+    ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
+    ctx.fillStyle = 'white';
+
+    const dateFormat = new Intl.DateTimeFormat('fr-ch', {
+        day: '2-digit',
+        month: 'short',
+    });
+    const timeFormat = new Intl.DateTimeFormat('fr-ch', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    });
 
     for (let x = 0; x < heatmap.x.length; x += xStep) {
         const centerX = plotLeft + (x + 0.5) * cellWidth;
-        const label = formatNumber(heatmap.x[x]);
+        const date = new Date(heatmap.x[x]! * 1000);
+        const labelDate = dateFormat.format(date);
+        const labelTime = timeFormat.format(date);
 
-        ctx.fillText(label, centerX, plotTop + plotHeight + 8);
+        ctx.fillText(labelDate, centerX, plotTop + plotHeight + 0);
+        ctx.fillText(labelTime, centerX, plotTop + plotHeight + 14);
     }
 
     const yStep = tickStep(heatmap.y.length, 8);
@@ -255,7 +269,7 @@ function drawColorBar(): void {
     ctx.strokeRect(barX, barY, barWidth, barHeight);
 
     const tickCount = 5;
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = 'white';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';

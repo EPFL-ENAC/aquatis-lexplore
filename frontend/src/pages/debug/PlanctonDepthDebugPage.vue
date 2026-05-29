@@ -18,13 +18,45 @@
                 :max-depth="100"
             /> -->
 
+            <h3>Shallow</h3>
+            <DepthHeatmapPlot v-if="shallow" :heatmap="shallow" />
+
+            <h3>Deep</h3>
+            <DepthHeatmapPlot v-if="deep" :heatmap="deep" />
+
+            <h3>Clean</h3>
+            <pre>
+const shallowSliced = heatmapShallow.data.slice({ yEnd: 24.45 }); // Data returns null deeper that this
+const deepSliced = heatmapDeep.data.slice({ yStart: 31.08, yEnd: 90.08 }); // Artifacts start there
+
+const bridgeY = [25.08, 26.08, 27.08, 28.08, 29.08, 30.08];
+
+return shallowSliced.toInterpolated(deepSliced.x).appendBelow(deepSliced, bridgeY);
+            </pre>
+            <DepthHeatmapPlot
+                v-if="zooplanktonDepthStore.cleanBackscatterHeatmap"
+                :heatmap="zooplanktonDepthStore.cleanBackscatterHeatmap"
+            />
+
+            <h3>Processed</h3>
+            <pre>
+clean
+    .replaceDepthRangeByLerp(48.08, 51.08)
+    .replaceDepthRangeByLerp(53.08, 60.08)
+    .zScore()
+    .smoothMovingAverage({ windowX: 31, windowY: 31 })
+            </pre>
+            <DepthHeatmapPlot
+                v-if="zooplanktonDepthStore.processedBackscatterHeatmap"
+                :heatmap="zooplanktonDepthStore.processedBackscatterHeatmap"
+            />
+
+            <h3>Processed (Highlight Column Maxima)</h3>
             <DepthHeatmapPlot
                 v-if="zooplanktonDepthStore.processedBackscatterHeatmap"
                 :heatmap="zooplanktonDepthStore.processedBackscatterHeatmap"
                 :highlight-column-maxima="true"
             />
-
-            <pre>{{ zooplanktonDepthStore.processedBackscatterHeatmap?.zValuesMinMax() }}</pre>
 
             <QuestionCardsRow :items="questionCards" :columns="1" />
         </div>
@@ -40,6 +72,7 @@ import DepthHeatmapPlot from 'src/components/plots/DepthHeatmapPlot.vue';
 // import ZooplanktonDepthPlot from 'src/components/live/ZooplanktonDepthPlot.vue';
 // import zooplanktonIcon from 'src/assets/zooplankton.png';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
+import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 
 const { t } = useI18n();
 const zooplanktonDepthStore = useZooplanctonDepthStore();
@@ -51,6 +84,13 @@ const questionCards = computed(() => [
         title: t('zooDepthQ1'),
     },
 ]);
+
+const shallow = computed<DepthHeatmap | null>(
+    () => zooplanktonDepthStore.heatmapShallow.data as DepthHeatmap | null,
+);
+const deep = computed<DepthHeatmap | null>(
+    () => zooplanktonDepthStore.heatmapDeep.data as DepthHeatmap | null,
+);
 </script>
 
 <style scoped></style>
