@@ -119,7 +119,7 @@ export const useWeatherStore = makeLexploreDatasetStore<WeatherData>(459, async 
         timestamps: data['time']! as number[],
         airTemperature: data['AirTC']! as number[],
         irradiance: data['Slrw']! as number[],
-        windSpeed: data['WS']! as number[],
+        windSpeed: (data['WS']! as number[]).map((v: number) => v * 3.6), // Convert from m/s to km/h
         windDirectionDegrees: data['WindDir']! as number[],
         precipitation: data['Rain']! as number[],
     };
