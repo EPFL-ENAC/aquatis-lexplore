@@ -12,9 +12,7 @@
 
     <PageHeader :eyebrow="t('livePickerEyebrow')" :level="1">
         <template #default>
-            {{ t('livePickerTitle').replace('\n', '') }}
-            <br />
-            {{ t('livePickerTitle').split('\n')[1] }}
+            {{ t('livePickerTitle') }}
         </template>
 
         <template #subtitle>

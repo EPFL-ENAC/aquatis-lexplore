@@ -34,7 +34,7 @@ export default {
 
     // --- Live Data Picker ---
     livePickerEyebrow: '01 · LIVE',
-    livePickerTitle: 'Prova altri\ndati in live!',
+    livePickerTitle: 'Prova altri dati in live!',
     livePickerSubtitle:
         'Scegli cosa vuoi osservare nel lago. Tutti i valori sono misurati in questo momento dalla piattaforma Léxplore.',
 
