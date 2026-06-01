@@ -20,11 +20,12 @@
                 </template>
             </PageHeader>
 
-            <PlanktonAdventurePlot
-                :samples="samples"
-                :selected-timestamp="selectedTimestamp"
-                icon-src="/copepode.png"
+            <PlanctonDepthPlot
+                v-if="zooplanktonDepthStore.lastRecordedDepth !== null"
+                :plancton-depth="planctonDepth?.y ?? 0"
                 :max-depth="100"
+                :margin-top="10"
+                :depth-axis-x="132"
             />
 
             <TimestampSlider
@@ -42,9 +43,7 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
-import PlanktonAdventurePlot, {
-    type DepthSample,
-} from 'src/components/plots/PlanktonAdventurePlot.vue';
+import PlanctonDepthPlot from 'src/components/plots/PlanctonDepthPlot.vue';
 import TimestampSlider from 'src/components/TimestampSlider.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
@@ -58,25 +57,14 @@ const gamesNavGroups = computed(() => getGamesNavGroups(t));
 const selectedTimestamp = ref<number>(Date.now() / 1000);
 const range = computed(() => zooplanktonDepthStore.lastFullDayOfDataTimestampRange);
 
-const samples = computed(() => {
-    if (!zooplanktonDepthStore.zooplanctonDepthPlotByTimestamp || !range.value) {
-        return [];
+const planctonDepth = computed(() => {
+    if (!zooplanktonDepthStore.processedBackscatterHeatmap || !range.value) {
+        return null;
     }
 
-    const samples: DepthSample[] = [];
-    for (const [t, values] of Object.entries(
-        zooplanktonDepthStore.zooplanctonDepthPlotByTimestamp,
-    )) {
-        const timestamp = Number(t);
-        if (timestamp >= range.value.start && timestamp < range.value.end) {
-            samples.push({
-                timestamp,
-                depth: values.y,
-            });
-        }
-    }
-
-    return samples;
+    return zooplanktonDepthStore.processedBackscatterHeatmap.columnMaximaAtTimestamp(
+        selectedTimestamp.value,
+    );
 });
 
 const questions = computed(() => [

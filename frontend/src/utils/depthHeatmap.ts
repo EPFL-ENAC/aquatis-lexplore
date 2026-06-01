@@ -1,4 +1,4 @@
-import { arraysEqual, sortedArrayRange, uniqueSorted } from './array';
+import { arraysEqual, getFractionalIndex, sortedArrayRange, uniqueSorted } from './array';
 import { Array2D } from './array2d';
 import { closestAboveSorted, closestBelowSorted, getInterpolationT, lerp } from './math';
 
@@ -264,6 +264,31 @@ export class DepthHeatmap {
         }
 
         return maxValues;
+    }
+
+    public columnMaximaAtTimestamp(timestamp: number): { y: number; z: number } | null {
+        const {
+            lowerIndex: xLowerIndex,
+            upperIndex: xUpperIndex,
+            t,
+        } = getFractionalIndex(this.x, timestamp);
+
+        if (xLowerIndex === -1) {
+            return null;
+        }
+
+        const fakeColumn = this.z.getInterpolatedColumn(xLowerIndex, xUpperIndex, t);
+        let maxZ = -Infinity;
+        let maxY = this.y[0]!;
+        for (let j = 0; j < this.y.length; j++) {
+            const zValue = fakeColumn[j]!;
+            if (zValue > maxZ) {
+                maxZ = zValue;
+                maxY = this.y[j]!;
+            }
+        }
+
+        return { y: maxY, z: maxZ };
     }
 
     toInterpolated(

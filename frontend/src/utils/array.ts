@@ -25,3 +25,32 @@ export function sortedArrayRange(
     const endIndex = array.findIndex((value) => value > endValue);
     return [startIndex, endIndex];
 }
+
+export function lastSmallerValueIndex(array: number[], value: number): number {
+    let index = array.findIndex((v) => v >= value);
+    if (index === -1) {
+        index = array.length - 1;
+    }
+    return index - 1;
+}
+
+export function getFractionalIndex(
+    array: number[],
+    value: number,
+): { lowerIndex: number; upperIndex: number; t: number } {
+    const lowerIndex = lastSmallerValueIndex(array, value);
+    const upperIndex = lowerIndex + 1;
+
+    if (upperIndex >= array.length) {
+        return { lowerIndex, upperIndex, t: 0 };
+    }
+
+    const lowerValue = array[lowerIndex]!;
+    const upperValue = array[upperIndex]!;
+
+    if (upperValue === lowerValue) {
+        return { lowerIndex, upperIndex, t: 0 };
+    }
+
+    return { lowerIndex, upperIndex, t: (value - lowerValue) / (upperValue - lowerValue) };
+}
