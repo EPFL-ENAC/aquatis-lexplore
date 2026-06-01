@@ -58,7 +58,7 @@ function cloneAxisData(data: DatasetAxisData): DatasetAxisData {
     return [...(data as number[])];
 }
 
-function mergeAxisData(
+/* function mergeAxisLeftRightData(
     left: DatasetAxisData,
     right: DatasetAxisData,
     axis: string,
@@ -83,12 +83,57 @@ function mergeAxisData(
     }
 
     return [...(left as number[]), ...(right as number[])];
+} */
+
+function mergeAxisTopBottomData(
+    top: DatasetAxisData,
+    bottom: DatasetAxisData,
+    axis: string,
+): DatasetAxisData {
+    if (top.length === 0) {
+        return cloneAxisData(bottom);
+    }
+
+    if (bottom.length === 0) {
+        return cloneAxisData(top);
+    }
+
+    const topIsMatrix = Array.isArray(top[0]);
+    const bottomIsMatrix = Array.isArray(bottom[0]);
+
+    if (topIsMatrix !== bottomIsMatrix) {
+        throw new Error(`Incompatible data shape while merging axis "${axis}" across files`);
+    }
+
+    if (topIsMatrix) {
+        const topMatrix = top as number[][];
+        const bottomMatrix = bottom as number[][];
+
+        if (topMatrix.length !== bottomMatrix.length) {
+            throw new Error(
+                `Incompatible matrix dimensions while merging axis "${axis}" top-to-bottom`,
+            );
+        }
+
+        return topMatrix.map((row, index) => [...row, ...bottomMatrix[index]!]);
+    }
+
+    return [...(top as number[]), ...(bottom as number[])];
 }
 
-function mergeRequestedAxes(chunks: DatasetFileDataChunk[], axes: string[]): DatasetData {
+function mergeRequestedAxes(
+    chunks: DatasetFileDataChunk[],
+    axes: string[],
+    constantAxis: string | null = null,
+): DatasetData {
     const merged: DatasetData = {};
 
     for (const axis of axes) {
+        if (axis === constantAxis) {
+            merged[axis] = chunks[0]!.data[axis]!; // constant axis doesn't move
+            continue;
+        }
+
         const axisValues = chunks
             .map((chunk) => chunk.data[axis])
             .filter((value): value is DatasetAxisData => value !== undefined);
@@ -100,7 +145,7 @@ function mergeRequestedAxes(chunks: DatasetFileDataChunk[], axes: string[]): Dat
         let mergedAxis = cloneAxisData(axisValues[0]!);
 
         for (let i = 1; i < axisValues.length; i += 1) {
-            mergedAxis = mergeAxisData(mergedAxis, axisValues[i]!, axis);
+            mergedAxis = mergeAxisTopBottomData(mergedAxis, axisValues[i]!, axis);
         }
 
         merged[axis] = mergedAxis;
@@ -158,6 +203,7 @@ export class Dataset {
     async getData(
         timePullParam: DataTimePullParam,
         axesLabels: string[],
+        constantAxisLabel: string | null = null,
         rename: boolean = true,
         validate: boolean = true,
     ): Promise<DatasetData> {
@@ -168,9 +214,11 @@ export class Dataset {
         }
 
         const nameToLabel: Record<string, string> = {};
+        const labelToName: Record<string, string> = {};
         for (const parameter of this.metadata.parameters) {
             if (axesLabels.includes(parameter.parseparameter)) {
                 nameToLabel[parameter.axis] = parameter.parseparameter;
+                labelToName[parameter.parseparameter] = parameter.axis;
             }
         }
 
@@ -188,7 +236,8 @@ export class Dataset {
             }
         }
 
-        const data = mergeRequestedAxes(chunks, Object.keys(nameToLabel));
+        const constantAxis = constantAxisLabel ? labelToName[constantAxisLabel]! : null;
+        const data = mergeRequestedAxes(chunks, Object.keys(nameToLabel), constantAxis);
         if (!rename) {
             return data;
         }

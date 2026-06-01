@@ -32,7 +32,7 @@ const liveDataItems = computed(() => getLiveDataItems(t));
 const temperatureRows = computed(() => [
     {
         label: t('tempDepthAir'),
-        depth: -15,
+        depth: -5,
         value: weatherStore.data?.airTemperature.at(-1) ?? 0,
     },
     {
@@ -41,14 +41,34 @@ const temperatureRows = computed(() => [
         value: lakeStore.data?.surfaceTemperature.at(-1) ?? 0,
     },
     {
+        label: '4m',
+        depth: 4,
+        value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 4) ?? 0,
+    },
+    {
+        label: '10m',
+        depth: 10,
+        value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 10) ?? 0,
+    },
+    {
+        label: '16m',
+        depth: 16,
+        value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 16) ?? 0,
+    },
+    {
         label: '24m',
         depth: 24,
         value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 24) ?? 0,
     },
     {
-        label: '50m',
-        depth: 50,
-        value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 50) ?? 0,
+        label: '40m',
+        depth: 40,
+        value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 40) ?? 0,
+    },
+    {
+        label: '60m',
+        depth: 60,
+        value: lakeStore.data?.temperatureOverDepth?.at('rightmost', 60) ?? 0,
     },
     {
         label: '80m',

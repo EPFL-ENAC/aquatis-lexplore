@@ -14,6 +14,8 @@ export class DepthHeatmap {
     readonly y: number[];
     readonly z: Array2D;
 
+    private _zValuesMinMaxCache: { min: number; max: number } | null = null;
+
     constructor(params?: { x?: number[]; y?: number[]; z?: number[][] | Array2D }) {
         this.x = [...(params?.x ?? [])];
         this.y = [...(params?.y ?? [])];
@@ -117,12 +119,15 @@ export class DepthHeatmap {
     }
 
     zValuesMinMax(): { min: number; max: number } | null {
-        const minmax = this.z.minMax();
-        if (!Number.isFinite(minmax.min.value) || !Number.isFinite(minmax.max.value)) {
-            return null;
+        if (this._zValuesMinMaxCache == null) {
+            const minmax = this.z.minMax();
+            if (!Number.isFinite(minmax.min.value) || !Number.isFinite(minmax.max.value)) {
+                this._zValuesMinMaxCache = null;
+            }
+            this._zValuesMinMaxCache = { min: minmax.min.value, max: minmax.max.value };
         }
 
-        return { min: minmax.min.value, max: minmax.max.value };
+        return this._zValuesMinMaxCache;
     }
 
     zScore(sample = false): DepthHeatmap {

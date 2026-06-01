@@ -70,6 +70,7 @@ function makeLexploreDatasetStore<T>(
                 data.value = await extractData(dataset.value);
                 error.value = null;
             } catch (err) {
+                console.error('Error pulling dataset' + id, err);
                 dataset.value = null;
                 error.value = err instanceof Error ? err : new Error(String(err));
             } finally {
@@ -84,7 +85,7 @@ function makeLexploreDatasetStore<T>(
             void pullDataset();
 
             interval = setInterval(() => {
-                void pullDataset();
+                // void pullDataset();
             }, options.refreshIntervalMs);
         });
 
@@ -106,14 +107,10 @@ function makeLexploreDatasetStore<T>(
 }
 
 export const useWeatherStore = makeLexploreDatasetStore<WeatherData>(459, async (dataset) => {
-    const data = await dataset.getData({ type: 'latest' }, [
-        'time',
-        'AirTC',
-        'Slrw',
-        'WS',
-        'WindDir',
-        'Rain',
-    ]);
+    const data = await dataset.getData(
+        { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
+        ['time', 'AirTC', 'Slrw', 'WS', 'WindDir', 'Rain'],
+    );
 
     return {
         timestamps: data['time']! as number[],
@@ -126,10 +123,13 @@ export const useWeatherStore = makeLexploreDatasetStore<WeatherData>(459, async 
 });
 
 export const useBuoyStore = makeLexploreDatasetStore<BuoyData>(885, async (dataset) => {
-    const data = await dataset.getData({ type: 'latest' }, [
-        'time',
-        'hs', // Replace with the real axis name for dataset 885
-    ]);
+    const data = await dataset.getData(
+        { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
+        [
+            'time',
+            'hs', // Replace with the real axis name for dataset 885
+        ],
+    );
 
     return {
         timestamps: data['time']! as number[],
@@ -138,12 +138,12 @@ export const useBuoyStore = makeLexploreDatasetStore<BuoyData>(885, async (datas
 });
 
 export const useLakeStore = makeLexploreDatasetStore<LakeData>(448, async (dataset) => {
-    const data = await dataset.getData({ type: 'latest' }, [
-        'time',
+    const twoYearsAgo = Date.now() - 1 * 365 * 24 * 3600 * 1000;
+    const data = await dataset.getData(
+        { type: 'timeRange', startTimestamp: twoYearsAgo, endTimestamp: Date.now() },
+        ['time', 'depth', 'temp', 'surfacetemp'],
         'depth',
-        'temp',
-        'surfacetemp',
-    ]);
+    );
 
     return {
         timestamps: data['time']! as number[],
@@ -157,7 +157,10 @@ export const useLakeStore = makeLexploreDatasetStore<LakeData>(448, async (datas
 });
 
 export const useAlgaeStore = makeLexploreDatasetStore<AlgaeData>(875, async (dataset) => {
-    const data = await dataset.getData({ type: 'latest' }, ['time', 'depth', 'Chl_A']);
+    const data = await dataset.getData(
+        { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
+        ['time', 'depth', 'Chl_A'],
+    );
 
     return {
         timestamps: data['time']! as number[],
@@ -171,7 +174,11 @@ export const useAlgaeStore = makeLexploreDatasetStore<AlgaeData>(875, async (dat
 
 export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
     const heatmapShallow = makeLexploreDatasetStore(600, async (dataset) => {
-        const data = await dataset.getData({ type: 'latest' }, ['time', 'depth', 'Sv']);
+        const data = await dataset.getData(
+            { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
+            ['time', 'depth', 'Sv'],
+            'depth',
+        );
 
         return new DepthHeatmap({
             x: data['time'] as number[],
@@ -181,7 +188,11 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
     })();
 
     const heatmapDeep = makeLexploreDatasetStore(599, async (dataset) => {
-        const data = await dataset.getData({ type: 'latest' }, ['time', 'depth', 'Sv']);
+        const data = await dataset.getData(
+            { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
+            ['time', 'depth', 'Sv'],
+            'depth',
+        );
 
         return new DepthHeatmap({
             x: data['time'] as number[],
@@ -257,10 +268,12 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
             return null;
         }
 
-        return { start: lastFullDayStart, end: lastFullDayEnd };
+        const rangeEnd = Math.min(lastFullDayEnd, maxTimestamp); // In case we don't have a full day available
+
+        return { start: lastFullDayStart, end: rangeEnd };
     });
 
-    const lastRecordedDepth = computed(() => {
+    const lastAvailableTimestamp = computed(() => {
         if (!zooplanctonDepthPlotByTimestamp.value) return null;
 
         const timestamps = Object.keys(zooplanctonDepthPlotByTimestamp.value).map(Number);
@@ -268,8 +281,12 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
             return null;
         }
 
-        const lastTimestamp = timestamps[timestamps.length - 1]!;
-        return zooplanctonDepthPlotByTimestamp.value[lastTimestamp]!.y;
+        return timestamps[timestamps.length - 1]!;
+    });
+
+    const lastRecordedDepth = computed(() => {
+        if (!zooplanctonDepthPlotByTimestamp.value || !lastAvailableTimestamp.value) return null;
+        return zooplanctonDepthPlotByTimestamp.value[lastAvailableTimestamp.value]!.y;
     });
 
     return {
@@ -280,6 +297,11 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
         zooplanctonDepthPlotByTimestamp,
         zooplanctonDepthAtTimestamp,
         lastFullDayOfDataTimestampRange,
+        lastAvailableTimestamp,
         lastRecordedDepth,
     };
 });
+
+function dataStartTime(weeksAgo: number = 2) {
+    return Date.now() - weeksAgo * 7 * 24 * 3600 * 1000;
+}

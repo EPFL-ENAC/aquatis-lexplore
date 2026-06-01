@@ -13,7 +13,7 @@ const { locale, t } = useI18n();
 
 const props = withDefaults(
     defineProps<{
-        measuredAt: number | undefined;
+        measuredAt: number | undefined | null;
         location?: string;
     }>(),
     {

@@ -188,7 +188,7 @@ export function makeSunEventsLinearGradient(
     }
 
     const startColor = edgeColorBefore(events[0]!.type);
-    const endColor = edgeColorAfter(events[events.length - 1]!.type);
+    // const endColor = edgeColorAfter(events[events.length - 1]!.type);
 
     const stops: string[] = [`${startColor} 0%`];
 
@@ -197,7 +197,7 @@ export function makeSunEventsLinearGradient(
         stops.push(`${displayPropertyByType[event.type].color} ${pct.toFixed(3)}%`);
     }
 
-    stops.push(`${endColor} 100%`);
+    // stops.push(`${endColor} 100%`);
 
     return `linear-gradient(${direction}, ${stops.join(', ')})`;
 }
@@ -271,7 +271,7 @@ function edgeColorBefore(type: SunEvent['type']): string {
     }
 }
 
-function edgeColorAfter(type: SunEvent['type']): string {
+/* function edgeColorAfter(type: SunEvent['type']): string {
     switch (type) {
         case 'dawn':
         case 'sunrise':
@@ -281,3 +281,4 @@ function edgeColorAfter(type: SunEvent['type']): string {
             return '#0b1020';
     }
 }
+ */

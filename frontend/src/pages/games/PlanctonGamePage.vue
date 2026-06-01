@@ -34,7 +34,9 @@
                 :end-timestamp="range.end * 1000"
             />
 
-            <QuestionCardsRow :items="questions" />
+            <PlotAppendix :measured-at="zooplanktonDepthStore.lastAvailableTimestamp" />
+
+            <QuestionCardsRow :items="questions" kickerClass="text-negative" />
         </div>
     </q-page>
 </template>
@@ -47,6 +49,7 @@ import PlanctonDepthPlot from 'src/components/plots/PlanctonDepthPlot.vue';
 import TimestampSlider from 'src/components/TimestampSlider.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
+import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import { getGamesNavGroups } from './gamesNavGroups';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 

@@ -1,7 +1,46 @@
 <template>
     <div class="temperature-over-depth-heatmap">
-        <canvas ref="plotCanvas" />
-        <canvas ref="colorBarCanvas" />
+        <div
+            class="plot-container"
+            :style="{ width: `${props.width}px`, height: `${props.height}px` }"
+        >
+            <canvas ref="plotCanvas" />
+
+            <div
+                v-if="focusOverlay.visible"
+                class="focus-overlay"
+                :style="{
+                    left: `${plotBounds.left}px`,
+                    top: `${plotBounds.top}px`,
+                    width: `${plotBounds.width}px`,
+                    height: `${plotBounds.height}px`,
+                }"
+            >
+                <div
+                    v-if="focusOverlay.leftShadeWidth > 0"
+                    class="focus-shade"
+                    :style="{
+                        left: '0px',
+                        top: '0px',
+                        width: `${focusOverlay.leftShadeWidth}px`,
+                        height: `${plotBounds.height}px`,
+                    }"
+                />
+                <div
+                    v-if="focusOverlay.rightShadeWidth > 0"
+                    class="focus-shade"
+                    :style="{
+                        left: `${focusOverlay.rightShadeLeft}px`,
+                        top: '0px',
+                        width: `${focusOverlay.rightShadeWidth}px`,
+                        height: `${plotBounds.height}px`,
+                    }"
+                />
+            </div>
+        </div>
+
+        <canvas v-if="props.colorBarWidth !== null" ref="colorBarCanvas" />
+        <div class="processing-overlay" v-if="loading"></div>
     </div>
 </template>
 
@@ -11,13 +50,13 @@ import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 import { formatNumber } from 'src/utils/format';
 import { HeatmapRaster } from 'src/utils/heatmapRaster';
 import { clamp, lerp } from 'src/utils/math';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
 interface Props {
     heatmap: DepthHeatmap | null;
     width?: number;
     height?: number;
-    colorBarWidth?: number;
+    colorBarWidth?: number | null;
     precision?: number;
     xLabel?: string;
     yLabel?: string;
@@ -42,6 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const plotCanvas = ref<HTMLCanvasElement | null>(null);
 const colorBarCanvas = ref<HTMLCanvasElement | null>(null);
+const loading = ref(true);
 
 const barMargins = {
     top: 16,
@@ -51,9 +91,14 @@ const barMargins = {
 };
 
 const temperatureColorMap = ColorMap.heat();
-
 const heatmapRaster = new HeatmapRaster(temperatureColorMap);
-const extent = computed(() => props.heatmap?.zValuesMinMax());
+
+const plotBounds = computed(() => ({
+    left: props.plotMargins.left,
+    top: props.plotMargins.top,
+    width: props.width - props.plotMargins.left - props.plotMargins.right,
+    height: props.height - props.plotMargins.top - props.plotMargins.bottom,
+}));
 
 function resizeCanvas(
     canvas: HTMLCanvasElement,
@@ -76,6 +121,26 @@ function resizeCanvas(
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     return ctx;
+}
+
+function getPlotContext(): CanvasRenderingContext2D | null {
+    const canvas = plotCanvas.value;
+
+    if (!canvas) {
+        return null;
+    }
+
+    return canvas.getContext('2d');
+}
+
+function getColorBarContext(): CanvasRenderingContext2D | null {
+    const canvas = colorBarCanvas.value;
+
+    if (!canvas) {
+        return null;
+    }
+
+    return canvas.getContext('2d');
 }
 
 function formatTick(value: number): string {
@@ -165,14 +230,51 @@ function valueToContinuousIndex(values: number[], value: number): number {
     return values.length;
 }
 
-function drawEmptyState(): void {
-    const canvas = plotCanvas.value;
+const focusOverlay = computed(() => {
+    const heatmap = props.heatmap;
+    const center = props.focusWindowCenter;
+    const width = props.focusWindowWidth;
+    const { width: plotWidth } = plotBounds.value;
 
-    if (!canvas) {
-        return;
+    if (
+        !heatmap ||
+        heatmap.x.length === 0 ||
+        center == null ||
+        width == null ||
+        width <= 0 ||
+        plotWidth <= 0
+    ) {
+        return {
+            visible: false,
+            leftShadeWidth: 0,
+            rightShadeLeft: 0,
+            rightShadeWidth: 0,
+        };
     }
 
-    const ctx = resizeCanvas(canvas, props.width, props.height);
+    const halfWidth = width / 2;
+    const startValue = center - halfWidth;
+    const endValue = center + halfWidth;
+
+    const startIndex = valueToContinuousIndex(heatmap.x, startValue);
+    const endIndex = valueToContinuousIndex(heatmap.x, endValue);
+
+    const focusLeft = Math.min(startIndex, endIndex) * (plotWidth / heatmap.x.length);
+    const focusRight = Math.max(startIndex, endIndex) * (plotWidth / heatmap.x.length);
+
+    const clampedLeft = clamp(focusLeft, 0, plotWidth);
+    const clampedRight = clamp(focusRight, 0, plotWidth);
+
+    return {
+        visible: true,
+        leftShadeWidth: Math.max(0, clampedLeft),
+        rightShadeLeft: clampedRight,
+        rightShadeWidth: Math.max(0, plotWidth - clampedRight),
+    };
+});
+
+function drawEmptyState(): void {
+    const ctx = getPlotContext();
 
     if (!ctx) {
         return;
@@ -187,65 +289,17 @@ function drawEmptyState(): void {
 }
 
 function clearColorBar(): void {
-    const canvas = colorBarCanvas.value;
-
-    if (!canvas) {
+    if (!props.colorBarWidth) {
         return;
     }
 
-    const ctx = resizeCanvas(canvas, props.colorBarWidth, props.height);
+    const ctx = getColorBarContext();
 
     if (!ctx) {
         return;
     }
 
     ctx.clearRect(0, 0, props.colorBarWidth, props.height);
-}
-
-function drawFocusWindowOverlay(
-    ctx: CanvasRenderingContext2D,
-    xValues: number[],
-    plotLeft: number,
-    plotTop: number,
-    plotWidth: number,
-    plotHeight: number,
-): void {
-    const center = props.focusWindowCenter;
-    const width = props.focusWindowWidth;
-
-    if (center == null || width == null || width <= 0 || xValues.length === 0) {
-        return;
-    }
-
-    const halfWidth = width / 2;
-    const startValue = center - halfWidth;
-    const endValue = center + halfWidth;
-
-    const startIndex = valueToContinuousIndex(xValues, startValue);
-    const endIndex = valueToContinuousIndex(xValues, endValue);
-
-    const focusLeft = plotLeft + Math.min(startIndex, endIndex) * (plotWidth / xValues.length);
-    const focusRight = plotLeft + Math.max(startIndex, endIndex) * (plotWidth / xValues.length);
-
-    const clampedLeft = clamp(focusLeft, plotLeft, plotLeft + plotWidth);
-    const clampedRight = clamp(focusRight, plotLeft, plotLeft + plotWidth);
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(plotLeft, plotTop, plotWidth, plotHeight);
-    ctx.clip();
-
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-
-    if (clampedLeft > plotLeft) {
-        ctx.fillRect(plotLeft, plotTop, clampedLeft - plotLeft, plotHeight);
-    }
-
-    if (clampedRight < plotLeft + plotWidth) {
-        ctx.fillRect(clampedRight, plotTop, plotLeft + plotWidth - clampedRight, plotHeight);
-    }
-
-    ctx.restore();
 }
 
 function drawHeatmap(): void {
@@ -256,44 +310,34 @@ function drawHeatmap(): void {
         return;
     }
 
-    if (!extent.value) {
+    const extent = props.heatmap?.zValuesMinMax();
+
+    if (!extent) {
         drawEmptyState();
         return;
     }
 
-    const canvas = plotCanvas.value;
-
-    if (!canvas) {
-        return;
-    }
-
-    const ctx = resizeCanvas(canvas, props.width, props.height);
+    const ctx = getPlotContext();
 
     if (!ctx) {
         return;
     }
 
-    const plotLeft = props.plotMargins.left;
-    const plotTop = props.plotMargins.top;
-    const plotWidth = props.width - props.plotMargins.left - props.plotMargins.right;
-    const plotHeight = props.height - props.plotMargins.top - props.plotMargins.bottom;
+    const { left: plotLeft, top: plotTop, width: plotWidth, height: plotHeight } = plotBounds.value;
 
     ctx.clearRect(0, 0, props.width, props.height);
 
     heatmapRaster.render(
         heatmap,
-        extent.value.min,
-        extent.value.max,
-        `${heatmap.x.length}:${heatmap.y.length}:${extent.value.min}:${extent.value.max}`,
+        extent.min,
+        extent.max,
+        `${heatmap.x.length}:${heatmap.y.length}:${extent.min}:${extent.max}`,
     );
 
     heatmapRaster.draw(ctx, plotLeft, plotTop, plotWidth, plotHeight);
 
-    drawFocusWindowOverlay(ctx, heatmap.x, plotLeft, plotTop, plotWidth, plotHeight);
-
-    ctx.fillStyle = '#0f172a';
-    ctx.font = '13px "Google Sans Flex", sans-serif';
     ctx.fillStyle = 'white';
+    ctx.font = '13px "Google Sans Flex", sans-serif';
 
     const cellHeight = plotHeight / heatmap.y.length;
 
@@ -323,13 +367,11 @@ function drawHeatmap(): void {
 }
 
 function drawColorBar(): void {
-    const canvas = colorBarCanvas.value;
-
-    if (!canvas) {
+    if (!props.colorBarWidth) {
         return;
     }
 
-    const ctx = resizeCanvas(canvas, props.colorBarWidth, props.height);
+    const ctx = getColorBarContext();
 
     if (!ctx) {
         return;
@@ -337,7 +379,8 @@ function drawColorBar(): void {
 
     ctx.clearRect(0, 0, props.colorBarWidth, props.height);
 
-    if (!extent.value) {
+    const extent = props.heatmap?.zValuesMinMax();
+    if (!extent) {
         return;
     }
 
@@ -366,7 +409,7 @@ function drawColorBar(): void {
     for (let i = 0; i < tickCount; i += 1) {
         const t = i / (tickCount - 1);
         const y = barY + t * barHeight;
-        const value = lerp(extent.value.max, extent.value.min, t);
+        const value = lerp(extent.max, extent.min, t);
 
         ctx.beginPath();
         ctx.moveTo(barX + barWidth, y);
@@ -385,37 +428,56 @@ function drawColorBar(): void {
     ctx.restore();
 }
 
-function drawAll(): void {
+function resizeCanvases(): void {
+    if (plotCanvas.value) {
+        resizeCanvas(plotCanvas.value, props.width, props.height);
+    }
+
+    if (props.colorBarWidth && colorBarCanvas.value) {
+        resizeCanvas(colorBarCanvas.value, props.colorBarWidth, props.height);
+    }
+}
+
+function redrawPlotAndColorBar(): void {
+    loading.value = true;
+
     drawHeatmap();
 
-    if (extent.value) {
+    const extent = props.heatmap?.zValuesMinMax();
+    if (extent) {
         drawColorBar();
     } else {
         clearColorBar();
     }
+
+    loading.value = false;
 }
 
-onMounted(() => {
-    drawAll();
-});
+watch(
+    () => [props.width, props.height, props.colorBarWidth],
+    async () => {
+        await nextTick();
+        resizeCanvases();
+        redrawPlotAndColorBar();
+    },
+);
 
 watch(
     () => [
         props.heatmap,
-        props.width,
-        props.height,
-        props.colorBarWidth,
         props.precision,
         props.xLabel,
         props.yLabel,
         props.zLabel,
-        props.focusWindowCenter,
-        props.focusWindowWidth,
+        props.plotMargins.top,
+        props.plotMargins.right,
+        props.plotMargins.bottom,
+        props.plotMargins.left,
     ],
     () => {
-        drawAll();
+        redrawPlotAndColorBar();
     },
-    { immediate: true },
+    { deep: true },
 );
 </script>
 
@@ -426,7 +488,34 @@ watch(
     gap: 12px;
 }
 
+.plot-container {
+    position: relative;
+    flex: 0 0 auto;
+}
+
 canvas {
     display: block;
+}
+
+.focus-overlay {
+    position: absolute;
+    pointer-events: none;
+}
+
+.focus-shade {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.processing-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
 }
 </style>

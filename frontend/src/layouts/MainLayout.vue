@@ -59,7 +59,7 @@ const logos = [
 
 .page-shell {
     width: 100%;
-    max-width: 1080px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 4rem;
     flex: 1;

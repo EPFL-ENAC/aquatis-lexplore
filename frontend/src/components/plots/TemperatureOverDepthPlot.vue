@@ -62,8 +62,8 @@ const props = withDefaults(
         colorMapTemperatureStart: 0,
         colorMapTemperatureEnd: 25,
         colorMap: () => ColorMap.heat(),
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 5,
         depthAxisX: 132,
     },
 );
@@ -161,7 +161,7 @@ function temperatureColor(value: number): string {
 
 .temperature-plot__plot {
     position: relative;
-    min-height: 620px;
+    min-height: 90rem;
     padding: 28px;
     z-index: 1;
 }

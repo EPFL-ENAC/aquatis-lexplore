@@ -15,20 +15,18 @@
     </PageHeader>
 
     <template v-if="heatmap">
-        <section
-            ref="heatmapContainer"
-            class="glass-panel heatmap-panel"
+        <ChartContainer
             :style="{
                 '--plot-margin-left': `${plotMargins.left}px`,
                 '--plot-margin-right': `${plotMargins.right}px`,
             }"
         >
-            <div ref="heatmapStage" class="heatmap-stage">
+            <div ref="heatmapContainer" class="heatmap-stage">
                 <TemperatureOverDepthHeatmap
                     :heatmap="heatmap"
                     :width="heatmapWidth"
                     :height="280"
-                    :color-bar-width="72"
+                    :color-bar-width="null"
                     x-label=""
                     y-label=""
                     z-label="Temp."
@@ -45,11 +43,13 @@
                     v-model="currentTimestamp"
                     :start-timestamp="startTimestamp * 1000"
                     :end-timestamp="endTimestamp * 1000"
+                    :dynamic-background="'seasons'"
+                    :show-ticks="false"
                 />
             </div>
-        </section>
+        </ChartContainer>
 
-        <section class="glass-panel profile-panel">
+        <ChartContainer>
             <div class="profile-kicker">{{ t('tempGameProfileKicker') }}</div>
 
             <div class="profile-grid">
@@ -68,12 +68,14 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </ChartContainer>
 
-        <QuestionCardsRow :items="questions" />
+        <PlotAppendix :measured-at="lastMeasurement" />
+
+        <QuestionCardsRow :items="questions" kickerClass="text-negative" />
     </template>
 
-    <section v-else class="glass-panel loading-panel">{{ t('tempGameLoading') }}</section>
+    <ChartContainer v-else>{{ t('tempGameLoading') }}</ChartContainer>
 </template>
 
 <script setup lang="ts">
@@ -84,6 +86,8 @@ import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TemperatureOverDepthHeatmap from 'src/components/plots/TemperatureOverDepthHeatmap.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
 import TimestampSlider from 'src/components/TimestampSlider.vue';
+import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
+import ChartContainer from 'src/components/ChartContainer.vue';
 import { getGamesNavGroups } from './gamesNavGroups';
 import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 import { useLakeStore } from 'src/stores/lexplore';
@@ -94,6 +98,19 @@ const gamesNavGroups = computed(() => getGamesNavGroups(t));
 
 const heatmap = computed<DepthHeatmap | null>(() => {
     return (lakeStore.data?.temperatureOverDepth ?? null) as DepthHeatmap | null;
+});
+
+const lastMeasurement = computed(() => {
+    if (!heatmap.value) {
+        return null;
+    }
+
+    const timestamps = heatmap.value.x;
+    if (timestamps.length === 0) {
+        return null;
+    }
+
+    return timestamps[timestamps.length - 1]!;
 });
 
 const heatmapContainer = useTemplateRef<HTMLElement>('heatmapContainer');
@@ -208,33 +225,10 @@ const questions = computed(() => [
 </script>
 
 <style scoped>
-.glass-panel {
-    border: 1px solid rgba(166, 233, 238, 0.18);
-    border-radius: 22px;
-    background: linear-gradient(180deg, rgba(141, 214, 223, 0.18) 0%, rgba(26, 39, 46, 0.22) 100%);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.06),
-        0 18px 40px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(8px);
-}
-
-.heatmap-panel {
-    margin-top: 28px;
-    padding: 20px 20px 14px;
-}
-
 .heatmap-stage {
     position: relative;
     display: inline-block;
-    max-width: 100%;
-}
-
-.heatmap-stage :deep(.temperature-over-depth-heatmap) {
-    gap: 0;
-}
-
-.heatmap-stage :deep(.temperature-over-depth-heatmap canvas:last-child) {
-    display: none;
+    width: 100%;
 }
 
 .heatmap-axis-mask {
@@ -251,11 +245,6 @@ const questions = computed(() => [
     position: relative;
     margin-left: var(--plot-margin-left, 64px);
     margin-right: var(--plot-margin-right, 12px);
-}
-
-.profile-panel {
-    margin-top: 18px;
-    padding: 16px 24px 14px;
 }
 
 .profile-kicker {
@@ -301,13 +290,6 @@ const questions = computed(() => [
     text-transform: lowercase;
 }
 
-.loading-panel {
-    margin-top: 28px;
-    padding: 24px;
-    color: rgba(255, 255, 255, 0.76);
-    font-size: 16px;
-}
-
 @media (max-width: 900px) {
     .profile-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -315,10 +297,6 @@ const questions = computed(() => [
 }
 
 @media (max-width: 720px) {
-    .heatmap-panel {
-        padding: 14px 14px 12px;
-    }
-
     .timeline-panel {
         margin-left: 48px;
     }

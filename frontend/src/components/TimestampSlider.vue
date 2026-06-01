@@ -1,6 +1,6 @@
 <template>
     <section class="timestamp-slider">
-        <div class="slider-labels">
+        <div v-if="props.showTicks" class="slider-labels">
             <span v-for="tick in ticks" :key="tick.timestamp" class="slider-label">
                 {{ tick.label }}
             </span>
@@ -39,6 +39,7 @@ import { clamp } from 'src/utils/math';
 import { SWITZERLAND_LATITUDE, SWITZERLAND_LONGITUDE } from 'src/utils/countries';
 import { getSunEventsBetween, makeSunEventsBackground } from 'src/utils/sunEvents';
 import { toUnixSeconds } from 'src/utils/datetime';
+import { getSeasonEventsBetween, makeSeasonEventsBackground } from 'src/utils/seasonsEvents';
 
 const { locale } = useI18n();
 
@@ -48,10 +49,14 @@ const props = withDefaults(
         endTimestamp: number;
         stepSeconds?: number;
         tickCount?: number;
+        dynamicBackground?: 'daynight' | 'seasons' | 'none';
+        showTicks?: boolean;
     }>(),
     {
         stepSeconds: 60,
         tickCount: 5,
+        dynamicBackground: 'daynight',
+        showTicks: true,
     },
 );
 
@@ -120,6 +125,21 @@ const selectedDateLabel = computed(() => {
 });
 
 const trackStyle = computed(() => {
+    if (props.dynamicBackground === 'none') {
+        return {
+            backgroundImage: `linear-gradient(to right, #0b1020 0%, #0b1020 100%)`,
+        };
+    }
+
+    // For ranges longer than a month, we show the seasons
+    if (props.dynamicBackground === 'seasons') {
+        const events = getSeasonEventsBetween(props.startTimestamp, props.endTimestamp);
+
+        return {
+            ...makeSeasonEventsBackground(props.startTimestamp, props.endTimestamp, events),
+        };
+    }
+
     const events = getSunEventsBetween(
         props.startTimestamp,
         props.endTimestamp,
@@ -138,6 +158,10 @@ const badgeStyle = computed(() => {
 });
 
 const ticks = computed(() => {
+    if (!props.showTicks) {
+        return [];
+    }
+
     const count = normalizedTickCount.value;
     const range = maxTimestamp.value - minTimestamp.value;
 
@@ -170,11 +194,15 @@ function onInput(event: Event) {
 </script>
 
 <style scoped>
+.timestamp-slider {
+    --vertical-padding: 1rem;
+}
+
 .slider-labels {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
-    padding: 0 1rem;
+    margin-bottom: 0.5rem;
+    padding: 0 var(--vertical-padding);
 }
 
 .slider-label {
@@ -188,25 +216,13 @@ function onInput(event: Event) {
     padding: 1rem 0;
     overflow-x: hidden;
     touch-action: pan-y;
-    min-height: 4rem;
+    min-height: 6rem;
 }
 
 .slider-track {
     position: relative;
     height: 52px;
     border-radius: 999px;
-    background: linear-gradient(
-        90deg,
-        #48d4d9 0%,
-        #b7d85d 12%,
-        #ffd400 28%,
-        #ffb347 44%,
-        #ff9a76 56%,
-        #ffb347 68%,
-        #ffd400 80%,
-        #94d084 90%,
-        #16c7d9 100%
-    );
     box-shadow:
         inset 0 1px 0 rgb(255 255 255 / 12%),
         0 8px 24px rgb(0 0 0 / 18%);
@@ -258,6 +274,7 @@ function onInput(event: Event) {
 .slider-input {
     position: absolute;
     inset: 0;
+    top: var(--vertical-padding);
     width: 100%;
     height: 52px;
     margin: 0;

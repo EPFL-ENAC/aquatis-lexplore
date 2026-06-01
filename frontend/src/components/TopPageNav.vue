@@ -63,7 +63,7 @@ const displayBackLabel = computed(() => props.backLabel || t('back'));
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    align-items: center;
+    align-items: stretch;
     margin-bottom: 2rem;
 }
 
@@ -76,7 +76,7 @@ const displayBackLabel = computed(() => props.backLabel || t('back'));
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    padding: 0.375rem;
+    padding: 0.125rem;
     border: 1px solid rgb(255 255 255 / 12%);
     border-radius: 999px;
     background: rgb(255 255 255 / 8%);

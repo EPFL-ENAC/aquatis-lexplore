@@ -21,8 +21,15 @@
                     </div>
                 </div>
 
-                <div class="plancton" :style="{ top: planctonTopPercent + '%' }">
-                    <img src="/zooplankton.svg" alt="" />
+                <div class="plancton" :style="{ '--top-percent': planctonTopPercent + '%' }">
+                    <ImageSwarm
+                        src="/zooplankton.svg"
+                        :count="30"
+                        :spread-x="250"
+                        :spread-y="planctonSpreadY"
+                        distribution="ellipse"
+                        :rotation-range="20"
+                    />
                 </div>
             </div>
         </div>
@@ -32,6 +39,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import SurfaceWaves from '../SurfaceWaves.vue';
+import ImageSwarm from '../ImageSwarm.vue';
 
 const props = withDefaults(
     defineProps<{
@@ -56,6 +64,10 @@ const planctonTopPercent = computed(() => {
     return (totalDepth / totalRange.value) * 100;
 });
 
+const planctonSpreadY = computed(() => {
+    return props.planctonDepth * 1.5;
+});
+
 const positionedRows = computed(() => {
     const depthsFactors = [0, 0.25, 0.5, 0.75];
     return depthsFactors.map((factor) => {
@@ -74,10 +86,8 @@ const positionedRows = computed(() => {
 <style scoped>
 .plancton {
     position: absolute;
+    top: var(--top-percent);
     left: 50%;
-    transform: translateX(-50%);
-    width: 48px;
-    height: 48px;
     filter: drop-shadow(0 0 4px rgb(255 255 255 / 20%));
 }
 

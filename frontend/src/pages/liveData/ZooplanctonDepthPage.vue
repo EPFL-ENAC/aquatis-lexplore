@@ -20,6 +20,7 @@
                 :margin-top="10"
                 :depth-axis-x="132"
             />
+            <PlotAppendix :measured-at="zooplanktonDepthStore.lastAvailableTimestamp" />
 
             <QuestionCardsRow :items="questionCards" :columns="1" />
         </div>
@@ -33,6 +34,7 @@ import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import PlanctonDepthPlot from 'src/components/plots/PlanctonDepthPlot.vue';
 import TopPageNav from 'src/components/TopPageNav.vue';
+import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 import { getLiveDataItems } from './liveDataNavGroups';
 
