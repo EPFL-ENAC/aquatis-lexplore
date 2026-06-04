@@ -47,7 +47,9 @@
             </div>
         </div>
 
-        <div class="processing-overlay" v-if="loading"></div>
+        <div class="processing-overlay" v-if="loading">
+            <q-circular-progress indeterminate rounded size="50px" color="white" class="q-ma-md" />
+        </div>
     </div>
 </template>
 
@@ -149,82 +151,6 @@ function tickStep(length: number, maxLabels = 8): number {
     return Math.max(1, Math.ceil(length / maxLabels));
 }
 
-function cellEdges(values: number[]): number[] {
-    if (values.length === 0) {
-        return [];
-    }
-
-    if (values.length === 1) {
-        return [values[0]! - 0.5, values[0]! + 0.5];
-    }
-
-    const edges: number[] = new Array(values.length + 1);
-
-    edges[0] = values[0]! - (values[1]! - values[0]!) / 2;
-
-    for (let i = 1; i < values.length; i += 1) {
-        edges[i] = (values[i - 1]! + values[i]!) / 2;
-    }
-
-    edges[values.length] =
-        values[values.length - 1]! + (values[values.length - 1]! - values[values.length - 2]!) / 2;
-
-    return edges;
-}
-
-function valueToContinuousIndex(values: number[], value: number): number {
-    if (values.length === 0) {
-        return 0;
-    }
-
-    const edges = cellEdges(values);
-    const first = edges[0]!;
-    const last = edges[edges.length - 1]!;
-    const ascending = last >= first;
-
-    if (ascending) {
-        if (value <= first) {
-            return 0;
-        }
-
-        if (value >= last) {
-            return values.length;
-        }
-
-        for (let i = 0; i < values.length; i += 1) {
-            const start = edges[i]!;
-            const end = edges[i + 1]!;
-
-            if (value <= end) {
-                const span = Math.max(1e-12, end - start);
-
-                return i + (value - start) / span;
-            }
-        }
-    } else {
-        if (value >= first) {
-            return 0;
-        }
-
-        if (value <= last) {
-            return values.length;
-        }
-
-        for (let i = 0; i < values.length; i += 1) {
-            const start = edges[i]!;
-            const end = edges[i + 1]!;
-
-            if (value >= end) {
-                const span = Math.max(1e-12, start - end);
-
-                return i + (start - value) / span;
-            }
-        }
-    }
-
-    return values.length;
-}
-
 const focusOverlay = computed(() => {
     const heatmap = props.heatmap;
     const center = props.focusWindowCenter;
@@ -251,8 +177,8 @@ const focusOverlay = computed(() => {
     const startValue = center - halfWidth;
     const endValue = center + halfWidth;
 
-    const startIndex = valueToContinuousIndex(heatmap.x, startValue);
-    const endIndex = valueToContinuousIndex(heatmap.x, endValue);
+    const startIndex = heatmap.xValueToContinuousIndex(startValue);
+    const endIndex = heatmap.xValueToContinuousIndex(endValue);
 
     const focusLeft = Math.min(startIndex, endIndex) * (plotWidth / heatmap.x.length);
     const focusRight = Math.max(startIndex, endIndex) * (plotWidth / heatmap.x.length);
@@ -291,7 +217,9 @@ function drawHeatmap(): void {
         return;
     }
 
+    console.time('minmax');
     const extent = props.heatmap?.zValuesMinMax();
+    console.timeEnd('minmax');
     if (!extent) {
         drawEmptyState();
         return;
@@ -352,15 +280,20 @@ function resizeCanvases(): void {
     }
 }
 
-function redrawPlot(): void {
-    console.log('Redrawing heatmap plot...');
-    console.time('redrawPlot');
+function redrawPlot(): Promise<void> {
     loading.value = true;
 
-    drawHeatmap();
+    function wait(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
 
-    loading.value = false;
-    console.timeEnd('redrawPlot');
+    return wait(10)
+        .then(() => {
+            drawHeatmap();
+        })
+        .finally(() => {
+            loading.value = false;
+        });
 }
 
 watch(
@@ -368,7 +301,7 @@ watch(
     async () => {
         await nextTick();
         resizeCanvases();
-        redrawPlot();
+        return await redrawPlot();
     },
 );
 
@@ -384,8 +317,8 @@ watch(
         props.plotMargins.bottom,
         props.plotMargins.left,
     ],
-    () => {
-        redrawPlot();
+    async () => {
+        return await redrawPlot();
     },
     { deep: true },
 );

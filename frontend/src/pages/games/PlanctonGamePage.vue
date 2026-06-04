@@ -13,6 +13,11 @@
         :max-depth="80"
         :depth-axis-x="132"
     />
+    <ChartContainer v-else>
+        <div class="loading">
+            <q-circular-progress indeterminate rounded size="50px" color="white" class="q-ma-md" />
+        </div>
+    </ChartContainer>
 
     <TimestampSlider
         v-if="range"
@@ -33,6 +38,7 @@ import PageHeader from 'src/components/PageHeader.vue';
 import PlanctonDepthPlot from 'src/components/plots/waterDepth/PlanctonDepthPlot.vue';
 import TimestampSlider from 'src/components/TimestampSlider.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
+import ChartContainer from 'src/components/ChartContainer.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 
@@ -60,3 +66,12 @@ const questions = computed(() => [
     },
 ]);
 </script>
+
+<style scoped>
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+</style>

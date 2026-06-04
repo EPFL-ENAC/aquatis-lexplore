@@ -110,6 +110,7 @@ function mergeAxisTopBottomData(
         const bottomMatrix = bottom as number[][];
 
         if (topMatrix.length !== bottomMatrix.length) {
+            console.log({ top, bottom, axis });
             throw new Error(
                 `Incompatible matrix dimensions while merging axis "${axis}" top-to-bottom`,
             );
@@ -126,7 +127,6 @@ function mergeRequestedAxes(
     axes: string[],
     constantAxis: string | null = null,
 ): DatasetData {
-    console.log('mergeRequestedAxes', { chunks, axes, constantAxis });
     const merged: DatasetData = {};
 
     for (const axis of axes) {
@@ -250,14 +250,6 @@ export class Dataset {
         }
 
         if (validate) {
-            if (axesLabels.includes('hs')) {
-                console.log(
-                    'Dataset.getData: hs is included in axesLabels, nameToLabel:',
-                    nameToLabel,
-                    labelToName,
-                );
-                console.log(axesLabels, renamedData);
-            }
             if (axesLabels.some((label) => !(label in renamedData))) {
                 throw new Error('Not all requested axes are available in the data');
             }

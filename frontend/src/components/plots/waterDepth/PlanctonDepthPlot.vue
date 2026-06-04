@@ -32,8 +32,10 @@ const props = withDefaults(
         marginTop?: number;
         marginBottom?: number;
         depthAxisX?: number;
+        minDisplayedDepth?: number;
     }>(),
     {
+        minDisplayedDepth: 2,
         marginTop: 10,
         marginBottom: 5,
         depthAxisX: 132,
@@ -57,7 +59,7 @@ const rows = computed(() => {
 const totalRange = computed(() => props.maxDepth + props.marginTop + props.marginBottom);
 
 const planctonTopPercent = computed(() => {
-    const totalDepth = props.planctonDepth + props.marginTop;
+    const totalDepth = Math.max(props.minDisplayedDepth, props.planctonDepth) + props.marginTop;
     return (totalDepth / totalRange.value) * 100;
 });
 

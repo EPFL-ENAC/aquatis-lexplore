@@ -145,6 +145,8 @@ export const useLakeStore = makeLexploreDatasetStore<LakeData>(448, async (datas
         'depth',
     );
 
+    Array2D.fromTransposed(data['temp'] as number[][]);
+
     return {
         timestamps: data['time']! as number[],
         surfaceTemperature: data['surfacetemp']! as number[],

@@ -107,7 +107,7 @@ const sliderIndex = ref(0);
 const plotMargins = {
     top: 16,
     right: 12,
-    bottom: 52,
+    bottom: 16,
     left: 64,
 };
 
@@ -167,7 +167,7 @@ const focusWindowWidth = computed(() => {
 
     const averageStep = totalStep / (xValues.length - 1);
 
-    return averageStep * 121.25;
+    return averageStep * 500;
 });
 
 const temperatureAtReferenceDepths = computed(() => {
@@ -192,10 +192,12 @@ const temperatureAtReferenceDepths = computed(() => {
         }));
     }
 
-    return referenceDepths.map((depth) => ({
+    const values = referenceDepths.map((depth) => ({
         depth,
         value: slice.averageOverTimeAtDepth(depth),
     }));
+
+    return values;
 });
 
 const questions = computed(() => [

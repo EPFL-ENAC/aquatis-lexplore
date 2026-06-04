@@ -33,14 +33,14 @@
 
                 <path class="wave-front" :d="waveFrontPath" :fill="progressColor" opacity="0.6" />
 
-                <circle cx="70" cy="95" r="13" fill="rgb(7, 50, 58)" />
+                <circle cx="70" :cy="UNIT_Y" r="13" fill="rgb(7, 50, 58)" />
             </g>
 
             <text class="wave-value" x="70" y="64">
                 {{ displayValue }}
             </text>
 
-            <text class="wave-unit" x="70" y="95">
+            <text class="wave-unit" x="70" :y="UNIT_Y">
                 {{ unit }}
             </text>
         </svg>
@@ -96,6 +96,8 @@ const BASIN_RIGHT = CX + INNER_RX;
 const BASIN_TOP = CY - INNER_RY;
 const BASIN_BOTTOM = CY + INNER_RY;
 const BASIN_WIDTH = BASIN_RIGHT - BASIN_LEFT;
+
+const UNIT_Y = 98;
 
 const clampedValue = computed(() => {
     return Math.max(props.minValue, Math.min(props.value, props.maxValue));

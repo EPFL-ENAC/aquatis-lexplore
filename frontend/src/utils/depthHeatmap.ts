@@ -15,6 +15,7 @@ export class DepthHeatmap {
     readonly z: Array2D;
 
     private _zValuesMinMaxCache: { min: number; max: number } | null = null;
+    private _xCellEdgesCache: number[] | null = null;
 
     constructor(params?: { x?: number[]; y?: number[]; z?: number[][] | Array2D }) {
         this.x = [...(params?.x ?? [])];
@@ -128,6 +129,83 @@ export class DepthHeatmap {
         }
 
         return this._zValuesMinMaxCache;
+    }
+
+    xCellEdges(): number[] {
+        if (this._xCellEdgesCache == null) {
+            this._xCellEdgesCache = DepthHeatmap.cellEdges(this.x);
+        }
+
+        return this._xCellEdgesCache;
+    }
+
+    xValueToContinuousIndex(value: number): number {
+        const edges = this.xCellEdges();
+
+        if (edges.length < 2) {
+            return 0;
+        }
+
+        const valuesLength = edges.length - 1;
+        const first = edges[0]!;
+        const last = edges[edges.length - 1]!;
+        const ascending = last >= first;
+
+        if (ascending) {
+            if (value <= first) {
+                return 0;
+            }
+
+            if (value >= last) {
+                return valuesLength;
+            }
+
+            let lo = 0;
+            let hi = valuesLength - 1;
+
+            while (lo <= hi) {
+                const mid = Math.floor((lo + hi) / 2);
+                const start = edges[mid]!;
+                const end = edges[mid + 1]!;
+
+                if (value < start) {
+                    hi = mid - 1;
+                } else if (value > end) {
+                    lo = mid + 1;
+                } else {
+                    const span = Math.max(1e-12, end - start);
+                    return mid + (value - start) / span;
+                }
+            }
+        } else {
+            if (value >= first) {
+                return 0;
+            }
+
+            if (value <= last) {
+                return valuesLength;
+            }
+
+            let lo = 0;
+            let hi = valuesLength - 1;
+
+            while (lo <= hi) {
+                const mid = Math.floor((lo + hi) / 2);
+                const start = edges[mid]!;
+                const end = edges[mid + 1]!;
+
+                if (value > start) {
+                    hi = mid - 1;
+                } else if (value < end) {
+                    lo = mid + 1;
+                } else {
+                    const span = Math.max(1e-12, start - end);
+                    return mid + (start - value) / span;
+                }
+            }
+        }
+
+        return valuesLength;
     }
 
     zScore(sample = false): DepthHeatmap {
@@ -401,6 +479,30 @@ export class DepthHeatmap {
         }
 
         return sortedBridgeY;
+    }
+
+    private static cellEdges(values: number[]): number[] {
+        if (values.length === 0) {
+            return [];
+        }
+
+        if (values.length === 1) {
+            return [values[0]! - 0.5, values[0]! + 0.5];
+        }
+
+        const edges: number[] = new Array(values.length + 1);
+
+        edges[0] = values[0]! - (values[1]! - values[0]!) / 2;
+
+        for (let i = 1; i < values.length; i += 1) {
+            edges[i] = (values[i - 1]! + values[i]!) / 2;
+        }
+
+        edges[values.length] =
+            values[values.length - 1]! +
+            (values[values.length - 1]! - values[values.length - 2]!) / 2;
+
+        return edges;
     }
 
     private validate(): void {
