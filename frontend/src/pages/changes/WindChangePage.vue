@@ -1,11 +1,4 @@
 <template>
-    <TopPageNav
-        :tabs="changePages"
-        active-href="/changes/windChange"
-        back-to="/changes"
-        :back-label="t('backToHome')"
-    />
-
     <PageHeader :eyebrow="t('windChangeEyebrow')" eyebrow-class="text-warning" :level="1">
         <template #default> {{ t('windChangeTitle') }} </template>
     </PageHeader>
@@ -31,10 +24,8 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
-import TopPageNav from 'src/components/TopPageNav.vue';
 import ScrollableTracksChart from 'src/components/plots/timeline/ScrollableTrackChart.vue';
 import ChartContainer from 'src/components/ChartContainer.vue';
-import { getChangePages } from './changesNavGroups';
 import { Timeline, Track } from 'src/components/plots/timeline/types';
 import { useBuoyStore, useLakeStore, useWeatherStore } from 'src/stores/lexplore';
 
@@ -43,7 +34,6 @@ const lakeStore = useLakeStore();
 const buoyStore = useBuoyStore();
 
 const { locale, t } = useI18n();
-const changePages = computed(() => getChangePages(t));
 
 function toMs(timestamp: number): number {
     return timestamp * 1000;
@@ -71,7 +61,7 @@ const tracks = computed(() => {
             new Track({
                 title: t('windChangeTrackWaterTemp'),
                 type: 'line',
-                color: '#4db8ff',
+                color: '#2b67f0',
                 data: lakeStore.data.timestamps.map((timestamp, index) => ({
                     timestamp: toMs(timestamp),
                     value: lakeStore.data!.surfaceTemperature[index]!,
@@ -110,6 +100,20 @@ const tracks = computed(() => {
                     value: weatherStore.data!.windSpeed[index]!,
                 })),
                 bucketSizeMs,
+            ),
+        );
+        result.push(
+            Track.buckets(
+                {
+                    title: t('windChangeTrackPrecipitation'),
+                    type: 'bar',
+                    color: '#4db8ff',
+                },
+                weatherStore.data.timestamps.map((timestamp, index) => ({
+                    timestamp: toMs(timestamp),
+                    value: weatherStore.data!.precipitation[index]!,
+                })),
+                3 * 60 * 60 * 1000,
             ),
         );
     }

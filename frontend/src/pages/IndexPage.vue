@@ -19,7 +19,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QrCode from 'src/components/QrCode.vue';
-import CardsNavMenu from 'src/components/CardsNavMenu.vue';
+import CardsNavMenu from 'src/components/navigation/CardsNavMenu.vue';
 import type { NavMenuItem } from 'src/navigation/navMenuItem';
 
 const { t } = useI18n();

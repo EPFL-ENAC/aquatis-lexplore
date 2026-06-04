@@ -1,11 +1,4 @@
 <template>
-    <TopPageNav
-        :tabs="gamesNavGroups"
-        active-href="/games/temperatureOverDepth"
-        back-to="/games"
-        :back-label="t('back')"
-    />
-
     <PageHeader :eyebrow="t('tempGameEyebrow')" eyebrow-class="text-negative" :level="1">
         <template #default>
             {{ t('tempGameTitle') }}
@@ -34,8 +27,6 @@
                     :focus-window-width="focusWindowWidth"
                     :plot-margins="plotMargins"
                 />
-
-                <div class="heatmap-axis-mask" />
             </div>
 
             <div class="timeline-panel">
@@ -84,17 +75,14 @@ import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import TemperatureOverDepthHeatmap from 'src/components/plots/TemperatureOverDepthHeatmap.vue';
-import TopPageNav from 'src/components/TopPageNav.vue';
 import TimestampSlider from 'src/components/TimestampSlider.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import ChartContainer from 'src/components/ChartContainer.vue';
-import { getGamesNavGroups } from './gamesNavGroups';
 import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 import { useLakeStore } from 'src/stores/lexplore';
 
 const { t } = useI18n();
 const lakeStore = useLakeStore();
-const gamesNavGroups = computed(() => getGamesNavGroups(t));
 
 const heatmap = computed<DepthHeatmap | null>(() => {
     return (lakeStore.data?.temperatureOverDepth ?? null) as DepthHeatmap | null;
@@ -231,16 +219,6 @@ const questions = computed(() => [
     width: 100%;
 }
 
-.heatmap-axis-mask {
-    position: absolute;
-    left: var(--plot-margin-left, 64px);
-    right: var(--plot-margin-right, 12px);
-    bottom: 0;
-    height: 52px;
-    background: #000;
-    pointer-events: none;
-}
-
 .timeline-panel {
     position: relative;
     margin-left: var(--plot-margin-left, 64px);
@@ -299,10 +277,6 @@ const questions = computed(() => [
 @media (max-width: 720px) {
     .timeline-panel {
         margin-left: 48px;
-    }
-
-    .heatmap-axis-mask {
-        left: 48px;
     }
 
     .heatmap-hitbox {

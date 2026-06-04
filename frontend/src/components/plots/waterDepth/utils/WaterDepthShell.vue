@@ -1,38 +1,39 @@
 <template>
-    <section class="chlorophyll-plot" :style="{ '--depth-plot-axis-x': `${depthAxisX}px` }">
-        <div class="chlorophyll-plot__inner">
-            <div class="chlorophyll-plot__water-surface" :style="{ top: `${surfaceTopPercent}%` }">
-                <div class="chlorophyll-plot__water-wave">
+    <section
+        class="water-depth-plot"
+        :style="{
+            '--depth-plot-axis-x': `${depthAxisX}px`,
+            '--water-deep-stop': `${deepStopPercent}%`,
+        }"
+    >
+        <div class="water-depth-plot__inner">
+            <div class="water-depth-plot__water-surface" :style="{ top: `${surfaceTopPercent}%` }">
+                <div class="water-depth-plot__water-wave">
                     <SurfaceWaves />
                 </div>
             </div>
 
-            <div class="chlorophyll-plot__plot">
-                <div class="chlorophyll-plot__axis" />
+            <div class="water-depth-plot__plot" :style="{ minHeight }">
+                <div class="water-depth-plot__axis" />
 
                 <div
                     v-for="row in positionedRows"
-                    :key="row.label"
-                    class="chlorophyll-plot__row"
+                    :key="row.key"
+                    class="water-depth-plot__row"
                     :style="{ top: row.top }"
                 >
-                    <div class="chlorophyll-plot__label">
-                        {{ row.label }}
+                    <div class="water-depth-plot__label">
+                        <slot name="label" :row="row">
+                            {{ row.label }}
+                        </slot>
                     </div>
 
-                    <div class="chlorophyll-plot__value">
-                        <div class="chlorophyll-plot__value-number">
-                            {{ formatChlorophyll(row.value) }}
-                        </div>
-
-                        <ChlorophyllDots
-                            :value="row.value"
-                            :min="props.valueStart"
-                            :max="props.valueEnd"
-                            :dot-count="18"
-                        />
+                    <div v-if="$slots.value" class="water-depth-plot__value">
+                        <slot name="value" :row="row" />
                     </div>
                 </div>
+
+                <slot name="overlay" :surface-top-percent="surfaceTopPercent" />
             </div>
         </div>
     </section>
@@ -40,40 +41,47 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import SurfaceWaves from '../SurfaceWaves.vue';
-import ChlorophyllDots from './ChlorophyllDots.vue';
+import SurfaceWaves from './SurfaceWaves.vue';
 
-export type ChlorophyllRow = {
+export type DepthPlotRow = {
+    key?: string | number;
     label: string;
-    value: number;
     depth: number;
+    value?: number;
+    [key: string]: unknown;
 };
 
 const props = withDefaults(
     defineProps<{
-        rows: ChlorophyllRow[];
-        valueStart?: number;
-        valueEnd?: number;
+        rows: DepthPlotRow[];
         marginTop?: number;
         marginBottom?: number;
         depthAxisX?: number;
-        unit?: string;
+        minHeight?: string;
+        deepStopDepth?: number;
     }>(),
     {
-        valueStart: 0,
-        valueEnd: 25,
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 5,
         depthAxisX: 132,
-        unit: 'mg/m³',
+        minHeight: '90rem',
+        deepStopDepth: 20,
     },
 );
 
 const minDepth = computed(() => {
+    if (props.rows.length === 0) {
+        return 0;
+    }
+
     return Math.min(...props.rows.map((row) => row.depth));
 });
 
 const maxDepth = computed(() => {
+    if (props.rows.length === 0) {
+        return 0;
+    }
+
     return Math.max(...props.rows.map((row) => row.depth));
 });
 
@@ -88,28 +96,31 @@ const surfaceTopPercent = computed(() => {
     return ((0 - minDepthWithMargin.value) / depthRangeWithMargin.value) * 100;
 });
 
+const deepStopPercent = computed(() => {
+    const ratio = (props.deepStopDepth - minDepthWithMargin.value) / depthRangeWithMargin.value;
+
+    return Math.min(100, Math.max(0, ratio * 100));
+});
+
 const positionedRows = computed(() => {
-    return props.rows.map((row) => {
+    return props.rows.map((row, index) => {
         const ratio = (row.depth - minDepthWithMargin.value) / depthRangeWithMargin.value;
 
         return {
             ...row,
+            key: row.key ?? row.label ?? index,
             top: `${ratio * 100}%`,
         };
     });
 });
-
-function formatChlorophyll(value: number): string {
-    return `${value.toFixed(1)} ${props.unit}`;
-}
 </script>
 
 <style scoped>
-.chlorophyll-plot {
+.water-depth-plot {
     padding: 24px 20px;
 }
 
-.chlorophyll-plot__inner {
+.water-depth-plot__inner {
     position: relative;
     overflow: hidden;
     border: 1px solid rgb(255 255 255 / 10%);
@@ -120,7 +131,7 @@ function formatChlorophyll(value: number): string {
     backdrop-filter: blur(10px);
 }
 
-.chlorophyll-plot__water-surface {
+.water-depth-plot__water-surface {
     position: absolute;
     left: 0;
     right: 0;
@@ -128,14 +139,13 @@ function formatChlorophyll(value: number): string {
     background: linear-gradient(
         180deg,
         rgb(120 220 255 / 30%) 0%,
-        rgb(32 168 210 / 22%) 35%,
-        rgb(20 116 160 / 18%) 65%,
-        rgb(8 74 110 / 22%) 100%
+        hsla(194, 74%, 25%, 0.22) var(--water-deep-stop),
+        hsla(201, 86%, 5%, 0.22) 100%
     );
     pointer-events: none;
 }
 
-.chlorophyll-plot__water-wave {
+.water-depth-plot__water-wave {
     position: absolute;
     top: -36px;
     left: 0;
@@ -144,17 +154,16 @@ function formatChlorophyll(value: number): string {
     color: rgb(120 220 255 / 30%);
     opacity: 0.95;
     filter: drop-shadow(0 -1px 0 rgb(255 255 255 / 14%));
-    animation: chlorophyll-plot-wave 9s linear infinite;
+    animation: water-depth-plot-wave 9s linear infinite;
 }
 
-.chlorophyll-plot__plot {
+.water-depth-plot__plot {
     position: relative;
-    min-height: 620px;
     padding: 28px;
     z-index: 1;
 }
 
-.chlorophyll-plot__axis {
+.water-depth-plot__axis {
     position: absolute;
     top: 20px;
     bottom: 20px;
@@ -167,7 +176,7 @@ function formatChlorophyll(value: number): string {
         0 0 20px rgb(0 0 0 / 20%);
 }
 
-.chlorophyll-plot__row {
+.water-depth-plot__row {
     display: flex;
     align-items: center;
     position: absolute;
@@ -177,7 +186,7 @@ function formatChlorophyll(value: number): string {
     min-height: 24px;
 }
 
-.chlorophyll-plot__label {
+.water-depth-plot__label {
     width: var(--depth-plot-axis-x);
     padding: 0 1rem;
     color: rgb(255 255 255 / 88%);
@@ -188,25 +197,14 @@ function formatChlorophyll(value: number): string {
     text-align: right;
 }
 
-.chlorophyll-plot__value {
+.water-depth-plot__value {
     margin-left: 5rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
     min-width: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.01em;
 }
 
-.chlorophyll-plot__value-number {
-    min-width: 7.5rem;
-    color: rgb(235 255 240 / 95%);
-    white-space: nowrap;
-}
-
-@keyframes chlorophyll-plot-wave {
+@keyframes water-depth-plot-wave {
     from {
         transform: translateX(0);
     }
@@ -217,35 +215,29 @@ function formatChlorophyll(value: number): string {
 }
 
 @media (max-width: 700px) {
-    .chlorophyll-plot {
+    .water-depth-plot {
         padding: 16px;
     }
 
-    .chlorophyll-plot__plot {
-        min-height: 520px;
+    .water-depth-plot__plot {
+        min-height: 520px !important;
         padding: 24px 20px;
     }
 
-    .chlorophyll-plot__axis {
+    .water-depth-plot__axis {
         left: 104px;
     }
 
-    .chlorophyll-plot__label {
+    .water-depth-plot__label {
         width: 72px;
         font-size: 1.15rem;
     }
 
-    .chlorophyll-plot__value {
+    .water-depth-plot__value {
         margin-left: 3rem;
-        gap: 0.75rem;
-        font-size: 1rem;
     }
 
-    .chlorophyll-plot__value-number {
-        min-width: 6.5rem;
-    }
-
-    .chlorophyll-plot__water-wave {
+    .water-depth-plot__water-wave {
         top: -26px;
         height: 42px;
     }

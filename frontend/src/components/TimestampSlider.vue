@@ -1,20 +1,14 @@
 <template>
     <section class="timestamp-slider">
-        <div v-if="props.showTicks" class="slider-labels">
-            <span v-for="tick in ticks" :key="tick.timestamp" class="slider-label">
-                {{ tick.label }}
-            </span>
-        </div>
-
         <div class="slider-track-wrap">
             <div class="slider-track" :style="trackStyle"></div>
 
             <div class="slider-badge" :style="badgeStyle">
                 <div class="slider-badge-time">
-                    {{ selectedTimeLabel }}
+                    {{ selectedTopLabel }}
                 </div>
                 <div class="slider-badge-date">
-                    {{ selectedDateLabel }}
+                    {{ selectedBottomLabel }}
                 </div>
             </div>
 
@@ -28,6 +22,16 @@
                 @input="onInput"
             />
         </div>
+
+        <div v-if="props.showTicks" class="slider-labels">
+            <span v-for="tick in ticks" :key="tick.timestamp" class="slider-label">
+                {{ tick.label }}
+            </span>
+        </div>
+
+        <div v-if="props.infoText" class="slider-info-text">
+            {{ t('sliderInfoText') }}
+        </div>
     </section>
 </template>
 
@@ -37,11 +41,14 @@ import { useI18n } from 'vue-i18n';
 import { formatDateShort, formatTime } from 'src/utils/format';
 import { clamp } from 'src/utils/math';
 import { SWITZERLAND_LATITUDE, SWITZERLAND_LONGITUDE } from 'src/utils/countries';
-import { getSunEventsBetween, makeSunEventsBackground } from 'src/utils/sunEvents';
 import { toUnixSeconds } from 'src/utils/datetime';
-import { getSeasonEventsBetween, makeSeasonEventsBackground } from 'src/utils/seasonsEvents';
+import { getDaynightCyclePeriodsBetween } from 'src/utils/daynightCycle';
+import { daynightCyclePeriodsToBands } from 'src/utils/daynightCycleStyle';
+import { BackgroundBuilder } from 'src/utils/backgroundBuilder';
+import { getSeasonPeriodsBetween } from 'src/utils/seasonsCycle';
+import { seasonPeriodsToBands } from 'src/utils/seasonsCycleStyle';
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const props = withDefaults(
     defineProps<{
@@ -51,12 +58,14 @@ const props = withDefaults(
         tickCount?: number;
         dynamicBackground?: 'daynight' | 'seasons' | 'none';
         showTicks?: boolean;
+        infoText?: boolean;
     }>(),
     {
         stepSeconds: 60,
         tickCount: 5,
         dynamicBackground: 'daynight',
         showTicks: true,
+        infoText: true,
     },
 );
 
@@ -116,11 +125,18 @@ const thumbPercent = computed(() => {
     return timestampToPercent(sliderValue.value);
 });
 
-const selectedTimeLabel = computed(() => {
+const selectedTopLabel = computed(() => {
+    if (props.dynamicBackground === 'seasons') {
+        return formatDateShort(sliderValue.value, locale.value);
+    }
     return formatTime(sliderValue.value, locale.value);
 });
 
-const selectedDateLabel = computed(() => {
+const selectedBottomLabel = computed(() => {
+    if (props.dynamicBackground === 'seasons') {
+        return new Date(sliderValue.value * 1000).getFullYear();
+    }
+
     return formatDateShort(sliderValue.value, locale.value);
 });
 
@@ -131,25 +147,68 @@ const trackStyle = computed(() => {
         };
     }
 
-    // For ranges longer than a month, we show the seasons
+    const backgroundBuilder = new BackgroundBuilder();
+
     if (props.dynamicBackground === 'seasons') {
-        const events = getSeasonEventsBetween(props.startTimestamp, props.endTimestamp);
+        const periods = getSeasonPeriodsBetween(props.startTimestamp, props.endTimestamp, 'north');
+
+        backgroundBuilder.addBand(seasonPeriodsToBands(periods));
 
         return {
-            ...makeSeasonEventsBackground(props.startTimestamp, props.endTimestamp, events),
+            ...backgroundBuilder.toCSS(props.startTimestamp, props.endTimestamp, {
+                iconSizePx: 24,
+            }),
         };
     }
 
-    const events = getSunEventsBetween(
+    const periods = getDaynightCyclePeriodsBetween(
         props.startTimestamp,
         props.endTimestamp,
         SWITZERLAND_LATITUDE,
         SWITZERLAND_LONGITUDE,
     );
+
+    backgroundBuilder.addBand(daynightCyclePeriodsToBands(periods));
+
     return {
-        ...makeSunEventsBackground(props.startTimestamp, props.endTimestamp, events),
+        ...backgroundBuilder.toCSS(props.startTimestamp, props.endTimestamp, {
+            iconSizePx: 24,
+        }),
     };
 });
+
+/* const trackStyle = computed(() => {
+    if (props.dynamicBackground === 'none') {
+        return {
+            backgroundImage: `linear-gradient(to right, #0b1020 0%, #0b1020 100%)`,
+        };
+    }
+
+    // For ranges longer than a month, we show the seasons
+    if (props.dynamicBackground === 'seasons') {
+        return {
+            ...makeSeasonEventsBackground(props.startTimestamp, props.endTimestamp),
+        };
+    }
+
+    const periods = getDaynightCyclePeriodsBetween(props.startTimestamp, props.endTimestamp, SWITZERLAND_LATITUDE, SWITZERLAND_LONGITUDE);
+    console.log('Day/night periods:', periods.map(p => ({
+        ...p,
+        start: new Date(p.start),
+        end: new Date(p.end),
+    })));
+    const backgroundBuilder = new BackgroundBuilder();
+    backgroundBuilder.addBand(daynightCyclePeriodsToBands(periods));
+    return {
+        ...backgroundBuilder.toCSS(
+            props.startTimestamp,
+            props.endTimestamp,
+            {
+                iconSizePx: 24
+            }            
+        ),
+    };
+}); */
 
 const badgeStyle = computed(() => {
     return {
@@ -201,7 +260,7 @@ function onInput(event: Event) {
 .slider-labels {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
     padding: 0 var(--vertical-padding);
 }
 

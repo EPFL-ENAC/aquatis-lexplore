@@ -24,7 +24,7 @@
 import { computed } from 'vue';
 import type { Track } from './types';
 import { clamp } from 'src/utils/math';
-import WindCompass from 'src/components/WindCompass.vue';
+import WindCompass from 'src/components/dials/WindCompass.vue';
 
 const props = withDefaults(
     defineProps<{

@@ -10,37 +10,20 @@
                     <div class="page-shell">
                         <router-view />
                     </div>
-
-                    <footer class="app-footer">
-                        <div class="footer-logos">
-                            <img
-                                v-for="logo in logos"
-                                :key="logo.name"
-                                :src="logo.src"
-                                :alt="logo.name"
-                                class="footer-logo"
-                            />
-                        </div>
-                    </footer>
                 </div>
             </q-page>
         </q-page-container>
+
+        <AppFooter />
     </q-layout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import AppHeader from 'src/components/AppHeader.vue';
+import AppHeader from 'src/components/navigation/AppHeader.vue';
+import AppFooter from 'src/components/navigation/AppFooter.vue';
 
 const leftDrawerOpen = ref(false);
-
-const logos = [
-    { name: 'Eawag', src: '/logos/eawag.svg' },
-    { name: 'UNIL', src: '/logos/unil.svg' },
-    { name: 'EPFL', src: '/logos/epfl_blue.svg' },
-    { name: 'Université de Genève', src: '/logos/unige.svg' },
-    { name: 'CARRTEL', src: '/logos/carrtel.svg' },
-];
 </script>
 
 <style scoped lang="scss">

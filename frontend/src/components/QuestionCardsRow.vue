@@ -1,10 +1,6 @@
 <template>
     <section class="questions-grid">
         <article v-for="item in props.items" :key="item.id" class="question-card">
-            <p class="question-kicker" :class="props.kickerClass">
-                {{ item.kicker }}
-            </p>
-
             <h3 class="question-title">
                 {{ item.title }}
             </h3>

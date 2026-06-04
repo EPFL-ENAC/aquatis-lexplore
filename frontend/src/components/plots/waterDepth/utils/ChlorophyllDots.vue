@@ -3,10 +3,11 @@
         class="chlorophyll-dots"
         :aria-label="`Chlorophyll intensity: ${activeDots} of ${dotCount}`"
     >
-        <span
+        <img
             v-for="index in dotCount"
             :key="index"
             class="chlorophyll-dots__dot"
+            :src="index <= activeDots ? '/phytoplancton.png' : '/phytoplancton_disabled.png'"
             :class="{ 'chlorophyll-dots__dot--active': index <= activeDots }"
         />
     </div>
@@ -25,7 +26,7 @@ const props = withDefaults(
     {
         min: 0,
         max: 25,
-        dotCount: 18,
+        dotCount: 25,
     },
 );
 
@@ -54,6 +55,21 @@ const activeDots = computed(() => {
 }
 
 .chlorophyll-dots__dot {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+    transition:
+        transform 180ms ease,
+        opacity 180ms ease;
+    opacity: 0.6;
+}
+.chlorophyll-dots__dot--active {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* 
+.chlorophyll-dots__dot {
     width: 0.6rem;
     height: 0.6rem;
     border-radius: 999px;
@@ -79,5 +95,5 @@ const activeDots = computed(() => {
         inset 0 0 0 1px rgb(255 255 255 / 18%);
     opacity: 1;
     transform: scale(1.05);
-}
+} */
 </style>

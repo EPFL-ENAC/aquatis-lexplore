@@ -1,17 +1,20 @@
 export default {
     // --- Common ---
-    backToHome: 'Zurück zur Startseite',
+    backToHome: 'Startseite',
     back: 'Zurück',
     live: 'LIVE',
     question: 'FRAGE',
+
+    lemanLive: 'Léman Live',
+    lastMeasurement: 'Letzte Messung um {time}',
 
     // --- 404 ---
     notFoundMessage: 'Ups, hier ist nichts...',
     goHome: 'Zur Startseite',
 
     // --- Header ---
-    headerAirTemp: 'LUFTTEMP.',
-    headerWaterTemp: 'WASSERT.',
+    headerAirTemp: 'LUFT',
+    headerWaterTemp: 'WASSER',
     headerWind: 'WIND',
     headerWave: 'WELLE',
 
@@ -89,7 +92,8 @@ export default {
     windChangeTrackAirTemp: 'Lufttemperatur (°C)',
     windChangeTrackWaterTemp: 'Wassertemperatur (°C)',
     windChangeTrackWindDirection: 'Windrichtung',
-    windChangeTrackWindSpeed: 'Windgeschwindigkeit (km/h)', // TODO: Make sure this is km/h and not m/s
+    windChangeTrackWindSpeed: 'Windgeschwindigkeit (km/h)',
+    windChangeTrackPrecipitation: 'Niederschläge (mm/h)',
     windChangeTrackWaveHeight: 'Wellenhöhe (m)',
     windChangeQ1: 'Bemerkst du in den letzten Tagen Veränderungen?',
     windChangeQ2: 'Ist die Luft wärmer oder kälter als das Wasser?',
@@ -97,12 +101,11 @@ export default {
     // --- Chlorophyll Change Page ---
     chloroChangeEyebrow: '02 · Entdeckung',
     chloroChangeTitle: 'Licht und Chlorophyll im See.',
-    chloroChangeTrackIrradiance: 'Bestrahlungsstärke',
+    chloroChangeTrackIrradiance: 'Bestrahlungsstärke (W/m²)',
     chloroChangeTrackAirTemp: 'Lufttemperatur (°C)',
     chloroChangeTrackWaterTemp: 'Wassertemperatur (°C)',
     chloroChangeTrackChlorophyll: 'Durchschnittliches Chlorophyll A (0–20 m)',
-    chloroChangeQ1: 'Kühlt das Wasser beim Regen ab?',
-    chloroChangeQ2: 'Ist die Luft wärmer oder kälter als das Wasser?',
+    chloroChangeQ1: 'Ist die Luft wärmer oder kälter als das Wasser?',
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · SPIELE',
@@ -156,9 +159,9 @@ export default {
     instEawag: 'Eawag',
     instUnil: 'UNIL',
     instEpfl: 'EPFL',
-    instUnige: 'Universität Genf',
-    instCarrtel: 'CARRTEL',
 
     // --- PlanktonAdventurePlot depth labels ---
     planktonDepthSurface: 'Oberfläche',
+
+    sliderInfoText: 'Verschiebe den roten Cursor, um den See zu verschiedenen Zeiten zu erkunden.',
 };

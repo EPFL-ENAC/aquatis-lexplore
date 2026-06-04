@@ -4,8 +4,8 @@ import { createI18n } from 'vue-i18n';
 import messages from 'src/i18n';
 
 export type MessageLanguages = keyof typeof messages;
-// Type-define 'en-US' as the master schema for the resource
-export type MessageSchema = (typeof messages)['en-US'];
+// Type-define 'en' as the master schema for the resource
+export type MessageSchema = (typeof messages)['en'];
 
 // See https://vue-i18n.intlify.dev/guide/advanced/typescript.html#global-resource-schema-type-definition
 /* eslint-disable @typescript-eslint/no-empty-object-type */
@@ -23,7 +23,7 @@ declare module 'vue-i18n' {
 
 function getInitialLocale(): MessageLanguages {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('app-locale') : null;
-    if (stored && (stored === 'en-US' || stored === 'fr' || stored === 'de' || stored === 'it')) {
+    if (stored && (stored === 'en' || stored === 'fr' || stored === 'de' || stored === 'it')) {
         return stored;
     }
 
@@ -34,7 +34,7 @@ function getInitialLocale(): MessageLanguages {
         if (browserLang.startsWith('it')) return 'it';
     }
 
-    return 'en-US';
+    return 'en';
 }
 
 export default defineBoot(({ app }) => {

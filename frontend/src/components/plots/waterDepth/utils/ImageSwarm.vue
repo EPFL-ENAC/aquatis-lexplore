@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { randomBetween, randomGaussian } from 'src/utils/math';
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 
 type DistributionMode = 'gaussian' | 'ellipse';
 
@@ -150,9 +150,9 @@ function createBaseEllipsePoint(index: number): BaseSwarmPoint {
     return createBaseAnimatedPoint(index, nx, ny);
 }
 
-function generateBasePoints(): BaseSwarmPoint[] {
-    return Array.from({ length: props.count }, (_, index) => {
-        if (props.distribution === 'ellipse') {
+function generateBasePoints(distribution: DistributionMode, count: number): BaseSwarmPoint[] {
+    return Array.from({ length: count }, (_, index) => {
+        if (distribution === 'ellipse') {
             return createBaseEllipsePoint(index);
         }
 
@@ -160,13 +160,7 @@ function generateBasePoints(): BaseSwarmPoint[] {
     });
 }
 
-const basePoints = ref(generateBasePoints());
-watch(
-    () => [props.count, props.distribution],
-    () => {
-        basePoints.value = generateBasePoints();
-    },
-);
+const basePoints = computed(() => generateBasePoints(props.distribution, props.count));
 
 const swarmPoints = computed<SwarmPoint[]>(() => {
     return basePoints.value.map((point) => ({

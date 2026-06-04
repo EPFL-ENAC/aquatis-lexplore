@@ -112,6 +112,21 @@ export class ColorMap {
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
 
+    public toCssGradient(): string {
+        const stopsCss = this.stops
+            .map((stop) => {
+                const color = `rgba(${stop.color[0]}, ${stop.color[1]}, ${stop.color[2]}, ${(
+                    stop.color[3] / 255
+                ).toFixed(3)})`;
+                const position = `${Math.round(stop.t * 100)}%`;
+
+                return `${color} ${position}`;
+            })
+            .join(', ');
+
+        return `linear-gradient(to right, ${stopsCss})`;
+    }
+
     public buildPalette(size: number): Uint8ClampedArray {
         if (!Number.isInteger(size) || size <= 0) {
             throw new Error('Palette size must be a positive integer');

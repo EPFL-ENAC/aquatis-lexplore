@@ -160,6 +160,7 @@ export const useAlgaeStore = makeLexploreDatasetStore<AlgaeData>(875, async (dat
     const data = await dataset.getData(
         { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
         ['time', 'depth', 'Chl_A'],
+        'depth',
     );
 
     return {
@@ -260,14 +261,14 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
         const maxTimestamp = timestamps[timestamps.length - 1]!;
         const minTimestamp = timestamps[0]!;
 
-        const oneDaySeconds = 24 * 3600;
-        const lastFullDayStart = Math.floor(maxTimestamp / oneDaySeconds) * oneDaySeconds;
-        const lastFullDayEnd = lastFullDayStart + oneDaySeconds;
+        const twoDaysSeconds = 2 * 24 * 3600;
+
+        const lastFullDayEnd = maxTimestamp;
+        const lastFullDayStart = lastFullDayEnd - twoDaysSeconds;
 
         if (lastFullDayEnd < minTimestamp) {
             return null;
         }
-
         const rangeEnd = Math.min(lastFullDayEnd, maxTimestamp); // In case we don't have a full day available
 
         return { start: lastFullDayStart, end: rangeEnd };

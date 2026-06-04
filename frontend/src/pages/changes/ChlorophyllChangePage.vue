@@ -1,11 +1,4 @@
 <template>
-    <TopPageNav
-        :tabs="changePages"
-        active-href="/changes/chlorophyllChange"
-        back-to="/changes"
-        :back-label="t('backToHome')"
-    />
-
     <PageHeader :eyebrow="t('chloroChangeEyebrow')" eyebrow-class="text-warning" :level="1">
         <template #default> {{ t('chloroChangeTitle') }} </template>
     </PageHeader>
@@ -31,11 +24,9 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
-import TopPageNav from 'src/components/TopPageNav.vue';
 import ScrollableTracksChart from 'src/components/plots/timeline/ScrollableTrackChart.vue';
 import ChartContainer from 'src/components/ChartContainer.vue';
 import { Timeline, Track } from 'src/components/plots/timeline/types';
-import { getChangePages } from './changesNavGroups';
 import { useAlgaeStore, useLakeStore, useWeatherStore } from 'src/stores/lexplore';
 
 const weatherStore = useWeatherStore();
@@ -43,7 +34,6 @@ const lakeStore = useLakeStore();
 const algaeStore = useAlgaeStore();
 
 const { locale, t } = useI18n();
-const changePages = computed(() => getChangePages(t));
 
 function toMs(timestamp: number): number {
     return timestamp * 1000;
@@ -145,11 +135,6 @@ const questions = computed(() => [
         id: '01',
         kicker: t('question'),
         title: t('chloroChangeQ1'),
-    },
-    {
-        id: '02',
-        kicker: t('question'),
-        title: t('chloroChangeQ2'),
     },
 ]);
 </script>

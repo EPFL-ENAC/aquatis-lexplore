@@ -1,32 +1,42 @@
 import type { NavMenuItem } from 'src/navigation/navMenuItem';
 
-export function getGamesNavGroups(t: (key: string) => string): NavMenuItem[] {
-    return [
-        {
-            id: '01',
-            shortLabel: t('gameNavPlanctonShort'),
-            label: t('gameNavPlanctonTitle'),
-            title: t('gameNavPlanctonTitle'),
-            subtitle: t('gameNavPlanctonSubtitle'),
-            icon: 'water',
-            href: '/games/planctonGame',
-            color: 'negative',
-            actionColor: 'negative',
-            textClass: 'text-negative',
-            imageSrc: '/zooplankton.svg',
-            imageFit: 'contain',
-        },
-        {
-            id: '02',
-            shortLabel: t('gameNavPlanctonShort'),
-            label: t('gameNavTempTitle'),
-            title: t('gameNavTempTitle'),
-            subtitle: t('gameNavTempSubtitle'),
-            icon: 'device_thermostat',
-            href: '/games/temperatureOverDepthGame',
-            color: 'negative',
-            actionColor: 'negative',
-            textClass: 'text-negative',
-        },
-    ];
-}
+export const gamesPicker: NavMenuItem = {
+    id: '03',
+    shortLabel: 'homeGamesLabel',
+    label: 'homeGamesTitle',
+    title: 'homeGamesTitle',
+    subtitle: 'homeGamesSubtitle',
+    icon: 'explore',
+    href: '/games',
+    color: 'negative',
+    textClass: 'text-negative',
+};
+
+export const gamesNavGroups: NavMenuItem[] = [
+    {
+        id: '01',
+        shortLabel: 'gameNavPlanctonShort',
+        label: 'gameNavPlanctonTitle',
+        title: 'gameNavPlanctonTitle',
+        subtitle: 'gameNavPlanctonSubtitle',
+        icon: 'water',
+        href: '/games/planctonGame',
+        color: 'negative',
+        actionColor: 'negative',
+        textClass: 'text-negative',
+        imageSrc: '/zooplankton.svg',
+        imageFit: 'contain',
+    },
+    {
+        id: '02',
+        shortLabel: 'gameNavPlanctonShort',
+        label: 'gameNavTempTitle',
+        title: 'gameNavTempTitle',
+        subtitle: 'gameNavTempSubtitle',
+        icon: 'device_thermostat',
+        href: '/games/temperatureOverDepthGame',
+        color: 'negative',
+        actionColor: 'negative',
+        textClass: 'text-negative',
+    },
+];

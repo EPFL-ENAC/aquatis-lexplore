@@ -6,35 +6,28 @@
                     <img src="/logo.svg" alt="AQUATIS logo" />
                 </div>
 
-                <q-btn-toggle
-                    v-model="locale"
-                    unelevated
-                    rounded
-                    no-caps
-                    class="header__langs"
-                    toggle-text-color="black"
-                    text-color="white"
-                    :options="languageOptions"
-                />
+                <div class="header-logos">
+                    <img
+                        v-for="logo in logos"
+                        :key="logo.name"
+                        :src="logo.src"
+                        :alt="logo.name"
+                        class="header-logo"
+                    />
+                </div>
             </div>
 
             <q-separator dark class="header__separator" />
 
             <div class="header__stats">
-                <div class="live">
-                    <span class="live__dot" />
-                    <span>{{ t('live') }}</span>
-                    <span class="live__time">{{
-                        formatTime(weatherStore.data?.timestamps.at(-1), locale)
-                    }}</span>
-                </div>
+                <PulsatingLiveDot :last-measurement-time="weatherStore.data?.timestamps.at(-1)" />
 
                 <div class="stats">
                     <div class="stat">
                         <div class="stat__label">{{ t('headerAirTemp') }}</div>
-                        <DialValue
+                        <TemperatureThermometer
                             :value="weatherStore.data?.airTemperature.at(-1) ?? 0"
-                            :size="104"
+                            :size="dialSize"
                             :min-value="-10"
                             :max-value="30"
                             unit="°C"
@@ -42,9 +35,9 @@
                     </div>
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWaterTemp') }}</div>
-                        <DialValue
+                        <TemperatureThermometer
                             :value="lakeStore.data?.surfaceTemperature.at(-1) ?? 0"
-                            :size="104"
+                            :size="dialSize"
                             :min-value="-10"
                             :max-value="30"
                             unit="°C"
@@ -58,20 +51,20 @@
                                     weatherStore.data?.windDirectionDegrees.at(-1) ?? 0
                                 "
                                 :wind-speed="weatherStore.data?.windSpeed.at(-1) ?? 0"
-                                :size="104"
+                                :size="dialSize"
                             />
                             <DialValue
                                 :value="weatherStore.data?.windSpeed.at(-1) ?? 0"
-                                :size="104"
+                                :size="dialSize"
                             />
                         </div>
                     </div>
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWave') }}</div>
-                        <DialValue
-                            :value="(buoyStore.data?.height.at(-1) ?? 0) * 100"
-                            :size="104"
-                            :max-value="25"
+                        <WaveHeightDial
+                            :value="buoyStore.data?.height.at(-1) ?? 0"
+                            :size="dialSize"
+                            :max-value="10"
                             unit="cm"
                         />
                     </div>
@@ -84,21 +77,24 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useWeatherStore, useLakeStore, useBuoyStore } from 'src/stores/lexplore';
-import { formatTime } from 'src/utils/format';
-import WindCompass from './WindCompass.vue';
-import DialValue from './DialValue.vue';
+import TemperatureThermometer from '../dials/TemperatureThermometer.vue';
+import WindCompass from '../dials/WindCompass.vue';
+import PulsatingLiveDot from '../PulsatingLiveDot.vue';
+import DialValue from '../dials/DialValue.vue';
+import WaveHeightDial from '../dials/WaveHeightDial.vue';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
 const buoyStore = useBuoyStore();
-const { locale, t } = useI18n();
+const { t } = useI18n();
 
-const languageOptions = [
-    { label: 'FR', value: 'fr' },
-    { label: 'EN', value: 'en-US' },
-    { label: 'DE', value: 'de' },
-    { label: 'IT', value: 'it' },
+const logos = [
+    { name: 'Eawag', src: '/logos/eawag.svg' },
+    { name: 'UNIL', src: '/logos/unil.svg' },
+    { name: 'EPFL', src: '/logos/epfl_blue.svg' },
 ];
+
+const dialSize = 152;
 </script>
 
 <style scoped lang="scss">
@@ -128,6 +124,14 @@ const languageOptions = [
     color: #00c6df;
 }
 
+.header-logos {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .header__brand {
     font-weight: 700;
     line-height: 1;
@@ -154,42 +158,6 @@ const languageOptions = [
     align-items: center;
 }
 
-.live {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 999px;
-    width: fit-content;
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.live__dot {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-    background: coral;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-.live__time {
-    padding-left: 0.75rem;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-}
-
 .stats {
     display: flex;
     gap: 2rem;
@@ -211,18 +179,5 @@ const languageOptions = [
 .stat__label {
     opacity: 0.6;
     font-weight: 600;
-}
-
-.stat__value {
-    font-weight: 700;
-    color: #fff;
-    font-size: 2rem;
-    line-height: 1;
-}
-
-.unit {
-    font-weight: 400;
-    font-size: 1.1rem;
-    color: var(--q-primary);
 }
 </style>

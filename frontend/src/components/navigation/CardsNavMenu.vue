@@ -31,15 +31,16 @@
 
                     <div class="feature-content">
                         <div class="feature-kicker" :class="item.textClass">
-                            {{ formatKicker(item) }}
+                            <span v-if="item.id && props.showIdInKicker"> {{ item.id }} · </span>
+                            <span>{{ t(item.shortLabel) }}</span>
                         </div>
 
                         <div class="feature-title">
-                            {{ item.title }}
+                            {{ t(item.title) }}
                         </div>
 
                         <div v-if="item.subtitle" class="feature-subtitle text-grey-5">
-                            {{ item.subtitle }}
+                            {{ t(item.subtitle) }}
                         </div>
                     </div>
 
@@ -58,7 +59,10 @@
 
 <script setup lang="ts">
 import type { NavMenuItem } from 'src/navigation/navMenuItem';
+import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
+
+const { t } = useI18n();
 
 const props = withDefaults(
     defineProps<{
@@ -73,14 +77,6 @@ const props = withDefaults(
 );
 
 const hasImageMedia = (item: NavMenuItem) => Boolean(item.imageSrc);
-
-const formatKicker = (item: NavMenuItem) => {
-    if (!props.showIdInKicker) {
-        return item.shortLabel;
-    }
-
-    return `${item.id} · ${item.shortLabel}`;
-};
 
 const isExternalLink = (item: NavMenuItem) => {
     if (!item.href) {

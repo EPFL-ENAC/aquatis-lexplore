@@ -1,17 +1,20 @@
 export default {
     // --- Common ---
-    backToHome: 'Torna alla home',
+    backToHome: 'Home',
     back: 'Indietro',
     live: 'LIVE',
     question: 'DOMANDA',
+
+    lemanLive: 'Léman Live',
+    lastMeasurement: 'Ultima misura alle {time}',
 
     // --- 404 ---
     notFoundMessage: 'Oops, nulla qui...',
     goHome: 'Torna alla Home',
 
     // --- Header ---
-    headerAirTemp: 'TEMP. ARIA',
-    headerWaterTemp: 'TEMP. ACQUA',
+    headerAirTemp: 'ARIA',
+    headerWaterTemp: 'ACQUA',
     headerWind: 'VENTO',
     headerWave: 'ONDA',
 
@@ -87,7 +90,8 @@ export default {
     windChangeTrackAirTemp: "Temperatura dell'aria (°C)",
     windChangeTrackWaterTemp: "Temperatura dell'acqua (°C)",
     windChangeTrackWindDirection: 'Direzione del vento',
-    windChangeTrackWindSpeed: 'Velocità del vento (km/h)', // TODO: Make sure this is km/h and not m/s
+    windChangeTrackWindSpeed: 'Velocità del vento (km/h)',
+    windChangeTrackPrecipitation: 'Precipitazioni (mm/h)',
     windChangeTrackWaveHeight: 'Altezza delle onde (m)',
     windChangeQ1: 'Noti dei cambiamenti negli ultimi giorni?',
     windChangeQ2: "L'aria è più calda o più fredda dell'acqua?",
@@ -95,12 +99,11 @@ export default {
     // --- Chlorophyll Change Page ---
     chloroChangeEyebrow: '02 · Scoperta',
     chloroChangeTitle: 'La luce e la clorofilla nel lago.',
-    chloroChangeTrackIrradiance: 'Irradianza',
+    chloroChangeTrackIrradiance: 'Energia solare (W/m²)',
     chloroChangeTrackAirTemp: "Temperatura dell'aria (°C)",
     chloroChangeTrackWaterTemp: "Temperatura dell'acqua (°C)",
     chloroChangeTrackChlorophyll: 'Clorofilla A media (0–20 m)',
-    chloroChangeQ1: "L'acqua si raffredda con la pioggia?",
-    chloroChangeQ2: "L'aria è più calda o più fredda dell'acqua?",
+    chloroChangeQ1: "L'aria è più calda o più fredda dell'acqua?",
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · GIOCHI',
@@ -153,9 +156,9 @@ export default {
     instEawag: 'Eawag',
     instUnil: 'UNIL',
     instEpfl: 'EPFL',
-    instUnige: 'Università di Ginevra',
-    instCarrtel: 'CARRTEL',
 
     // --- PlanktonAdventurePlot depth labels ---
     planktonDepthSurface: 'Superficie',
+
+    sliderInfoText: 'Muovi il cursore rosso per esplorare il lago a diversi momenti.',
 };

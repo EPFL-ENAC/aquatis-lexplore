@@ -1,15 +1,4 @@
 <template>
-    <q-btn
-        flat
-        rounded
-        no-caps
-        icon="home"
-        :label="t('backToHome')"
-        class="back-btn"
-        color="white"
-        to="/"
-    />
-
     <PageHeader :eyebrow="t('changesPickerEyebrow')" eyebrow-class="text-warning" :level="1">
         <template #default>
             {{ t('changesPickerTitle') }}
@@ -18,18 +7,16 @@
         <template #subtitle> {{ t('changesPickerSubtitle') }} </template>
     </PageHeader>
 
-    <CardsNavMenu :items="changePages" :show-id-in-kicker="false" :media-width="128" />
+    <CardsNavMenu :items="changesNavGroups" :show-id-in-kicker="false" :media-width="128" />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import CardsNavMenu from 'src/components/CardsNavMenu.vue';
+import CardsNavMenu from 'src/components/navigation/CardsNavMenu.vue';
 import PageHeader from 'src/components/PageHeader.vue';
-import { getChangePages } from './changesNavGroups';
+import { changesNavGroups } from './changesNavGroups';
 
 const { t } = useI18n();
-const changePages = computed(() => getChangePages(t));
 </script>
 
 <style scoped>

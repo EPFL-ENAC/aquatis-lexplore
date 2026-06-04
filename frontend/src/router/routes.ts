@@ -1,3 +1,6 @@
+import { changesNavGroups, changesPicker } from 'src/pages/changes/changesNavGroups';
+import { gamesNavGroups, gamesPicker } from 'src/pages/games/gamesNavGroups';
+import { liveDataNavGroups, liveDataPicker } from 'src/pages/liveData/liveDataNavGroups';
 import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -11,6 +14,10 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: '/liveData',
+                meta: {
+                    parentMenu: liveDataPicker,
+                    tabs: liveDataNavGroups,
+                },
                 children: [
                     {
                         path: '',
@@ -33,6 +40,10 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: '/changes',
+                meta: {
+                    parentMenu: changesPicker,
+                    tabs: changesNavGroups,
+                },
                 children: [
                     {
                         path: '',
@@ -50,6 +61,10 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: '/games',
+                meta: {
+                    parentMenu: gamesPicker,
+                    tabs: gamesNavGroups,
+                },
                 children: [
                     {
                         path: '',

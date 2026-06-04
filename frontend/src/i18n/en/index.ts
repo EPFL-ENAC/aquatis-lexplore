@@ -1,17 +1,20 @@
 export default {
     // --- Common ---
-    backToHome: 'Back to Home',
+    backToHome: 'Home',
     back: 'Back',
     live: 'LIVE',
     question: 'QUESTION',
+
+    lemanLive: 'Léman Live',
+    lastMeasurement: 'Last Measurement at {time}',
 
     // --- 404 ---
     notFoundMessage: 'Oops, nothing here...',
     goHome: 'Go Home',
 
     // --- Header ---
-    headerAirTemp: 'AIR TEMP',
-    headerWaterTemp: 'WATER TEMP',
+    headerAirTemp: 'AIR',
+    headerWaterTemp: 'WATER',
     headerWind: 'WIND',
     headerWave: 'WAVE',
 
@@ -87,7 +90,8 @@ export default {
     windChangeTrackAirTemp: 'Air Temperature (°C)',
     windChangeTrackWaterTemp: 'Water Temperature (°C)',
     windChangeTrackWindDirection: 'Wind Direction',
-    windChangeTrackWindSpeed: 'Wind Speed (km/h)', // TODO: Make sure this is km/h and not m/s
+    windChangeTrackWindSpeed: 'Wind Speed (km/h)',
+    windChangeTrackPrecipitation: 'Precipitation (mm/h)',
     windChangeTrackWaveHeight: 'Wave Height (m)',
     windChangeQ1: 'Do you notice changes over the past few days?',
     windChangeQ2: 'Is the air warmer or colder than the water?',
@@ -95,12 +99,11 @@ export default {
     // --- Chlorophyll Change Page ---
     chloroChangeEyebrow: '02 · Discovery',
     chloroChangeTitle: 'Light and Chlorophyll in the Lake.',
-    chloroChangeTrackIrradiance: 'Irradiance',
+    chloroChangeTrackIrradiance: 'Solar Energy (W/m²)',
     chloroChangeTrackAirTemp: 'Air Temperature (°C)',
     chloroChangeTrackWaterTemp: 'Water Temperature (°C)',
     chloroChangeTrackChlorophyll: 'Average Chlorophyll A (0–20 m)',
-    chloroChangeQ1: 'Does the water cool down with rain?',
-    chloroChangeQ2: 'Is the air warmer or colder than the water?',
+    chloroChangeQ1: 'Is the air warmer or colder than the water?',
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · GAMES',
@@ -153,9 +156,9 @@ export default {
     instEawag: 'Eawag',
     instUnil: 'UNIL',
     instEpfl: 'EPFL',
-    instUnige: 'University of Geneva',
-    instCarrtel: 'CARRTEL',
 
     // --- PlanktonAdventurePlot depth labels ---
     planktonDepthSurface: 'Surface',
+
+    sliderInfoText: 'Move the red cursor to explore the lake at different times.',
 };

@@ -1,5 +1,5 @@
 <template>
-    <div class="wind-speed-dial" :style="{ '--size': `${size}px` }">
+    <div class="wind-speed-dial" :style="{ '--size': `${size}px`, '--font-scale': `${fontScale}` }">
         <svg
             class="dial-svg"
             viewBox="0 0 100 100"
@@ -23,7 +23,7 @@
             <text class="speed-value" x="50" y="48">
                 {{ displayValue }}
             </text>
-            <text class="speed-unit" x="50" :y="props.size * 0.65">
+            <text class="speed-unit" x="50" :y="48 + 15 * fontScale">
                 {{ unit }}
             </text>
         </svg>
@@ -40,6 +40,7 @@ import { useI18n } from 'vue-i18n';
 interface Props {
     value: number;
     size?: number;
+    fontScale?: number;
     unit?: string;
     minValue?: number;
     maxValue?: number;
@@ -48,6 +49,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     size: 120,
+    fontScale: 1.25,
     unit: 'km/h',
     minValue: 0,
     maxValue: 50,
@@ -140,7 +142,7 @@ const arcPath = computed(() => {
 
 .speed-value {
     fill: #ffffff;
-    font-size: calc(var(--size) * 0.225);
+    font-size: calc(var(--font-scale) * 1rem);
     font-weight: 700;
     text-anchor: middle;
     dominant-baseline: middle;
@@ -148,7 +150,7 @@ const arcPath = computed(() => {
 
 .speed-unit {
     fill: #5fe3ff;
-    font-size: calc(var(--size) * 0.1);
+    font-size: calc(var(--font-scale) * 0.5rem);
     font-weight: 600;
     text-anchor: middle;
     dominant-baseline: middle;

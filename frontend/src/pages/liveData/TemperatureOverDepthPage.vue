@@ -1,6 +1,4 @@
 <template>
-    <TopPageNav :tabs="liveDataItems" />
-
     <PageHeader :eyebrow="t('tempDepthEyebrow')" :level="1">
         <template #default>
             {{ t('tempDepthTitle') }}
@@ -15,19 +13,16 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import TopPageNav from 'src/components/TopPageNav.vue';
 import PageHeader from 'src/components/PageHeader.vue';
-import TemperatureOverDepthPlot from 'src/components/plots/TemperatureOverDepthPlot.vue';
+import TemperatureOverDepthPlot from 'src/components/plots/waterDepth/TemperatureOverDepthPlot.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import { useWeatherStore, useLakeStore } from 'src/stores/lexplore';
 import { computed } from 'vue';
-import { getLiveDataItems } from './liveDataNavGroups';
 
 const { t } = useI18n();
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
-const liveDataItems = computed(() => getLiveDataItems(t));
 
 const temperatureRows = computed(() => [
     {

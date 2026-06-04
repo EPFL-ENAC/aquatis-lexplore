@@ -1,5 +1,13 @@
 <template>
     <div class="temperature-over-depth-heatmap">
+        <div class="color-bar-container">
+            <div class="color-bar" :style="{ '--gradient': colorBarGradient }"></div>
+            <div class="min-max" v-if="minMax">
+                <span class="min">{{ formatNumber(minMax.min, locale) }} {{ props.unit }}</span>
+                <span class="max">{{ formatNumber(minMax.max, locale) }} {{ props.unit }}</span>
+            </div>
+        </div>
+
         <div
             class="plot-container"
             :style="{ width: `${props.width}px`, height: `${props.height}px` }"
@@ -39,7 +47,6 @@
             </div>
         </div>
 
-        <canvas v-if="props.colorBarWidth !== null" ref="colorBarCanvas" />
         <div class="processing-overlay" v-if="loading"></div>
     </div>
 </template>
@@ -49,18 +56,19 @@ import { ColorMap } from 'src/utils/colors';
 import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 import { formatNumber } from 'src/utils/format';
 import { HeatmapRaster } from 'src/utils/heatmapRaster';
-import { clamp, lerp } from 'src/utils/math';
+import { clamp } from 'src/utils/math';
 import { computed, nextTick, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
     heatmap: DepthHeatmap | null;
     width?: number;
     height?: number;
-    colorBarWidth?: number | null;
     precision?: number;
     xLabel?: string;
     yLabel?: string;
     zLabel?: string;
+    unit?: string;
     focusWindowCenter?: number | null;
     focusWindowWidth?: number | null;
     plotMargins?: { top: number; right: number; bottom: number; left: number };
@@ -69,29 +77,26 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     width: 760,
     height: 420,
-    colorBarWidth: 90,
     precision: 2,
     xLabel: 'X',
     yLabel: 'Depth',
     zLabel: 'Temperature',
+    unit: '°C',
     focusWindowCenter: null,
     focusWindowWidth: null,
-    plotMargins: () => ({ top: 16, right: 12, bottom: 52, left: 64 }),
+    plotMargins: () => ({ top: 16, right: 12, bottom: 16, left: 64 }),
 });
 
-const plotCanvas = ref<HTMLCanvasElement | null>(null);
-const colorBarCanvas = ref<HTMLCanvasElement | null>(null);
-const loading = ref(true);
+const { locale } = useI18n();
 
-const barMargins = {
-    top: 16,
-    right: 40,
-    bottom: 52,
-    left: 18,
-};
+const plotCanvas = ref<HTMLCanvasElement | null>(null);
+const loading = ref(true);
+const minMax = ref<{ min: number; max: number } | null>(null);
 
 const temperatureColorMap = ColorMap.heat();
 const heatmapRaster = new HeatmapRaster(temperatureColorMap);
+
+const colorBarGradient = computed(() => temperatureColorMap.toCssGradient());
 
 const plotBounds = computed(() => ({
     left: props.plotMargins.left,
@@ -125,16 +130,6 @@ function resizeCanvas(
 
 function getPlotContext(): CanvasRenderingContext2D | null {
     const canvas = plotCanvas.value;
-
-    if (!canvas) {
-        return null;
-    }
-
-    return canvas.getContext('2d');
-}
-
-function getColorBarContext(): CanvasRenderingContext2D | null {
-    const canvas = colorBarCanvas.value;
 
     if (!canvas) {
         return null;
@@ -288,20 +283,6 @@ function drawEmptyState(): void {
     ctx.fillText('No heatmap data', props.width / 2, props.height / 2);
 }
 
-function clearColorBar(): void {
-    if (!props.colorBarWidth) {
-        return;
-    }
-
-    const ctx = getColorBarContext();
-
-    if (!ctx) {
-        return;
-    }
-
-    ctx.clearRect(0, 0, props.colorBarWidth, props.height);
-}
-
 function drawHeatmap(): void {
     const heatmap = props.heatmap;
 
@@ -311,14 +292,13 @@ function drawHeatmap(): void {
     }
 
     const extent = props.heatmap?.zValuesMinMax();
-
     if (!extent) {
         drawEmptyState();
         return;
     }
+    minMax.value = extent;
 
     const ctx = getPlotContext();
-
     if (!ctx) {
         return;
     }
@@ -366,99 +346,29 @@ function drawHeatmap(): void {
     ctx.restore();
 }
 
-function drawColorBar(): void {
-    if (!props.colorBarWidth) {
-        return;
-    }
-
-    const ctx = getColorBarContext();
-
-    if (!ctx) {
-        return;
-    }
-
-    ctx.clearRect(0, 0, props.colorBarWidth, props.height);
-
-    const extent = props.heatmap?.zValuesMinMax();
-    if (!extent) {
-        return;
-    }
-
-    const barX = barMargins.left;
-    const barY = barMargins.top;
-    const barWidth = 20;
-    const barHeight = props.height - barMargins.top - barMargins.bottom;
-
-    for (let i = 0; i < barHeight; i += 1) {
-        const t = 1 - i / Math.max(1, barHeight - 1);
-
-        ctx.fillStyle = temperatureColorMap.toCss(t);
-        ctx.fillRect(barX, barY + i, barWidth, 1);
-    }
-
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(barX, barY, barWidth, barHeight);
-
-    const tickCount = 5;
-    ctx.fillStyle = '#0f172a';
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-
-    for (let i = 0; i < tickCount; i += 1) {
-        const t = i / (tickCount - 1);
-        const y = barY + t * barHeight;
-        const value = lerp(extent.max, extent.min, t);
-
-        ctx.beginPath();
-        ctx.moveTo(barX + barWidth, y);
-        ctx.lineTo(barX + barWidth + 6, y);
-        ctx.stroke();
-
-        ctx.fillText(formatTick(value), barX + barWidth + 10, y);
-    }
-
-    ctx.save();
-    ctx.translate(barX + barWidth / 2, 4);
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.font = '13px sans-serif';
-    ctx.fillText(props.zLabel, 0, 0);
-    ctx.restore();
-}
-
 function resizeCanvases(): void {
     if (plotCanvas.value) {
         resizeCanvas(plotCanvas.value, props.width, props.height);
     }
-
-    if (props.colorBarWidth && colorBarCanvas.value) {
-        resizeCanvas(colorBarCanvas.value, props.colorBarWidth, props.height);
-    }
 }
 
-function redrawPlotAndColorBar(): void {
+function redrawPlot(): void {
+    console.log('Redrawing heatmap plot...');
+    console.time('redrawPlot');
     loading.value = true;
 
     drawHeatmap();
 
-    const extent = props.heatmap?.zValuesMinMax();
-    if (extent) {
-        drawColorBar();
-    } else {
-        clearColorBar();
-    }
-
     loading.value = false;
+    console.timeEnd('redrawPlot');
 }
 
 watch(
-    () => [props.width, props.height, props.colorBarWidth],
+    () => [props.width, props.height],
     async () => {
         await nextTick();
         resizeCanvases();
-        redrawPlotAndColorBar();
+        redrawPlot();
     },
 );
 
@@ -475,7 +385,7 @@ watch(
         props.plotMargins.left,
     ],
     () => {
-        redrawPlotAndColorBar();
+        redrawPlot();
     },
     { deep: true },
 );
@@ -484,8 +394,8 @@ watch(
 <style scoped>
 .temperature-over-depth-heatmap {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .plot-container {
@@ -517,5 +427,18 @@ canvas {
     font-size: 16px;
     font-weight: 700;
     color: #0f172a;
+}
+
+.color-bar {
+    height: 2rem;
+    background: var(--gradient);
+    border-radius: 1rem;
+}
+
+.min-max {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+    color: white;
 }
 </style>
