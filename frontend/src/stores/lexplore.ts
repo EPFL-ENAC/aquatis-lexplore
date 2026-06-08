@@ -184,33 +184,45 @@ export const useAlgaeStore = makeLexploreDatasetStore<AlgaeData>(875, async (dat
 });
 
 export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
-    const heatmapShallow = makeLexploreDatasetStore(600, async (dataset) => {
-        const data = await dataset.getData(
-            { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
-            ['time', 'depth', 'Sv'],
-            'depth',
-        );
+    const heatmapShallow = makeLexploreDatasetStore(
+        600,
+        async (dataset) => {
+            const data = await dataset.getData(
+                { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
+                ['time', 'depth', 'Sv'],
+                'depth',
+            );
 
-        return new DepthHeatmap({
-            x: data['time'] as number[],
-            y: data['depth']?.reverse() as number[],
-            z: Array2D.fromTransposed(data['Sv'] as number[][], true),
-        });
-    })();
+            return new DepthHeatmap({
+                x: data['time'] as number[],
+                y: data['depth']?.reverse() as number[],
+                z: Array2D.fromTransposed(data['Sv'] as number[][], true),
+            });
+        },
+        {
+            refreshIntervalMs: 15 * 60 * 1000, // Refresh every 15 minutes for zooplancton depth
+        },
+    )();
 
-    const heatmapDeep = makeLexploreDatasetStore(599, async (dataset) => {
-        const data = await dataset.getData(
-            { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
-            ['time', 'depth', 'Sv'],
-            'depth',
-        );
+    const heatmapDeep = makeLexploreDatasetStore(
+        599,
+        async (dataset) => {
+            const data = await dataset.getData(
+                { type: 'timeRange', startTimestamp: dataStartTime(), endTimestamp: Date.now() },
+                ['time', 'depth', 'Sv'],
+                'depth',
+            );
 
-        return new DepthHeatmap({
-            x: data['time'] as number[],
-            y: data['depth'] as number[],
-            z: Array2D.fromTransposed(data['Sv'] as number[][]),
-        });
-    })();
+            return new DepthHeatmap({
+                x: data['time'] as number[],
+                y: data['depth'] as number[],
+                z: Array2D.fromTransposed(data['Sv'] as number[][]),
+            });
+        },
+        {
+            refreshIntervalMs: 15 * 60 * 1000, // Refresh every 15 minutes for zooplancton depth
+        },
+    )();
 
     const cleanBackscatterHeatmap = computed(() => {
         if (!heatmapShallow.data || !heatmapDeep.data) return null;
