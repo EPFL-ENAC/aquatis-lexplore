@@ -33,7 +33,7 @@ import { formatNumber } from 'src/utils/format';
 import { ColorMap } from 'src/utils/colors';
 
 interface Props {
-    value: number;
+    value?: number | undefined;
     size?: number;
     fontScale?: number;
     unit?: string;
@@ -77,15 +77,15 @@ const INNER_BULB_CY = 110;
 const INNER_BOTTOM = INNER_BULB_CY - INNER_BULB_R - 8;
 
 const VALUE_X = 70;
-const VALUE_Y = 36;
-const UNIT_BELOW_Y = 58;
+const VALUE_Y = 64;
+const UNIT_BELOW_Y = VALUE_Y + 20;
 const UNIT_RIGHT_GAP = 4;
 
 const valueTextRef = ref<SVGTextElement | null>(null);
 const valueTextWidth = ref(0);
 
 const clampedValue = computed(() => {
-    return Math.max(props.minValue, Math.min(props.value, props.maxValue));
+    return Math.max(props.minValue, Math.min(props.value ?? props.minValue, props.maxValue));
 });
 
 const range = computed(() => {

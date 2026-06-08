@@ -16,7 +16,10 @@
             <text class="label" :x="labelPositions.s.x" :y="labelPositions.s.y">S</text>
             <text class="label" :x="labelPositions.w.x" :y="labelPositions.w.y">W</text>
 
-            <g :transform="`rotate(${normalizedDeg} 50 50)`">
+            <g
+                v-if="props.windDirectionDeg !== undefined"
+                :transform="`rotate(${normalizedDeg} 50 50)`"
+            >
                 <path class="wind-triangle" :d="trianglePath" />
             </g>
 
@@ -30,8 +33,8 @@ import { describeArc, polarToCartesian } from 'src/utils/svg';
 import { computed } from 'vue';
 
 interface Props {
-    windDirectionDeg: number;
-    windSpeed: number;
+    windDirectionDeg?: number | undefined;
+    windSpeed?: number | undefined;
     size?: number;
     speedUnit?: string;
     maxVisualSpeed?: number;
@@ -61,12 +64,12 @@ function quarterRing(multiplier: number) {
 }
 
 const normalizedDeg = computed(() => {
-    const deg = props.windDirectionDeg % 360;
+    const deg = (props.windDirectionDeg ?? 0) % 360;
     return deg < 0 ? deg + 360 : deg;
 });
 
 const displaySpeed = computed(() => {
-    return `${Math.round(props.windSpeed)} ${props.speedUnit}`;
+    return `${Math.round(props.windSpeed ?? 0)} ${props.speedUnit}`;
 });
 
 const cardinalLabel = computed(() => {
@@ -76,7 +79,7 @@ const cardinalLabel = computed(() => {
 });
 
 const speedRatio = computed(() => {
-    const ratio = props.windSpeed / props.maxVisualSpeed;
+    const ratio = (props.windSpeed ?? 0) / props.maxVisualSpeed;
     return Math.max(0, Math.min(ratio, 1));
 });
 

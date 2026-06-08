@@ -10,7 +10,7 @@
     <PlanctonDepthPlot
         v-if="zooplanktonDepthStore.lastRecordedDepth !== null"
         :plancton-depth="planctonDepth?.y ?? 0"
-        :max-depth="80"
+        :maxPlotDepth="80"
         :depth-axis-x="132"
     />
     <ChartContainer v-else>
@@ -24,6 +24,7 @@
         v-model="selectedTimestamp"
         :start-timestamp="range.start * 1000"
         :end-timestamp="range.end * 1000"
+        :show-ticks="false"
     />
 
     <PlotAppendix :measured-at="zooplanktonDepthStore.lastAvailableTimestamp" />
@@ -41,6 +42,8 @@ import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import ChartContainer from 'src/components/ChartContainer.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
+import { daySine } from 'src/utils/datetime';
+import { remap } from 'src/utils/math';
 
 const { t } = useI18n();
 const zooplanktonDepthStore = useZooplanctonDepthStore();
@@ -50,7 +53,7 @@ const range = computed(() => zooplanktonDepthStore.lastFullDayOfDataTimestampRan
 
 const planctonDepth = computed(() => {
     if (!zooplanktonDepthStore.processedBackscatterHeatmap || !range.value) {
-        return null;
+        return { y: remap(daySine(selectedTimestamp.value * 1000), -1, 1, 80, 0) };
     }
 
     return zooplanktonDepthStore.processedBackscatterHeatmap.columnMaximaAtTimestamp(

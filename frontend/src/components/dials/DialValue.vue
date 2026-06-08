@@ -38,7 +38,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
-    value: number;
+    value?: number | undefined;
     size?: number;
     fontScale?: number;
     unit?: string;
@@ -73,7 +73,7 @@ const START_ANGLE = 225;
 const END_ANGLE = 495;
 
 const clampedValue = computed(() => {
-    return Math.max(props.minValue, Math.min(props.value, props.maxValue));
+    return Math.max(props.minValue, Math.min(props.value ?? props.minValue, props.maxValue));
 });
 
 const displayValue = computed(() => {

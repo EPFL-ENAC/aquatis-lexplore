@@ -54,7 +54,7 @@ import { formatNumber } from 'src/utils/format';
 import { ColorMap } from 'src/utils/colors';
 
 interface Props {
-    value: number;
+    value?: number | undefined;
     size?: number;
     fontScale?: number;
     unit?: string;
@@ -100,7 +100,7 @@ const BASIN_WIDTH = BASIN_RIGHT - BASIN_LEFT;
 const UNIT_Y = 98;
 
 const clampedValue = computed(() => {
-    return Math.max(props.minValue, Math.min(props.value, props.maxValue));
+    return Math.max(props.minValue, Math.min(props.value ?? props.minValue, props.maxValue));
 });
 
 const valueRatio = computed(() => {

@@ -3,7 +3,7 @@
         <template #default> {{ t('chloroChangeTitle') }} </template>
     </PageHeader>
 
-    <ChartContainer :legendItems="tracks">
+    <ChartContainer>
         <ScrollableTracksChart
             :timeline="timeline"
             :px-per-hour="10"

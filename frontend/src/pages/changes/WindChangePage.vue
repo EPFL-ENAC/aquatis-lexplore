@@ -3,7 +3,7 @@
         <template #default> {{ t('windChangeTitle') }} </template>
     </PageHeader>
 
-    <ChartContainer :legendItems="tracksInLegend">
+    <ChartContainer>
         <ScrollableTracksChart
             :timeline="timeline"
             :px-per-hour="10"
@@ -139,10 +139,6 @@ const tracks = computed(() => {
 });
 
 const timeline = computed(() => new Timeline(tracks.value));
-
-const tracksInLegend = computed(() =>
-    tracks.value.filter((track) => track.type !== 'wind' && track.type !== 'number'),
-);
 
 const questions = computed(() => [
     {

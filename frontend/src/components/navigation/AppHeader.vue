@@ -26,7 +26,7 @@
                     <div class="stat">
                         <div class="stat__label">{{ t('headerAirTemp') }}</div>
                         <TemperatureThermometer
-                            :value="weatherStore.data?.airTemperature.at(-1) ?? 0"
+                            :value="weatherStore.data?.airTemperature.at(-1)"
                             :size="dialSize"
                             :min-value="-10"
                             :max-value="30"
@@ -36,7 +36,7 @@
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWaterTemp') }}</div>
                         <TemperatureThermometer
-                            :value="lakeStore.data?.surfaceTemperature.at(-1) ?? 0"
+                            :value="lakeStore.data?.surfaceTemperature.at(-1)"
                             :size="dialSize"
                             :min-value="-10"
                             :max-value="30"
@@ -47,14 +47,12 @@
                         <div class="stat__label">{{ t('headerWind') }}</div>
                         <div class="stat__row">
                             <WindCompass
-                                :wind-direction-deg="
-                                    weatherStore.data?.windDirectionDegrees.at(-1) ?? 0
-                                "
-                                :wind-speed="weatherStore.data?.windSpeed.at(-1) ?? 0"
+                                :wind-direction-deg="weatherStore.data?.windDirectionDegrees.at(-1)"
+                                :wind-speed="weatherStore.data?.windSpeed.at(-1)"
                                 :size="dialSize"
                             />
                             <DialValue
-                                :value="weatherStore.data?.windSpeed.at(-1) ?? 0"
+                                :value="weatherStore.data?.windSpeed.at(-1)"
                                 :size="dialSize"
                             />
                         </div>
@@ -62,7 +60,7 @@
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWave') }}</div>
                         <WaveHeightDial
-                            :value="buoyStore.data?.height.at(-1) ?? 0"
+                            :value="buoyStore.data?.height.at(-1)"
                             :size="dialSize"
                             :max-value="10"
                             unit="cm"
@@ -91,6 +89,7 @@ const { t } = useI18n();
 const logos = [
     { name: 'Eawag', src: '/logos/eawag.svg' },
     { name: 'UNIL', src: '/logos/unil.svg' },
+    { name: 'UNIGE', src: '/logos/unige.svg' },
     { name: 'EPFL', src: '/logos/epfl_blue.svg' },
 ];
 

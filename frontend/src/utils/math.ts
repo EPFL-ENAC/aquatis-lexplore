@@ -101,3 +101,14 @@ export function randomGaussian(mean = 0, stdDev = 1) {
 export function randomBetween(min: number, max: number) {
     return min + Math.random() * (max - min);
 }
+
+export function remap(
+    value: number,
+    fromMin: number,
+    fromMax: number,
+    toMin: number,
+    toMax: number,
+): number {
+    const t = getInterpolationT(fromMin, fromMax, value);
+    return lerp(toMin, toMax, t);
+}

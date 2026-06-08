@@ -12,7 +12,7 @@
     <PlanctonDepthPlot
         v-if="zooplanktonDepthStore.lastRecordedDepth !== null"
         :plancton-depth="zooplanktonDepthStore.lastRecordedDepth"
-        :max-depth="80"
+        :maxPlotDepth="80"
         :depth-axis-x="132"
     />
     <ChartContainer v-else>
@@ -32,6 +32,7 @@ import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import PlanctonDepthPlot from 'src/components/plots/waterDepth/PlanctonDepthPlot.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
+import ChartContainer from 'src/components/ChartContainer.vue';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 
 const { t } = useI18n();

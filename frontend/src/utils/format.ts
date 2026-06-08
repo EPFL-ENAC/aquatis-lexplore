@@ -1,9 +1,10 @@
 export function formatNumber(
     value: number | undefined,
     locale: string | undefined = undefined,
+    fallback: string = '-',
 ): string {
     if (value === undefined) {
-        return 'N/A';
+        return fallback;
     }
 
     const numberFormatter = new Intl.NumberFormat(locale, {
@@ -23,9 +24,13 @@ export function formatDate(date: Date, locale: string | undefined = undefined): 
     return dateFormatter.format(date);
 }
 
-export function formatTime(timestamp: number | undefined, locale: string | undefined): string {
+export function formatTime(
+    timestamp: number | undefined,
+    locale: string | undefined,
+    fallback: string = '-',
+): string {
     if (timestamp === undefined) {
-        return 'N/A';
+        return fallback;
     }
 
     return new Intl.DateTimeFormat(locale, {
@@ -36,9 +41,13 @@ export function formatTime(timestamp: number | undefined, locale: string | undef
     }).format(new Date(timestamp * 1000));
 }
 
-export function formatDateShort(timestamp: number | undefined, locale: string | undefined): string {
+export function formatDateShort(
+    timestamp: number | undefined,
+    locale: string | undefined,
+    fallback: string = '-',
+): string {
     if (timestamp === undefined) {
-        return 'N/A';
+        return fallback;
     }
 
     return new Intl.DateTimeFormat(locale, {

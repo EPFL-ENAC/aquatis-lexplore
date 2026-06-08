@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { Array2D } from 'src/utils/array2d';
 import { Dataset } from 'src/utils/dataset';
 import { DepthHeatmap } from 'src/utils/depthHeatmap';
-import { closestAboveSorted, closestBelowSorted, getInterpolationT, lerp } from 'src/utils/math';
 import { computed, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
 interface MeasurementData {
@@ -72,7 +71,7 @@ function makeLexploreDatasetStore<T>(
                 data.value = await extractData(dataset.value);
                 error.value = null;
             } catch (err) {
-                console.error('Error pulling dataset' + id, err);
+                console.error('Error pulling dataset ' + id, err);
                 dataset.value = null;
                 error.value = err instanceof Error ? err : new Error(String(err));
             } finally {
@@ -224,53 +223,28 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
         },
     )();
 
-    const cleanBackscatterHeatmap = computed(() => {
+    const processedBackscatterHeatmap = computed(() => {
         if (!heatmapShallow.data || !heatmapDeep.data) return null;
         const shallowSliced = heatmapShallow.data.slice({ yEnd: 24.45 }); // Data returns null deeper that this
         const deepSliced = heatmapDeep.data.slice({ yStart: 31.08, yEnd: 90.08 }); // Artifacts start there
 
         const bridgeY = [25.08, 26.08, 27.08, 28.08, 29.08, 30.08];
 
-        return shallowSliced.toInterpolated(deepSliced.x).appendBelow(deepSliced, bridgeY);
-    });
-
-    const processedBackscatterHeatmap = computed(() => {
-        if (!cleanBackscatterHeatmap.value) return null;
-        return cleanBackscatterHeatmap.value
+        const shallowInterpolated = shallowSliced.toInterpolated(deepSliced.x);
+        const shallowZScore = shallowInterpolated.zScore();
+        const deepZScore = deepSliced
             .replaceDepthRangeByLerp(48.08, 51.08)
             .replaceDepthRangeByLerp(53.08, 60.08)
-            .zScore()
-            .smoothMovingAverage({ windowX: 31, windowY: 31 });
+            .zScore();
+
+        const appended = shallowZScore.appendBelow(deepZScore, bridgeY);
+
+        return appended.smoothMovingAverage({ windowX: 31, windowY: 31 });
     });
 
     const zooplanctonDepthPlotByTimestamp = computed(() => {
         return processedBackscatterHeatmap.value?.maxZValuePlot();
     });
-
-    function zooplanctonDepthAtTimestamp(timestamp: number): number | null {
-        if (!zooplanctonDepthPlotByTimestamp.value) return null;
-
-        const availableTimestamps = Object.keys(zooplanctonDepthPlotByTimestamp.value).map(Number);
-        if (availableTimestamps.length === 0) {
-            return null;
-        }
-
-        const below = closestBelowSorted(availableTimestamps, timestamp) ?? {
-            index: 0,
-            value: availableTimestamps[0]!,
-        };
-        const above = closestAboveSorted(availableTimestamps, timestamp) ?? {
-            index: availableTimestamps.length - 1,
-            value: availableTimestamps[availableTimestamps.length - 1]!,
-        };
-        const t = getInterpolationT(below.value, above.value, timestamp);
-
-        return lerp(
-            zooplanctonDepthPlotByTimestamp.value[below.value]!.y,
-            zooplanctonDepthPlotByTimestamp.value[above.value]!.y,
-            t,
-        );
-    }
 
     const lastFullDayOfDataTimestampRange = computed(() => {
         if (!zooplanctonDepthPlotByTimestamp.value) return null;
@@ -315,10 +289,8 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
     return {
         heatmapShallow,
         heatmapDeep,
-        cleanBackscatterHeatmap,
         processedBackscatterHeatmap,
         zooplanctonDepthPlotByTimestamp,
-        zooplanctonDepthAtTimestamp,
         lastFullDayOfDataTimestampRange,
         lastAvailableTimestamp,
         lastRecordedDepth,

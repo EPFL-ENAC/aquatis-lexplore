@@ -24,27 +24,23 @@
             <h3>Deep</h3>
             <DepthHeatmapPlot v-if="deep" :heatmap="deep" />
 
-            <h3>Clean</h3>
+            <h3>Processed</h3>
             <pre>
 const shallowSliced = heatmapShallow.data.slice({ yEnd: 24.45 }); // Data returns null deeper that this
 const deepSliced = heatmapDeep.data.slice({ yStart: 31.08, yEnd: 90.08 }); // Artifacts start there
 
 const bridgeY = [25.08, 26.08, 27.08, 28.08, 29.08, 30.08];
 
-return shallowSliced.toInterpolated(deepSliced.x).appendBelow(deepSliced, bridgeY);
-            </pre>
-            <DepthHeatmapPlot
-                v-if="zooplanktonDepthStore.cleanBackscatterHeatmap"
-                :heatmap="zooplanktonDepthStore.cleanBackscatterHeatmap"
-            />
-
-            <h3>Processed</h3>
-            <pre>
-clean
+const shallowInterpolated = shallowSliced.toInterpolated(deepSliced.x);
+const shallowZScore = shallowInterpolated.zScore();
+const deepZScore = deepSliced
     .replaceDepthRangeByLerp(48.08, 51.08)
     .replaceDepthRangeByLerp(53.08, 60.08)
-    .zScore()
-    .smoothMovingAverage({ windowX: 31, windowY: 31 })
+    .zScore();
+
+const appended = shallowZScore.appendBelow(deepZScore, bridgeY);
+
+return appended.smoothMovingAverage({ windowX: 31, windowY: 31 });
             </pre>
             <DepthHeatmapPlot
                 v-if="zooplanktonDepthStore.processedBackscatterHeatmap"

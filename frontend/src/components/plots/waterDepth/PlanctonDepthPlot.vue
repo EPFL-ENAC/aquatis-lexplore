@@ -24,18 +24,21 @@
 import { computed } from 'vue';
 import WaterDepthShell from './utils/WaterDepthShell.vue';
 import ImageSwarm from './utils/ImageSwarm.vue';
+import { clamp } from 'src/utils/math.js';
 
 const props = withDefaults(
     defineProps<{
         planctonDepth: number;
-        maxDepth: number;
+        maxPlotDepth: number;
         marginTop?: number;
         marginBottom?: number;
         depthAxisX?: number;
         minDisplayedDepth?: number;
+        maxDisplayedDepth?: number;
     }>(),
     {
         minDisplayedDepth: 2,
+        maxDisplayedDepth: 60,
         marginTop: 10,
         marginBottom: 5,
         depthAxisX: 132,
@@ -46,7 +49,7 @@ const rows = computed(() => {
     const depthFactors = [0, 0.25, 0.5, 0.75, 1];
 
     return depthFactors.map((factor) => {
-        const depth = props.maxDepth * factor;
+        const depth = props.maxPlotDepth * factor;
 
         return {
             key: depth,
@@ -56,15 +59,23 @@ const rows = computed(() => {
     });
 });
 
-const totalRange = computed(() => props.maxDepth + props.marginTop + props.marginBottom);
+const totalRange = computed(() => props.maxPlotDepth + props.marginTop + props.marginBottom);
+
+const clampedDepth = computed(() =>
+    clamp(
+        props.planctonDepth,
+        props.minDisplayedDepth,
+        props.maxDisplayedDepth ?? props.maxPlotDepth,
+    ),
+);
 
 const planctonTopPercent = computed(() => {
-    const totalDepth = Math.max(props.minDisplayedDepth, props.planctonDepth) + props.marginTop;
+    const totalDepth = clampedDepth.value + props.marginTop;
     return (totalDepth / totalRange.value) * 100;
 });
 
 const planctonSpreadY = computed(() => {
-    return props.planctonDepth * 1.5;
+    return clampedDepth.value * 4;
 });
 </script>
 
