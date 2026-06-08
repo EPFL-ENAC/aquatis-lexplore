@@ -52,12 +52,14 @@ const selectedTimestamp = ref<number>(Date.now() / 1000);
 const range = computed(() => zooplanktonDepthStore.lastFullDayOfDataTimestampRange);
 
 const planctonDepth = computed(() => {
+    const remapedSine = remap(daySine(selectedTimestamp.value * 1000), -1, 1, 80, 0);
     if (!zooplanktonDepthStore.processedBackscatterHeatmap || !range.value) {
-        return { y: remap(daySine(selectedTimestamp.value * 1000), -1, 1, 80, 0) };
+        return { y: remapedSine, z: 0 };
     }
 
     return zooplanktonDepthStore.processedBackscatterHeatmap.columnMaximaAtTimestamp(
         selectedTimestamp.value,
+        { startY: remapedSine - 40, endY: remapedSine + 40 },
     );
 });
 

@@ -52,6 +52,7 @@ return appended.smoothMovingAverage({ windowX: 31, windowY: 31 });
                 v-if="zooplanktonDepthStore.processedBackscatterHeatmap"
                 :heatmap="zooplanktonDepthStore.processedBackscatterHeatmap"
                 :highlight-column-maxima="true"
+                :column-maxima-constraint="columnMaximaConstraint"
             />
 
             <QuestionCardsRow :items="questionCards" :columns="1" />
@@ -69,6 +70,8 @@ import DepthHeatmapPlot from 'src/components/plots/DepthHeatmapPlot.vue';
 // import zooplanktonIcon from 'src/assets/zooplankton.png';
 import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 import type { DepthHeatmap } from 'src/utils/depthHeatmap';
+import { remap } from 'src/utils/math';
+import { daySine } from 'src/utils/datetime';
 
 const { t } = useI18n();
 const zooplanktonDepthStore = useZooplanctonDepthStore();
@@ -87,6 +90,15 @@ const shallow = computed<DepthHeatmap | null>(
 const deep = computed<DepthHeatmap | null>(
     () => zooplanktonDepthStore.heatmapDeep.data as DepthHeatmap | null,
 );
+
+function columnMaximaConstraint(timestamp: number): { startY: number; endY: number } {
+    const remapedSine = remap(daySine(timestamp * 1000), -1, 1, 80, 0);
+
+    return {
+        startY: remapedSine - 40,
+        endY: remapedSine + 40,
+    };
+}
 </script>
 
 <style scoped></style>

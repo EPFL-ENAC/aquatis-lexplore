@@ -1,4 +1,10 @@
-import { arraysEqual, getFractionalIndex, sortedArrayRange, uniqueSorted } from './array';
+import {
+    arraysEqual,
+    getFractionalIndex,
+    lastSmallerValueIndex,
+    sortedArrayRange,
+    uniqueSorted,
+} from './array';
 import { Array2D } from './array2d';
 import { closestAboveSorted, closestBelowSorted, getInterpolationT, lerp } from './math';
 
@@ -335,11 +341,25 @@ export class DepthHeatmap {
         });
     }
 
-    public maxZValuePlot(): Record<number, { y: number; z: number }> {
+    public maxZValuePlot(
+        columnSlice:
+            | ((timestamp: number) => { startY: number; endY: number })
+            | undefined = undefined,
+    ): Record<number, { y: number; z: number }> {
         const maxValues: Record<number, { y: number; z: number }> = {};
 
         for (let i = 0; i < this.x.length; i++) {
-            const { yIndex, value } = this.z.maxAtX(i);
+            let indexSlice = undefined;
+            if (columnSlice) {
+                const valueSlice = columnSlice(this.x[i]!);
+                indexSlice = {
+                    startY: lastSmallerValueIndex(this.y, valueSlice.startY),
+                    endY: lastSmallerValueIndex(this.y, valueSlice.endY) + 1,
+                };
+                console.log({ timestamp: this.x[i], valueSlice, indexSlice });
+            }
+
+            const { yIndex, value } = this.z.maxAtX(i, indexSlice);
             maxValues[this.x[i]!] = {
                 y: this.y[yIndex]!,
                 z: value,
@@ -349,7 +369,10 @@ export class DepthHeatmap {
         return maxValues;
     }
 
-    public columnMaximaAtTimestamp(timestamp: number): { y: number; z: number } | null {
+    public columnMaximaAtTimestamp(
+        timestamp: number,
+        columnSlice?: { startY: number; endY: number },
+    ): { y: number; z: number } | null {
         const {
             lowerIndex: xLowerIndex,
             upperIndex: xUpperIndex,
@@ -364,10 +387,17 @@ export class DepthHeatmap {
         let maxZ = -Infinity;
         let maxY = this.y[0]!;
         for (let j = 0; j < this.y.length; j++) {
+            const yValue = this.y[j]!;
+            if (columnSlice) {
+                if (yValue < columnSlice.startY || yValue > columnSlice.endY) {
+                    continue;
+                }
+            }
+
             const zValue = fakeColumn[j]!;
             if (zValue > maxZ) {
                 maxZ = zValue;
-                maxY = this.y[j]!;
+                maxY = yValue;
             }
         }
 

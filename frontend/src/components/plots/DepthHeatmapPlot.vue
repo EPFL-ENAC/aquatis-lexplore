@@ -29,6 +29,7 @@ interface Props {
     zLabel?: string;
     highlightColumnMaxima?: boolean;
     colorMap?: ColorMap;
+    columnMaximaConstraint?: ((timestamp: number) => { startY: number; endY: number }) | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -143,7 +144,9 @@ function drawHeatmap(): void {
 
     const cellWidth = plotWidth / heatmap.x.length;
     const cellHeight = plotHeight / heatmap.y.length;
-    const columnMaxima = props.highlightColumnMaxima ? heatmap.maxZValuePlot() : null;
+    const columnMaxima = props.highlightColumnMaxima
+        ? heatmap.maxZValuePlot(props.columnMaximaConstraint)
+        : null;
 
     for (let x = 0; x < heatmap.x.length; x += 1) {
         for (let y = 0; y < heatmap.y.length; y += 1) {

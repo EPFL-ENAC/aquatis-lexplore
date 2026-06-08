@@ -179,7 +179,10 @@ export class Array2D {
         return sum / n;
     }
 
-    public maxAtX(x: number): { yIndex: number; value: number } {
+    public maxAtX(
+        x: number,
+        columnSlice?: { startY: number; endY: number },
+    ): { yIndex: number; value: number } {
         if (x < 0 || x >= this.width) {
             throw new Error(`x index ${x} is out of bounds.`);
         }
@@ -189,7 +192,10 @@ export class Array2D {
             yIndex: -1,
         };
 
-        for (let y = 0; y < this.height; y += 1) {
+        const startY = columnSlice ? clamp(columnSlice.startY, 0, this.height - 1) : 0;
+        const endY = columnSlice ? clamp(columnSlice.endY, 0, this.height - 1) : this.height - 1;
+
+        for (let y = startY; y <= endY; y += 1) {
             const value = this.at(x, y)!;
 
             if (Number.isFinite(value) && value > max.value) {
