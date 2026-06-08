@@ -15,6 +15,11 @@
         :max-depth="80"
         :depth-axis-x="132"
     />
+    <ChartContainer v-else>
+        <div class="loading">
+            <q-circular-progress indeterminate rounded size="50px" color="white" class="q-ma-md" />
+        </div>
+    </ChartContainer>
     <PlotAppendix :measured-at="zooplanktonDepthStore.lastAvailableTimestamp" />
 
     <QuestionCardsRow :items="questionCards" :columns="1" />
@@ -41,4 +46,11 @@ const questionCards = computed(() => [
 ]);
 </script>
 
-<style scoped></style>
+<style scoped>
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+</style>

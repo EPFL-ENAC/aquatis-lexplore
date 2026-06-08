@@ -103,6 +103,10 @@ export class DatasetFileCollection {
         endTimestamp: number,
     ): Promise<DatasetFileDataChunk[]> {
         const matchingFiles = this.getFilesForTimeRange(startTimestamp, endTimestamp);
+        console.log(
+            `Found ${matchingFiles.length} matching files for time range ${new Date(startTimestamp).toISOString()} - ${new Date(endTimestamp).toISOString()}:`,
+            matchingFiles,
+        );
 
         return Promise.all(
             matchingFiles.map(async (file) => ({

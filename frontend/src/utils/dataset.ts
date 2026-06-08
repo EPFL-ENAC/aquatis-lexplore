@@ -208,6 +208,11 @@ export class Dataset {
         rename: boolean = true,
         validate: boolean = true,
     ): Promise<DatasetData> {
+        console.log(
+            'Getting data with params',
+            { timePullParam, axesLabels, constantAxisLabel, rename, validate },
+            this,
+        );
         if (timePullParam.type === 'timeRange') {
             if (timePullParam.endTimestamp < timePullParam.startTimestamp) {
                 throw new Error('endTimestamp must be greater than or equal to startTimestamp');

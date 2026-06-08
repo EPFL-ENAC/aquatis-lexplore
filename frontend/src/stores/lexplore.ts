@@ -65,8 +65,10 @@ function makeLexploreDatasetStore<T>(
                     !dataset.value ||
                     Date.now() - (lastPullTimestamp.value ?? 0) > options!.datasetMaxAgeMs!
                 ) {
+                    console.log(`Dataset.fromId ${id}...`);
                     dataset.value = await Dataset.fromId(id);
                 }
+                console.log(`Extracting data from dataset ${id}...`);
                 data.value = await extractData(dataset.value);
                 error.value = null;
             } catch (err) {
@@ -85,7 +87,7 @@ function makeLexploreDatasetStore<T>(
             void pullDataset();
 
             interval = setInterval(() => {
-                // void pullDataset();
+                void pullDataset();
             }, options.refreshIntervalMs);
         });
 
@@ -137,26 +139,32 @@ export const useBuoyStore = makeLexploreDatasetStore<BuoyData>(885, async (datas
     };
 });
 
-export const useLakeStore = makeLexploreDatasetStore<LakeData>(448, async (dataset) => {
-    const twoYearsAgo = Date.now() - 1 * 365 * 24 * 3600 * 1000;
-    const data = await dataset.getData(
-        { type: 'timeRange', startTimestamp: twoYearsAgo, endTimestamp: Date.now() },
-        ['time', 'depth', 'temp', 'surfacetemp'],
-        'depth',
-    );
+export const useLakeStore = makeLexploreDatasetStore<LakeData>(
+    448,
+    async (dataset) => {
+        const twoYearsAgo = Date.now() - 1 * 365 * 24 * 3600 * 1000;
+        const data = await dataset.getData(
+            { type: 'timeRange', startTimestamp: twoYearsAgo, endTimestamp: Date.now() },
+            ['time', 'depth', 'temp', 'surfacetemp'],
+            'depth',
+        );
 
-    Array2D.fromTransposed(data['temp'] as number[][]);
+        Array2D.fromTransposed(data['temp'] as number[][]);
 
-    return {
-        timestamps: data['time']! as number[],
-        surfaceTemperature: data['surfacetemp']! as number[],
-        temperatureOverDepth: new DepthHeatmap({
-            x: data['time'] as number[],
-            y: data['depth'] as number[],
-            z: Array2D.fromTransposed(data['temp'] as number[][]),
-        }),
-    };
-});
+        return {
+            timestamps: data['time']! as number[],
+            surfaceTemperature: data['surfacetemp']! as number[],
+            temperatureOverDepth: new DepthHeatmap({
+                x: data['time'] as number[],
+                y: data['depth'] as number[],
+                z: Array2D.fromTransposed(data['temp'] as number[][]),
+            }),
+        };
+    },
+    {
+        refreshIntervalMs: 60 * 60 * 1000, // Refresh every hour since lake data changes slowly
+    },
+);
 
 export const useAlgaeStore = makeLexploreDatasetStore<AlgaeData>(875, async (dataset) => {
     const data = await dataset.getData(

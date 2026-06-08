@@ -140,7 +140,9 @@ const tracks = computed(() => {
 
 const timeline = computed(() => new Timeline(tracks.value));
 
-const tracksInLegend = computed(() => tracks.value.filter((track) => track.type !== 'wind'));
+const tracksInLegend = computed(() =>
+    tracks.value.filter((track) => track.type !== 'wind' && track.type !== 'number'),
+);
 
 const questions = computed(() => [
     {

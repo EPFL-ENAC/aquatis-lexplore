@@ -32,7 +32,7 @@ import AppNav from './AppNav.vue';
 import { useI18n } from 'vue-i18n';
 const { locale } = useI18n();
 
-const languageOptions = [{ value: 'fr' }, { value: 'en' }, { value: 'de' }, { value: 'it' }];
+const languageOptions = [{ value: 'fr' }, { value: 'en-GB' }, { value: 'de' }, { value: 'it' }];
 </script>
 
 <style scoped lang="scss">
