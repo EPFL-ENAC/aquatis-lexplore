@@ -22,14 +22,15 @@ export default {
     homeEyebrow: 'BIENVENUE',
     homeTitle: 'Le Léman, en direct, sous tes yeux.',
     homeSubtitle:
-        "Plonge à 100 mètres, suis le plancton heure par heure, et compare l'eau à l'air avec les données vraies de la plateforme scientifique Léxplore.",
+        'Plonge à 100 mètres, suis le plancton heure par heure, et observe le lien entre l’air et l’eau avec les données vraies de la plateforme scientifique LéXPLORE.',
 
     // --- Home nav cards ---
     homeLiveLabel: 'LIVE',
     homeLiveTitle: 'Plus de données en LIVE',
-    homeLiveSubtitle: 'Température en profondeur, plancton, microalgues mesurés en direct.',
+    homeLiveSubtitle:
+        'Température de l’eau à toutes les profondeurs , localisation du plancton animal, microalgues, mesurés en direct',
     homeDiscoveryLabel: 'DÉCOUVERTE',
-    homeDiscoveryTitle: 'Découvre les changements du Léman',
+    homeDiscoveryTitle: 'Les 10 derniers jours du Léman',
     homeDiscoverySubtitle: "Comment l'eau, l'air, les vagues ont bougé ces 10 derniers jours.",
     homeGamesLabel: 'JEUX',
     homeGamesTitle: 'Deviens un Léxplorateur',
@@ -40,7 +41,7 @@ export default {
     livePickerEyebrow: '01 · LIVE',
     livePickerTitle: "Teste d'autres données en live!",
     livePickerSubtitle:
-        'Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en ce moment par la plateforme Léxplore.',
+        'Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en ce moment par la plateforme LéXPLORE.',
 
     // --- Live Data nav ---
     liveNavTempDepth: 'Température en profondeur',
@@ -54,20 +55,20 @@ export default {
     tempDepthTitle: "Plus on descend, plus l'eau refroidit.",
     tempDepthAir: 'Air',
     tempDepthQ1: "Observes-tu une différence entre l'air et l'eau ?",
-    tempDepthQ2: "Est-ce qu'il fait plus froid à 50 m ou à 100 m ?",
+    tempDepthQ2: "Est-ce qu'il fait plus froid à 10 m ou à 60 m ?",
 
     // --- Zooplankton Depth (Live) ---
     zooDepthEyebrow: '01 · LIVE - Profondeur du Zooplancton',
     zooDepthTitle: 'Il monte la nuit, il descend le jour.',
     zooDepthSubtitle:
-        'Le plancton animal bouge entre le fond et la surface pour manger et pour se cacher des poissons.',
+        'Le plancton animal migre chaque jour, entre le fond, pour se cacher des poissons, vers la surface, pour se nourrir des microalgues la nuit.',
     zooDepthQ1: 'À quelle profondeur vois-tu le plancton maintenant ?',
 
     // --- Algae Concentration (Live) ---
     algaeConcEyebrow: '01 · LIVE - Concentration des Microalgues',
-    algaeConcTitle: 'Des forêts microscopiques.',
+    algaeConcTitle: 'Des prairies microscopiques.',
     algaeConcSubtitle:
-        'Les microalgues du Léman sont appelées phytoplancton. La concentration grimpe en été, avec la lumière et la chaleur du soleil.',
+        'Les microalgues, ou phytoplancton, ont besoin de la lumière du soleil pour pousser. Elles constituent le premier maillon de la chaine alimentaire. mais quand elles sont trop nombreuses, l’eau du lac verdit et se trouble.',
     algaeConcQ1: 'À quelle profondeur la concentration de plancton est la plus haute ?',
 
     // --- Changes Picker ---
@@ -94,7 +95,7 @@ export default {
     windChangeTrackWindSpeed: 'Vitesse du vent (km/h)',
     windChangeTrackPrecipitation: 'Précipitations (mm/h)',
     windChangeTrackWaveHeight: 'Hauteur des vagues (m)',
-    windChangeQ1: 'Observes-tu des changements ces derniers jours ?',
+    windChangeQ1: 'Quel est l’effet des coups de vent sur la surface du lac?',
     windChangeQ2: "L'air est-il plus chaud ou plus froid que l'eau ?",
 
     // --- Chlorophyll Change Page ---
@@ -104,13 +105,13 @@ export default {
     chloroChangeTrackAirTemp: "Température de l'air (°C)",
     chloroChangeTrackWaterTemp: "Température de l'eau (°C)",
     chloroChangeTrackChlorophyll: 'Chlorophylle A moyenne (0–20 m)',
-    chloroChangeQ1: "L'air est-il plus chaud ou plus froid que l'eau ?",
+    chloroChangeQ1: 'Est-ce que c’est parce qu’il fait plus chaud qu’il y a plus d’algues?',
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · JEUX',
     gamePickerTitle: 'Jeu sur la vie dans le Léman',
     gamePickerSubtitle:
-        'Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en ce moment par la plateforme Léxplore.',
+        'Choisis ce que tu veux observer dans le lac. Toutes les valeurs sont mesurées en ce moment par la plateforme LéXPLORE.',
 
     // --- Game nav ---
     gameNavPlanctonTitle: "L'aventure du Plancton",
@@ -127,14 +128,14 @@ export default {
     tempGameSubtitle: 'Glisse sur la grille pour explorer.',
     tempGameProfileKicker: 'Au curseur → temp par profondeur',
     tempGameLoading: 'Chargement des températures…',
-    tempGameQ1: 'Quelle est la période la plus chaude en profondeur?',
+    tempGameQ1: 'Jusqu’à quelle profondeur l’énergie solaire réchauffe-t-elle l’eau du Léman?',
     tempGameQ2: "À quelle profondeur l'eau reste toujours plus froide que 10°C?",
 
     // --- Plankton Game ---
     planctonGameEyebrow: "01 · L'aventure du Plancton",
     planctonGameTitle: 'Bouge le curseur rouge.',
     planctonGameSubtitle: 'Observe le mouvement du zooplancton à travers la journée.',
-    planctonGameQ1: "Est-ce qu'il est plus proche de la surface vers midi ou vers minuit ?",
+    planctonGameQ1: 'Penses-tu que le plancton animal aime la lumière?',
 
     // --- Plots ---
     plotDepthProfileAria: 'Graphique de profil en profondeur',

@@ -3,7 +3,7 @@
         <div class="header__inner">
             <div class="header__top">
                 <div class="header__logo">
-                    <img src="/logo.svg" alt="AQUATIS logo" />
+                    <img src="/fondation_aquatis.svg" alt="FONDATION AQUATIS logo" />
                 </div>
 
                 <div class="header-logos">
@@ -90,6 +90,7 @@ const logos = [
     { name: 'Eawag', src: '/logos/eawag.svg' },
     { name: 'UNIL', src: '/logos/unil.svg' },
     { name: 'UNIGE', src: '/logos/unige.svg' },
+    { name: 'Carrtel', src: '/logos/carrtel.svg' },
     { name: 'EPFL', src: '/logos/epfl_blue.svg' },
 ];
 
@@ -121,6 +122,11 @@ const dialSize = 152;
     gap: 1rem;
     align-items: flex-start;
     color: #00c6df;
+}
+
+.header__logo img {
+    height: 6rem;
+    width: auto;
 }
 
 .header-logos {
@@ -176,7 +182,8 @@ const dialSize = 152;
 }
 
 .stat__label {
-    opacity: 0.6;
+    opacity: 0.7;
+    font-size: 1.25rem;
     font-weight: 600;
 }
 </style>

@@ -5,12 +5,12 @@ export default {
     live: 'LIVE',
     question: 'QUESTION',
 
-    lemanLive: 'Léman Live',
-    lastMeasurement: 'Last Measurement at {time}',
+    lemanLive: 'Live from Lake Geneva',
+    lastMeasurement: 'Last measurement at {time}',
 
     // --- 404 ---
     notFoundMessage: 'Oops, nothing here...',
-    goHome: 'Go Home',
+    goHome: 'Back to home',
 
     // --- Header ---
     headerAirTemp: 'AIR',
@@ -20,54 +20,55 @@ export default {
 
     // --- Home page ---
     homeEyebrow: 'WELCOME',
-    homeTitle: 'Lake Geneva, live, right before your eyes.',
+    homeTitle: 'Lake Geneva, live, before your eyes.',
     homeSubtitle:
-        'Dive to 100 meters, track plankton hour by hour, and compare water to air with real data from the Léxplore scientific platform.',
+        'Dive 100 metres deep, track plankton hour by hour, and observe the link between air and water with real data from the LéXPLORE scientific platform.',
 
     // --- Home nav cards ---
     homeLiveLabel: 'LIVE',
-    homeLiveTitle: 'More Live Data',
-    homeLiveSubtitle: 'Temperature at depth, plankton, microalgae measured in real time.',
+    homeLiveTitle: 'More LIVE data',
+    homeLiveSubtitle:
+        'Water temperature at all depths, animal plankton location, and microalgae, measured live.',
     homeDiscoveryLabel: 'DISCOVERY',
-    homeDiscoveryTitle: "Discover Lake Geneva's Changes",
-    homeDiscoverySubtitle: 'How water, air, and waves have shifted over the past 10 days.',
+    homeDiscoveryTitle: 'The last 10 days of Lake Geneva',
+    homeDiscoverySubtitle: 'How the water, air, and waves have moved over the last 10 days.',
     homeGamesLabel: 'GAMES',
     homeGamesTitle: 'Become a Léxplorer',
-    homeGamesSubtitle: 'The plankton adventure and Hot-or-Cold: two games to understand the lake.',
+    homeGamesSubtitle: 'The Plankton Adventure and Hot-or-Cold: two games to understand the lake.',
 
     // --- Live Data Picker ---
     livePickerEyebrow: '01 · LIVE',
-    livePickerTitle: 'Try other live data!',
+    livePickerTitle: 'Check out other live data!',
     livePickerSubtitle:
-        'Choose what you want to observe in the lake. All values are currently measured by the Léxplore platform.',
+        'Choose what you want to observe in the lake. All values are currently being measured by the LéXPLORE platform.',
 
     // --- Live Data nav ---
-    liveNavTempDepth: 'Temperature at Depth',
+    liveNavTempDepth: 'Temperature at depth',
     liveNavTempDepthShort: 'Air → 100m',
-    liveNavZooDepth: 'Zooplankton Depth',
-    liveNavZooDepthShort: 'Day/Night Migration',
-    liveNavAlgaeConc: 'Microalgae Concentration',
+    liveNavZooDepth: 'Zooplankton depth',
+    liveNavZooDepthShort: 'Day/night migration',
+    liveNavAlgaeConc: 'Microalgae concentration',
 
     // --- Temperature Over Depth (Live) ---
-    tempDepthEyebrow: '01 · LIVE - Temperature at Depth',
-    tempDepthTitle: 'The deeper you go, the colder the water.',
+    tempDepthEyebrow: '01 · LIVE - Temperature at depth',
+    tempDepthTitle: 'The deeper you go, the colder the water gets.',
     tempDepthAir: 'Air',
-    tempDepthQ1: 'Do you notice a difference between air and water?',
-    tempDepthQ2: 'Is it colder at 50m or at 100m?',
+    tempDepthQ1: 'Do you notice a difference between the air and the water?',
+    tempDepthQ2: 'Is it colder at 10 m or 60 m?',
 
     // --- Zooplankton Depth (Live) ---
-    zooDepthEyebrow: '01 · LIVE - Zooplankton Depth',
-    zooDepthTitle: 'It rises at night, it sinks during the day.',
+    zooDepthEyebrow: '01 · LIVE - Zooplankton depth',
+    zooDepthTitle: 'Rising at night, sinking by day.',
     zooDepthSubtitle:
-        'Animal plankton moves between the bottom and the surface to feed and hide from fish.',
-    zooDepthQ1: 'At what depth do you see plankton now?',
+        'Animal plankton migrates every day, from the bottom to hide from fish, towards the surface to feed on microalgae at night.',
+    zooDepthQ1: 'At what depth can you see the plankton now?',
 
     // --- Algae Concentration (Live) ---
-    algaeConcEyebrow: '01 · LIVE - Microalgae Concentration',
-    algaeConcTitle: 'Microscopic forests.',
+    algaeConcEyebrow: '01 · LIVE - Microalgae concentration',
+    algaeConcTitle: 'Microscopic meadows.',
     algaeConcSubtitle:
-        "Lake Geneva's microalgae are called phytoplankton. Concentration peaks in summer, with sunlight and heat.",
-    algaeConcQ1: 'At what depth is plankton concentration the highest?',
+        'Microalgae, or phytoplankton, need sunlight to grow. They are the first link in the food chain. But when there are too many, the lake water turns green and cloudy.',
+    algaeConcQ1: 'At what depth is the plankton concentration highest?',
 
     // --- Changes Picker ---
     changesPickerEyebrow: '02 · CHANGES',
@@ -75,47 +76,47 @@ export default {
     changesPickerSubtitle: 'Choose what you want to observe in the lake.',
 
     // --- Changes nav ---
-    changesNavWindTitle: 'The Effect of Wind on the Lake',
+    changesNavWindTitle: "The wind's effect on the lake",
     changesNavWindShort: 'Wind',
     changesNavWindSubtitle:
-        'Discover how wind influences water movement on the surface of Lake Geneva.',
-    changesNavGrowthTitle: 'Is It Growing?',
+        'Discover how wind influences water movement at the surface of Lake Geneva.',
+    changesNavGrowthTitle: 'Is it growing?',
     changesNavGrowthShort: 'Growth',
     changesNavGrowthSubtitle:
-        'Observe how life in the lake evolves and whether certain organisms are developing.',
+        'Observe how life in the lake evolves and if certain organisms are developing.',
 
     // --- Wind Change Page ---
     windChangeEyebrow: '02 · Discovery',
-    windChangeTitle: 'The effect of wind on the lake.',
-    windChangeTrackAirTemp: 'Air Temperature (°C)',
-    windChangeTrackWaterTemp: 'Water Temperature (°C)',
-    windChangeTrackWindDirection: 'Wind Direction',
-    windChangeTrackWindSpeed: 'Wind Speed (km/h)',
+    windChangeTitle: "The wind's effect on the lake.",
+    windChangeTrackAirTemp: 'Air temperature (°C)',
+    windChangeTrackWaterTemp: 'Water temperature (°C)',
+    windChangeTrackWindDirection: 'Wind direction',
+    windChangeTrackWindSpeed: 'Wind speed (km/h)',
     windChangeTrackPrecipitation: 'Precipitation (mm/h)',
-    windChangeTrackWaveHeight: 'Wave Height (m)',
-    windChangeQ1: 'Do you notice changes over the past few days?',
+    windChangeTrackWaveHeight: 'Wave height (m)',
+    windChangeQ1: 'What is the effect of wind gusts on the lake surface?',
     windChangeQ2: 'Is the air warmer or colder than the water?',
 
     // --- Chlorophyll Change Page ---
     chloroChangeEyebrow: '02 · Discovery',
-    chloroChangeTitle: 'Light and Chlorophyll in the Lake.',
-    chloroChangeTrackIrradiance: 'Solar Energy (W/m²)',
-    chloroChangeTrackAirTemp: 'Air Temperature (°C)',
-    chloroChangeTrackWaterTemp: 'Water Temperature (°C)',
+    chloroChangeTitle: 'Light and chlorophyll in the lake.',
+    chloroChangeTrackIrradiance: 'Solar energy (W/m²)',
+    chloroChangeTrackAirTemp: 'Air temperature (°C)',
+    chloroChangeTrackWaterTemp: 'Water temperature (°C)',
     chloroChangeTrackChlorophyll: 'Average Chlorophyll A (0–20 m)',
-    chloroChangeQ1: 'Is the air warmer or colder than the water?',
+    chloroChangeQ1: 'Is there more algae because it is warmer?',
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · GAMES',
     gamePickerTitle: 'Games about life in Lake Geneva',
     gamePickerSubtitle:
-        'Choose what you want to observe in the lake. All values are currently measured by the Léxplore platform.',
+        'Choose what you want to observe in the lake. All values are currently being measured by the LéXPLORE platform.',
 
     // --- Game nav ---
     gameNavPlanctonTitle: 'The Plankton Adventure',
-    gameNavPlanctonShort: 'Day/Night Migration',
+    gameNavPlanctonShort: 'Day/night migration',
     gameNavPlanctonSubtitle:
-        'Follow the zooplankton as it rises and falls in the lake, hour after hour.',
+        'Follow the zooplankton as it rises and sinks in the lake, hour by hour.',
     gameNavTempTitle: 'Hot or Cold?',
     gameNavTempSubtitle: '3 months of temperature, by depth. Find the zone that never warms up.',
 
@@ -123,19 +124,19 @@ export default {
     tempGameEyebrow: '02 · Hot or Cold?',
     tempGameTitle: '2 years of Lake Geneva, by depth.',
     tempGameSubtitle: 'Slide across the grid to explore.',
-    tempGameProfileKicker: 'At cursor → temp by depth',
-    tempGameLoading: 'Loading temperatures…',
-    tempGameQ1: 'What is the warmest period at depth?',
-    tempGameQ2: 'At what depth does the water always stay colder than 10°C?',
+    tempGameProfileKicker: 'At the cursor → temp by depth',
+    tempGameLoading: 'Loading temperatures...',
+    tempGameQ1: 'To what depth does solar energy warm the water in Lake Geneva?',
+    tempGameQ2: 'At what depth does the water always remain colder than 10°C?',
 
     // --- Plankton Game ---
     planctonGameEyebrow: '01 · The Plankton Adventure',
     planctonGameTitle: 'Move the red cursor.',
     planctonGameSubtitle: 'Observe the movement of zooplankton throughout the day.',
-    planctonGameQ1: 'Is it closer to the surface around noon or around midnight?',
+    planctonGameQ1: 'Do you think animal plankton likes light?',
 
     // --- Plots ---
-    plotDepthProfileAria: 'Depth profile chart',
+    plotDepthProfileAria: 'Depth profile graph',
     plotPlanktonAria: 'Zooplankton depth',
     plotSurface: 'Surface',
     plotNoHeatmapData: 'No heatmap data',
@@ -147,7 +148,7 @@ export default {
     plotLocation: 'Lake Geneva',
 
     // --- QrCode ---
-    qrLabel: 'Learn More',
+    qrLabel: 'Find out more',
 
     // --- Format fallbacks ---
     na: 'N/A',

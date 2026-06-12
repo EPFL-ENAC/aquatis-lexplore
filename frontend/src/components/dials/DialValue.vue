@@ -150,7 +150,7 @@ const arcPath = computed(() => {
 
 .speed-unit {
     fill: #5fe3ff;
-    font-size: calc(var(--font-scale) * 0.5rem);
+    font-size: calc(var(--font-scale) * 0.6rem);
     font-weight: 600;
     text-anchor: middle;
     dominant-baseline: middle;

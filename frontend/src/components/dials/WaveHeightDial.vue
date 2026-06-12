@@ -33,7 +33,7 @@
 
                 <path class="wave-front" :d="waveFrontPath" :fill="progressColor" opacity="0.6" />
 
-                <circle cx="70" :cy="UNIT_Y" r="13" fill="rgb(7, 50, 58)" />
+                <circle cx="70" :cy="UNIT_Y + 2" r="15" fill="rgb(7, 50, 58)" />
             </g>
 
             <text class="wave-value" x="70" y="64">
@@ -242,7 +242,7 @@ const waveFrontPath = computed(() => {
 
 .wave-unit {
     fill: #5fe3ff;
-    font-size: calc(var(--font-scale) * 0.75rem);
+    font-size: calc(var(--font-scale) * 0.9rem);
     font-weight: 600;
     text-anchor: middle;
     dominant-baseline: middle;

@@ -177,39 +177,6 @@ const trackStyle = computed(() => {
     };
 });
 
-/* const trackStyle = computed(() => {
-    if (props.dynamicBackground === 'none') {
-        return {
-            backgroundImage: `linear-gradient(to right, #0b1020 0%, #0b1020 100%)`,
-        };
-    }
-
-    // For ranges longer than a month, we show the seasons
-    if (props.dynamicBackground === 'seasons') {
-        return {
-            ...makeSeasonEventsBackground(props.startTimestamp, props.endTimestamp),
-        };
-    }
-
-    const periods = getDaynightCyclePeriodsBetween(props.startTimestamp, props.endTimestamp, SWITZERLAND_LATITUDE, SWITZERLAND_LONGITUDE);
-    console.log('Day/night periods:', periods.map(p => ({
-        ...p,
-        start: new Date(p.start),
-        end: new Date(p.end),
-    })));
-    const backgroundBuilder = new BackgroundBuilder();
-    backgroundBuilder.addBand(daynightCyclePeriodsToBands(periods));
-    return {
-        ...backgroundBuilder.toCSS(
-            props.startTimestamp,
-            props.endTimestamp,
-            {
-                iconSizePx: 24
-            }            
-        ),
-    };
-}); */
-
 const badgeStyle = computed(() => {
     return {
         left: `clamp(${BADGE_RADIUS}px, ${thumbPercent.value}%, calc(100% - ${BADGE_RADIUS}px))`,

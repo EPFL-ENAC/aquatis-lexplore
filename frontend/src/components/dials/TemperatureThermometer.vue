@@ -239,7 +239,7 @@ onMounted(() => {
 
 .temp-unit {
     fill: #5fe3ff;
-    font-size: calc(var(--font-scale) * 0.75rem);
+    font-size: calc(var(--font-scale) * 0.9rem);
     font-weight: 600;
     text-anchor: start;
     dominant-baseline: middle;
