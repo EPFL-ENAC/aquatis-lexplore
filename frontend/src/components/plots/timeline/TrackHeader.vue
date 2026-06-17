@@ -4,7 +4,7 @@
     </div>
 
     <svg
-        v-if="track.type !== 'wind' && track.type !== 'number'"
+        v-if="track.series.some((s) => s.type !== 'wind' && s.type !== 'number')"
         class="timeline-chart__track-scale"
         :width="leftGutterWidth"
         :height="trackHeight"
@@ -59,20 +59,22 @@ const valueTicks = computed(() => {
     const top = props.topMargin;
     const innerHeight = Math.max(1, props.trackHeight - props.topMargin - props.bottomMargin);
 
-    if (props.tickCount <= 1 || props.track.min === props.track.max) {
+    const rangeRaw = props.track.getValueRange();
+
+    if (props.tickCount <= 1 || rangeRaw.min === rangeRaw.max) {
         return [
             {
-                value: props.track.max,
+                value: rangeRaw.max,
                 y: top + innerHeight / 2,
             },
         ];
     }
 
-    const range = props.track.getValueRangePretty();
+    const rangePretty = rangeRaw.toPretty();
 
     return Array.from({ length: props.tickCount }, (_, index) => {
         const ratio = index / (props.tickCount - 1);
-        const value = range.max - ratio * range.length;
+        const value = rangePretty.max - ratio * rangePretty.length;
         const y = top + ratio * innerHeight;
 
         return { value, y };

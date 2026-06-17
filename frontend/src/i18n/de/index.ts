@@ -90,6 +90,7 @@ export default {
     // --- Wind Change Page ---
     windChangeEyebrow: '02 · Entdeckung',
     windChangeTitle: 'Der Einfluss des Windes auf den See.',
+    windChangeTrackTemperature: 'Luft- und Wassertemperaturen (°C)',
     windChangeTrackAirTemp: 'Lufttemperatur (°C)',
     windChangeTrackWaterTemp: 'Wassertemperatur (°C)',
     windChangeTrackWindDirection: 'Windrichtung',

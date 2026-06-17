@@ -132,26 +132,26 @@ onMounted(async () => {
     scrollToRightEnd();
 });
 
-const domain = computed(() => props.timeline.getDomain());
+const timeRange = computed(() => props.timeline.getPlotTimeRange());
 const ticks = computed(() => props.timeline.getTicks(props.tickEveryMinutes, locale.value));
 
 const plotWidth = computed(() => {
-    const durationMs = Math.max(HOUR_MS, domain.value.end - domain.value.start);
+    const durationMs = Math.max(HOUR_MS, timeRange.value.max - timeRange.value.min);
 
     return (durationMs / HOUR_MS) * props.pxPerHour;
 });
 
 function xForTimestamp(timestamp: number): number {
-    const duration = Math.max(HOUR_MS, domain.value.end - domain.value.start);
-    const ratio = (timestamp - domain.value.start) / duration;
+    const duration = Math.max(HOUR_MS, timeRange.value.max - timeRange.value.min);
+    const ratio = (timestamp - timeRange.value.min) / duration;
 
     return ratio * plotWidth.value;
 }
 
 function trackHeightAdjusted(track: Track): number {
-    if (track.type === 'wind') {
+    if (track.series.some((s) => s.type === 'wind')) {
         return 80;
-    } else if (track.type === 'number') {
+    } else if (track.series.some((s) => s.type === 'number')) {
         return 50;
     }
 

@@ -8,7 +8,7 @@
             :timeline="timeline"
             :px-per-hour="10"
             :tick-every-minutes="8 * 60"
-            :track-height="128"
+            :track-height="200"
             :axis-height="58"
             :bar-gap="2"
             :line-stroke-width="3"
@@ -26,7 +26,7 @@ import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import ScrollableTracksChart from 'src/components/plots/timeline/ScrollableTrackChart.vue';
 import ChartContainer from 'src/components/ChartContainer.vue';
-import { Timeline, Track } from 'src/components/plots/timeline/types';
+import { Timeline, Track, Series } from 'src/components/plots/timeline/types';
 import { useAlgaeStore, useLakeStore, useWeatherStore } from 'src/stores/lexplore';
 
 const weatherStore = useWeatherStore();
@@ -70,29 +70,35 @@ const tracks = computed(() => {
 
     if (weatherStore.data) {
         result.push(
-            Track.buckets(
-                {
-                    title: t('chloroChangeTrackIrradiance'),
-                    color: '#ffd54a',
-                    type: 'bar',
-                },
-                weatherStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: weatherStore.data!.irradiance[index]!,
-                })),
-                3 * 60 * 60 * 1000,
-            ),
+            new Track({
+                title: t('chloroChangeTrackIrradiance'),
+                series: [
+                    Series.buckets(
+                        { id: 'irradiance', type: 'bar', color: '#ffd54a' },
+                        weatherStore.data.timestamps.map((timestamp, index) => ({
+                            timestamp: toMs(timestamp),
+                            value: weatherStore.data!.irradiance[index]!,
+                        })),
+                        3 * 60 * 60 * 1000,
+                    ),
+                ],
+            }),
         );
 
         result.push(
             new Track({
                 title: t('chloroChangeTrackAirTemp'),
-                type: 'line',
-                color: '#ff5e66',
-                data: weatherStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: weatherStore.data!.airTemperature[index]!,
-                })),
+                series: [
+                    new Series({
+                        id: 'air-temp',
+                        type: 'line',
+                        color: '#ff5e66',
+                        data: weatherStore.data.timestamps.map((timestamp, index) => ({
+                            timestamp: toMs(timestamp),
+                            value: weatherStore.data!.airTemperature[index]!,
+                        })),
+                    }),
+                ],
             }),
         );
     }
@@ -101,27 +107,33 @@ const tracks = computed(() => {
         result.push(
             new Track({
                 title: t('chloroChangeTrackWaterTemp'),
-                type: 'line',
-                color: '#4db8ff',
-                data: lakeStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: lakeStore.data!.surfaceTemperature[index]!,
-                })),
+                series: [
+                    new Series({
+                        id: 'water-temp',
+                        type: 'line',
+                        color: '#4db8ff',
+                        data: lakeStore.data.timestamps.map((timestamp, index) => ({
+                            timestamp: toMs(timestamp),
+                            value: lakeStore.data!.surfaceTemperature[index]!,
+                        })),
+                    }),
+                ],
             }),
         );
     }
 
     if (chlorophyll0to20.value.length > 0) {
         result.push(
-            Track.buckets(
-                {
-                    title: t('chloroChangeTrackChlorophyll'),
-                    color: '#5df2c1',
-                    type: 'bar',
-                },
-                chlorophyll0to20.value,
-                3 * 60 * 60 * 1000,
-            ),
+            new Track({
+                title: t('chloroChangeTrackChlorophyll'),
+                series: [
+                    Series.buckets(
+                        { id: 'chlorophyll', type: 'bar', color: '#5df2c1' },
+                        chlorophyll0to20.value,
+                        3 * 60 * 60 * 1000,
+                    ),
+                ],
+            }),
         );
     }
 

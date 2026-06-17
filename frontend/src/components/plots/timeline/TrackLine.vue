@@ -3,7 +3,7 @@
         <path
             v-if="pathD"
             :d="pathD"
-            :stroke="track.color"
+            :stroke="series.color"
             :stroke-width="strokeWidth"
             fill="none"
             stroke-linejoin="round"
@@ -15,7 +15,7 @@
             :cx="singlePoint.x"
             :cy="singlePoint.y"
             :r="(strokeWidth ?? 0) + 1"
-            :fill="track.color"
+            :fill="series.color"
         />
     </g>
 </template>
@@ -23,11 +23,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import type { Track } from './types';
+import type { Series } from './types';
 import { clamp } from 'src/utils/math';
 
 const props = defineProps<{
-    track: Track;
+    series: Series;
     xForTimestamp: (timestamp: number) => number;
     trackTop: number;
     trackHeight: number;
@@ -41,14 +41,14 @@ function yForValue(value: number): number {
 
     return innerTop + innerHeight - ratio * innerHeight;
 }
-const prettyRange = computed(() => props.track.getValueRangePretty());
+const prettyRange = computed(() => props.series.getValueRange().toPretty());
 
 const pathD = computed(() => {
-    if (props.track.data.length === 0) {
+    if (props.series.data.length === 0) {
         return '';
     }
 
-    return props.track.data
+    return props.series.data
         .map((point, index) => {
             const x = props.xForTimestamp(point.timestamp);
             const y = yForValue(point.value);
@@ -59,11 +59,11 @@ const pathD = computed(() => {
 });
 
 const singlePoint = computed(() => {
-    if (props.track.data.length !== 1) {
+    if (props.series.data.length !== 1) {
         return null;
     }
 
-    const point = props.track.data[0]!;
+    const point = props.series.data[0]!;
 
     return {
         x: props.xForTimestamp(point.timestamp),

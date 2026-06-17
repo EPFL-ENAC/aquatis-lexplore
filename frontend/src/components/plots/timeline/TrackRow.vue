@@ -28,41 +28,44 @@
             />
         </g>
 
-        <TrackBars
-            v-if="track.type === 'bar'"
-            :track="track"
-            :x-for-timestamp="xForTimestamp"
-            :track-top="0"
-            :track-height="height"
-            :gap="barGap"
-        />
+        <!-- Use a template loop to handle multiple series per track -->
+        <template v-for="series in track.series" :key="series.id">
+            <TrackBars
+                v-if="series.type === 'bar'"
+                :series="series"
+                :x-for-timestamp="xForTimestamp"
+                :track-top="0"
+                :track-height="height"
+                :gap="barGap"
+            />
 
-        <TrackLine
-            v-else-if="track.type === 'line'"
-            :track="track"
-            :x-for-timestamp="xForTimestamp"
-            :track-top="0"
-            :track-height="height"
-            :stroke-width="lineStrokeWidth"
-        />
+            <TrackLine
+                v-else-if="series.type === 'line'"
+                :series="series"
+                :x-for-timestamp="xForTimestamp"
+                :track-top="0"
+                :track-height="height"
+                :stroke-width="lineStrokeWidth"
+            />
 
-        <TrackWind
-            v-else-if="track.type === 'wind'"
-            :track="track"
-            :x-for-timestamp="xForTimestamp"
-            :track-top="0"
-            :track-height="height"
-            :gap="barGap"
-        />
+            <TrackWind
+                v-else-if="series.type === 'wind'"
+                :series="series"
+                :x-for-timestamp="xForTimestamp"
+                :track-top="0"
+                :track-height="height"
+                :gap="barGap"
+            />
 
-        <TrackNumber
-            v-else-if="track.type === 'number'"
-            :track="track"
-            :x-for-timestamp="xForTimestamp"
-            :track-top="0"
-            :track-height="height"
-            :gap="barGap"
-        />
+            <TrackNumber
+                v-else-if="series.type === 'number'"
+                :series="series"
+                :x-for-timestamp="xForTimestamp"
+                :track-top="0"
+                :track-height="height"
+                :gap="barGap"
+            />
+        </template>
     </svg>
 </template>
 

@@ -27,26 +27,44 @@
 
                     <div class="stat">
                         <div class="stat__label">{{ t('headerAirTemp') }}</div>
-                        <TemperatureThermometer
-                            :value="weatherStore.data?.airTemperature.at(-1)"
-                            :size="dialSize"
-                            :min-value="-10"
-                            :max-value="30"
-                            unit="°C"
-                        />
+                        <div class="stat__row">
+                            <IconizedValue
+                                :value="weatherStore.data?.airTemperature.at(-1)"
+                                unit="°C"
+                                :force-height="dialSize"
+                            >
+                                <TemperatureThermometer
+                                    :value="weatherStore.data?.airTemperature.at(-1)"
+                                    :size="dialSize"
+                                    :min-value="-10"
+                                    :max-value="30"
+                                    unit="°C"
+                                    :font-scale="0"
+                                />
+                            </IconizedValue>
+                        </div>
                     </div>
 
                     <q-separator vertical class="stats__separator" color="white" />
 
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWaterTemp') }}</div>
-                        <TemperatureThermometer
-                            :value="lakeStore.data?.surfaceTemperature.at(-1)"
-                            :size="dialSize"
-                            :min-value="-10"
-                            :max-value="30"
-                            unit="°C"
-                        />
+                        <div class="stat__row">
+                            <IconizedValue
+                                :value="lakeStore.data?.surfaceTemperature.at(-1)"
+                                unit="°C"
+                                :force-height="dialSize"
+                            >
+                                <TemperatureThermometer
+                                    :value="lakeStore.data?.surfaceTemperature.at(-1)"
+                                    :size="dialSize"
+                                    :min-value="-10"
+                                    :max-value="30"
+                                    unit="°C"
+                                    :font-scale="0"
+                                />
+                            </IconizedValue>
+                        </div>
                     </div>
 
                     <q-separator vertical class="stats__separator" color="white" />
@@ -54,15 +72,22 @@
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWind') }}</div>
                         <div class="stat__row">
+                            <IconizedValue
+                                :value="weatherStore.data?.windSpeed.at(-1)"
+                                unit="km/h"
+                                :fade-end-percent="40"
+                            >
+                                <q-icon name="air" size="7rem" class="iconized-value__icon flip" />
+                            </IconizedValue>
                             <WindCompass
                                 :wind-direction-deg="weatherStore.data?.windDirectionDegrees.at(-1)"
                                 :wind-speed="weatherStore.data?.windSpeed.at(-1)"
                                 :size="dialSize"
                             />
-                            <DialValue
+                            <!-- <DialValue
                                 :value="weatherStore.data?.windSpeed.at(-1)"
                                 :size="dialSize"
-                            />
+                            /> -->
                         </div>
                     </div>
 
@@ -70,12 +95,18 @@
 
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWave') }}</div>
-                        <WaveHeightDial
+
+                        <!--<WaveHeightDial
                             :value="buoyStore.data?.height.at(-1)"
                             :size="dialSize"
                             :max-value="10"
                             unit="cm"
-                        />
+                        /> -->
+                        <div class="stat__row">
+                            <IconizedValue :value="buoyStore.data?.height.at(-1)" unit="cm">
+                                <q-icon name="water" size="7rem" class="iconized-value__icon" />
+                            </IconizedValue>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,8 +120,7 @@ import { useWeatherStore, useLakeStore, useBuoyStore } from 'src/stores/lexplore
 import TemperatureThermometer from '../dials/TemperatureThermometer.vue';
 import WindCompass from '../dials/WindCompass.vue';
 import PulsatingLiveDot from '../PulsatingLiveDot.vue';
-import DialValue from '../dials/DialValue.vue';
-import WaveHeightDial from '../dials/WaveHeightDial.vue';
+import IconizedValue from '../dials/IconizedValue.vue';
 
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
@@ -187,8 +217,9 @@ const dialSize = 152;
 }
 
 .stat__row {
+    flex: 1;
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     align-items: center;
 }
 
@@ -201,5 +232,9 @@ const dialSize = 152;
 
 .stats__separator {
     opacity: 0.25;
+}
+
+.flip {
+    transform: scaleX(-1);
 }
 </style>

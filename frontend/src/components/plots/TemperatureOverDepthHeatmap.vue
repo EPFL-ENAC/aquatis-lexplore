@@ -354,6 +354,11 @@ canvas {
     color: #0f172a;
 }
 
+.color-bar-container {
+    width: 50%;
+    margin-left: auto;
+}
+
 .color-bar {
     height: 2rem;
     background: var(--gradient);

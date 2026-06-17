@@ -4,7 +4,7 @@
             class="wind-svg"
             viewBox="0 0 100 100"
             role="img"
-            :aria-label="`Wind ${cardinalLabel}, ${displaySpeed}`"
+            :aria-label="`Wind ${cardinalLabel}`"
         >
             <path class="ring ring-main" :d="quarterRing(0)" />
             <path class="ring ring-main" :d="quarterRing(1)" />
@@ -34,20 +34,11 @@ import { computed } from 'vue';
 
 interface Props {
     windDirectionDeg?: number | undefined;
-    windSpeed?: number | undefined;
     size?: number;
-    speedUnit?: string;
-    maxVisualSpeed?: number;
-    minTriangleRadiusRatio?: number;
-    maxTriangleRadiusRatio?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     size: 96,
-    speedUnit: 'km/h',
-    maxVisualSpeed: 30,
-    minTriangleRadiusRatio: 0.3,
-    maxTriangleRadiusRatio: 0.6,
 });
 
 const CENTER = 50;
@@ -68,27 +59,11 @@ const normalizedDeg = computed(() => {
     return deg < 0 ? deg + 360 : deg;
 });
 
-const displaySpeed = computed(() => {
-    return `${Math.round(props.windSpeed ?? 0)} ${props.speedUnit}`;
-});
-
 const cardinalLabel = computed(() => {
     const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
     const index = Math.round(normalizedDeg.value / 45) % 8;
     return dirs[index];
 });
-
-const speedRatio = computed(() => {
-    const ratio = (props.windSpeed ?? 0) / props.maxVisualSpeed;
-    return Math.max(0, Math.min(ratio, 1));
-});
-
-const triangleRadiusRatio = computed(() => {
-    const min = Math.max(0, props.minTriangleRadiusRatio);
-    const max = Math.max(min, props.maxTriangleRadiusRatio);
-    return min + (max - min) * speedRatio.value;
-});
-
 const labelPositions = computed(() => ({
     n: polarToCartesian(CENTER, CENTER, LABEL_RADIUS, 0),
     e: polarToCartesian(CENTER, CENTER, LABEL_RADIUS, 90),
@@ -100,17 +75,10 @@ const labelPositions = computed(() => ({
  * Triangle is centered at the compass midpoint.
  * Height grows from 50% to 80% of the ring radius by default.
  */
-const triangleHeight = computed(() => {
-    return RING_DEMI_RADIUS * triangleRadiusRatio.value * 2;
-});
-
-const triangleHalfWidth = computed(() => {
-    return triangleHeight.value * 0.34;
-});
 
 const trianglePath = computed(() => {
-    const h = triangleHeight.value;
-    const halfW = triangleHalfWidth.value;
+    const h = 50;
+    const halfW = 15;
 
     const topY = CENTER - (2 * h) / 3;
     const bottomY = CENTER + h / 3;

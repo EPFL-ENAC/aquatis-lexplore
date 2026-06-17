@@ -7,7 +7,7 @@
             :y="bar.y"
             :width="bar.width"
             :height="bar.height"
-            :fill="track.color"
+            :fill="series.color"
             :opacity="0.9"
             rx="1.5"
         />
@@ -16,12 +16,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { Track } from './types';
+import type { Series } from './types';
 import { clamp } from 'src/utils/math';
 
 const props = withDefaults(
     defineProps<{
-        track: Track;
+        series: Series;
         xForTimestamp: (timestamp: number) => number;
         trackTop: number;
         trackHeight: number;
@@ -42,11 +42,11 @@ interface Bar {
 const bars = computed<Bar[]>(() => {
     const innerTop = props.trackTop + 8;
     const innerHeight = Math.max(1, props.trackHeight - 14);
-    const range = props.track.getValueRangePretty();
+    const range = props.series.getValueRange().toPretty();
 
-    return props.track.data.map((point, index) => {
+    return props.series.data.map((point, index) => {
         const nextTimestamp =
-            props.track.data[index + 1]?.timestamp ?? point.timestamp + props.track.stepMs;
+            props.series.data[index + 1]?.timestamp ?? point.timestamp + props.series.stepMs;
 
         const x = props.xForTimestamp(point.timestamp);
         const nextX = props.xForTimestamp(nextTimestamp);

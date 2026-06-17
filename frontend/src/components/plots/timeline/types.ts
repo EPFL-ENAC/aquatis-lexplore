@@ -18,14 +18,20 @@ export interface TimelineTick {
     isDayStart: boolean;
 }
 
-export type TrackType = 'bar' | 'line' | 'wind' | 'number';
+export type SeriesType = 'bar' | 'line' | 'wind' | 'number';
 
-export interface TrackProperties {
-    title: string;
-    type: TrackType;
+export interface SeriesProperties {
+    id: string;
+    title?: string | undefined;
+    type: SeriesType;
     data: TrackPoint[];
     color?: string;
     stepMs?: number;
+}
+
+export interface TrackProperties {
+    title: string;
+    series: Series[];
 }
 
 export class Range {
@@ -49,33 +55,109 @@ export class Range {
 
         return (value - this.min) / this.length;
     }
+
+    includeValue(value: number): Range {
+        return new Range(Math.min(this.min, value), Math.max(this.max, value));
+    }
+
+    toPadded(pad: number): Range {
+        if (pad < 0) {
+            throw new Error('pad must be greater than or equal to 0');
+        }
+
+        return new Range(this.min - pad, this.max + pad);
+    }
+
+    toPaddedRatio(ratio: number, minPad = 0): Range {
+        if (ratio < 0) {
+            throw new Error('ratio must be greater than or equal to 0');
+        }
+
+        if (minPad < 0) {
+            throw new Error('minPad must be greater than or equal to 0');
+        }
+
+        const pad = Math.max(this.length * ratio, minPad);
+
+        return new Range(this.min - pad, this.max + pad);
+    }
+
+    toPretty(minResolution: number | undefined = undefined): Range {
+        let resolution = minResolution;
+
+        if (resolution === undefined) {
+            const rawRange = this.length;
+
+            if (rawRange <= 1) {
+                resolution = 0.1;
+            } else if (rawRange <= 5) {
+                resolution = 1;
+            } else if (rawRange <= 20) {
+                resolution = 5;
+            } else if (rawRange <= 100) {
+                resolution = 10;
+            } else if (rawRange <= 500) {
+                resolution = 50;
+            } else if (rawRange <= 2000) {
+                resolution = 100;
+            } else {
+                resolution = 500;
+            }
+        }
+
+        const minPretty = Math.floor(this.min / resolution) * resolution;
+        const maxPretty = Math.ceil(this.max / resolution) * resolution;
+
+        return new Range(minPretty, maxPretty);
+    }
+
+    static maxRangeFromRanges(ranges: Range[], fallback: Range = new Range(0, 1)): Range {
+        if (ranges.length === 0) {
+            return fallback;
+        }
+
+        let min = Number.POSITIVE_INFINITY;
+        let max = Number.NEGATIVE_INFINITY;
+
+        for (const range of ranges) {
+            min = Math.min(min, range.min);
+            max = Math.max(max, range.max);
+        }
+
+        if (!Number.isFinite(min) || !Number.isFinite(max)) {
+            return fallback;
+        }
+
+        return new Range(min, max);
+    }
 }
 
-export class Track {
-    private _title: string;
-    private _type: TrackType;
+export class Series {
+    private _id: string;
+    private _title?: string | undefined;
+    private _type: SeriesType;
     private _data: TrackPoint[];
     private _color: string;
+    private _stepMs: number;
 
-    private _min: number = 0;
-    private _max: number = 1;
-    private _stepMs: number = HOUR_MS;
-
-    constructor(props: TrackProperties) {
+    constructor(props: SeriesProperties) {
+        this._id = props.id;
         this._title = props.title;
         this._type = props.type;
         this._color = props.color ?? 'cyan';
         this._data = [...props.data].sort((a, b) => a.timestamp - b.timestamp);
         this._stepMs = props.stepMs ?? HOUR_MS;
-
-        this.computeRange();
     }
 
-    get title(): string {
+    get id(): string {
+        return this._id;
+    }
+
+    get title(): string | undefined {
         return this._title;
     }
 
-    get type(): TrackType {
+    get type(): SeriesType {
         return this._type;
     }
 
@@ -83,97 +165,131 @@ export class Track {
         return this._data;
     }
 
-    private computeRange() {
-        if (this._data.length === 0) {
-            return;
-        }
-
-        const values = this._data.map((point) => point.value);
-
-        this._min = Math.min(...values);
-        this._max = Math.max(...values);
-
-        if (this._type === 'bar' && this._min > 0) {
-            this._min = 0;
-        }
-
-        if (this._max === this._min) {
-            this._max = this._min + 1;
-        }
-
-        if (this._type === 'line') {
-            const pad = Math.max((this._max - this._min) * 0.08, 1);
-
-            this._min -= pad;
-            this._max += pad;
-        }
-    }
-
-    get min(): number {
-        return this._min;
-    }
-
-    get max(): number {
-        return this._max;
+    get color(): string {
+        return this._color;
     }
 
     get stepMs(): number {
         return this._stepMs;
     }
 
-    get color(): string {
-        return this._color;
-    }
-
-    getTimeRange(): { min: number; max: number } {
+    getTimeRange(): Range {
         if (this._data.length === 0) {
-            return { min: 0, max: 0 };
+            return new Range(0, 0);
         }
 
-        const min = this._data[0]!.timestamp;
-        let max = this._data[this._data.length - 1]!.timestamp;
-
-        if (this._type === 'bar') {
-            max += this._stepMs;
-        }
-
-        return { min, max };
+        return new Range(this._data[0]!.timestamp, this._data[this._data.length - 1]!.timestamp);
     }
 
-    getValueRangePretty(minResolution: number | undefined = undefined): Range {
-        if (minResolution === undefined) {
-            // undefined means autodetect
-            const rawRange = this._max - this._min;
-            if (rawRange <= 1) {
-                minResolution = 0.1;
-            } else if (rawRange <= 5) {
-                minResolution = 1;
-            } else if (rawRange <= 20) {
-                minResolution = 5;
-            } else if (rawRange <= 100) {
-                minResolution = 10;
-            } else if (rawRange <= 500) {
-                minResolution = 50;
-            } else if (rawRange <= 2000) {
-                minResolution = 100;
+    getPlotTimeRange(): Range {
+        const raw = this.getTimeRange();
+
+        if (this._data.length === 0) {
+            return raw;
+        }
+
+        if (this._type !== 'bar') {
+            return raw;
+        }
+
+        return new Range(raw.min, raw.max + this._stepMs);
+    }
+
+    getValueRange(): Range {
+        if (this._data.length === 0) {
+            return new Range(0, 0);
+        }
+
+        const values = this._data.map((point) => point.value);
+
+        return new Range(Math.min(...values), Math.max(...values));
+    }
+
+    slidingWindowOutlierRemoval(
+        windowSizeSamples: number,
+        distanceFromAverageThreshold: number,
+        replaceBy: 'average' | 'drop' = 'average',
+    ): Series {
+        if (windowSizeSamples <= 0 || !Number.isInteger(windowSizeSamples)) {
+            throw new Error('samples must be a positive integer');
+        }
+
+        if (distanceFromAverageThreshold < 0) {
+            throw new Error('distanceFromAverageThreshold must be greater than or equal to 0');
+        }
+
+        if (this._data.length === 0) {
+            return new Series({
+                id: this._id,
+                title: this._title,
+                type: this._type,
+                data: [],
+                color: this._color,
+                stepMs: this._stepMs,
+            });
+        }
+
+        const halfWindow = Math.floor(windowSizeSamples / 2);
+        const nextData: TrackPoint[] = [];
+
+        for (let i = 0; i < this._data.length; i += 1) {
+            const windowStart = Math.max(0, i - halfWindow);
+            const windowEnd = Math.min(this._data.length - 1, i + halfWindow);
+
+            const windowValues: number[] = [];
+
+            for (let j = windowStart; j <= windowEnd; j += 1) {
+                if (j === i) {
+                    continue;
+                }
+
+                windowValues.push(this._data[j]!.value);
+            }
+
+            if (windowValues.length === 0) {
+                nextData.push({ ...this._data[i]! });
+                continue;
+            }
+
+            const average =
+                windowValues.reduce((sum, value) => sum + value, 0) / windowValues.length;
+
+            const point = this._data[i]!;
+            const distance = Math.abs(point.value - average);
+
+            if (distance > distanceFromAverageThreshold) {
+                if (replaceBy === 'average') {
+                    nextData.push({
+                        timestamp: point.timestamp,
+                        value: average,
+                    });
+                }
             } else {
-                minResolution = 500;
+                nextData.push({ ...point });
             }
         }
 
-        const minPretty = Math.floor(this._min / minResolution) * minResolution;
-        const maxPretty = Math.ceil(this._max / minResolution) * minResolution;
-
-        return new Range(minPretty, maxPretty);
+        return new Series({
+            id: this._id,
+            title: this._title,
+            type: this._type,
+            data: nextData,
+            color: this._color,
+            stepMs: this._stepMs,
+        });
     }
 
     static buckets(
-        props: Omit<TrackProperties, 'data' | 'stepMs'>,
+        props: Omit<SeriesProperties, 'data' | 'stepMs'>,
         rawData: TrackPoint[],
         bucketDurationMs: number,
-    ): Track {
+    ): Series {
+        if (bucketDurationMs <= 0) {
+            throw new Error('bucketDurationMs must be greater than 0');
+        }
+
         if (rawData.length === 0) {
-            return new Track({
+            return new Series({
                 ...props,
                 data: [],
                 stepMs: bucketDurationMs,
@@ -205,7 +321,7 @@ export class Track {
             }),
         );
 
-        return new Track({
+        return new Series({
             ...props,
             data: bucketedData,
             stepMs: bucketDurationMs,
@@ -213,43 +329,89 @@ export class Track {
     }
 }
 
+export class Track {
+    private _title: string;
+    private _series: Series[];
+
+    constructor(props: TrackProperties) {
+        this._title = props.title;
+        this._series = [...props.series];
+    }
+
+    get title(): string {
+        return this._title;
+    }
+
+    get series(): Series[] {
+        return this._series;
+    }
+
+    getTimeRange(): Range {
+        return Range.maxRangeFromRanges(
+            this._series.map((series) => series.getTimeRange()),
+            new Range(0, 0),
+        );
+    }
+
+    getPlotTimeRange(): Range {
+        return Range.maxRangeFromRanges(
+            this._series.map((series) => series.getPlotTimeRange()),
+            new Range(0, 0),
+        );
+    }
+
+    getValueRange(): Range {
+        return Range.maxRangeFromRanges(
+            this._series.map((series) => series.getValueRange()),
+            new Range(0, 0),
+        );
+    }
+
+    getDisplayValueRange(minResolution: number | undefined = undefined): Range {
+        let range = this.getValueRange();
+
+        const hasBarSeries = this._series.some((series) => series.type === 'bar');
+        const hasLineSeries = this._series.some((series) => series.type === 'line');
+
+        if (hasBarSeries) {
+            range = range.includeValue(0);
+        }
+
+        if (hasLineSeries) {
+            range = range.toPaddedRatio(0.08, 1);
+        }
+
+        return range.toPretty(minResolution);
+    }
+}
+
 export class Timeline {
     private _tracks: Track[];
 
-    constructor(tracks: TrackProperties[]) {
-        this._tracks = tracks.map((props) => new Track(props));
+    constructor(tracks: Track[]) {
+        this._tracks = [...tracks];
     }
 
     get tracks(): Track[] {
         return this._tracks;
     }
 
-    getTimeRange(): { min: number; max: number } {
-        let min = Number.POSITIVE_INFINITY;
-        let max = Number.NEGATIVE_INFINITY;
-
-        for (const track of this._tracks) {
-            const { min: trackMin, max: trackMax } = track.getTimeRange();
-
-            min = Math.min(min, trackMin);
-            max = Math.max(max, trackMax);
-        }
-
-        if (!Number.isFinite(min) || !Number.isFinite(max)) {
-            return { min: 0, max: 0 };
-        }
-
-        return { min, max };
+    getTimeRange(): Range {
+        return Range.maxRangeFromRanges(
+            this._tracks.map((track) => track.getTimeRange()),
+            new Range(0, 0),
+        );
     }
 
-    getDomain(): TimelineDomain {
-        const { min, max } = this.getTimeRange();
-        return { start: min, end: max };
+    getPlotTimeRange(): Range {
+        return Range.maxRangeFromRanges(
+            this._tracks.map((track) => track.getPlotTimeRange()),
+            new Range(0, 0),
+        );
     }
 
     getTicks(tickEveryMinutes = 4 * 60, locale?: string): TimelineTick[] {
-        const domain = this.getDomain();
-
+        const timeRange = this.getPlotTimeRange();
         const stepMinutes = Math.max(1, tickEveryMinutes);
 
         const timeFormatter = new Intl.DateTimeFormat(locale, {
@@ -257,6 +419,7 @@ export class Timeline {
             minute: '2-digit',
             hourCycle: 'h23',
         });
+
         const dateFormatter = new Intl.DateTimeFormat(locale, {
             weekday: 'short',
             day: '2-digit',
@@ -264,8 +427,7 @@ export class Timeline {
         });
 
         const ticks: TimelineTick[] = [];
-
-        const start = new Date(domain.start);
+        const start = new Date(timeRange.min);
 
         const midnight = new Date(start);
         midnight.setHours(0, 0, 0, 0);
@@ -281,7 +443,7 @@ export class Timeline {
         const tick = new Date(midnight);
         tick.setMinutes(firstTickMinutes, 0, 0);
 
-        for (; tick.getTime() <= domain.end; tick.setMinutes(tick.getMinutes() + stepMinutes)) {
+        for (; tick.getTime() <= timeRange.max; tick.setMinutes(tick.getMinutes() + stepMinutes)) {
             const isDayStart = tick.getHours() === 0 && tick.getMinutes() === 0;
 
             ticks.push({

@@ -88,6 +88,7 @@ export default {
     // --- Wind Change Page ---
     windChangeEyebrow: '02 · Discovery',
     windChangeTitle: "The wind's effect on the lake.",
+    windChangeTrackTemperature: 'Air and water temperatures (°C)',
     windChangeTrackAirTemp: 'Air temperature (°C)',
     windChangeTrackWaterTemp: 'Water temperature (°C)',
     windChangeTrackWindDirection: 'Wind direction',

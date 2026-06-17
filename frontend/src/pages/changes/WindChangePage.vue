@@ -8,7 +8,7 @@
             :timeline="timeline"
             :px-per-hour="10"
             :tick-every-minutes="8 * 60"
-            :track-height="128"
+            :track-height="200"
             :axis-height="58"
             :bar-gap="2"
             :line-stroke-width="3"
@@ -26,7 +26,7 @@ import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import ScrollableTracksChart from 'src/components/plots/timeline/ScrollableTrackChart.vue';
 import ChartContainer from 'src/components/ChartContainer.vue';
-import { Timeline, Track } from 'src/components/plots/timeline/types';
+import { Timeline, Track, Series } from 'src/components/plots/timeline/types';
 import { useBuoyStore, useLakeStore, useWeatherStore } from 'src/stores/lexplore';
 
 const weatherStore = useWeatherStore();
@@ -41,97 +41,144 @@ function toMs(timestamp: number): number {
 
 const tracks = computed(() => {
     const result: Track[] = [];
+    const tenDaysAgo = Date.now() - 10 * 24 * 60 * 60 * 1000;
 
+    const tempSeries: Series[] = [];
+
+    // 1. Air Temperature Track
     if (weatherStore.data) {
-        result.push(
-            new Track({
-                title: t('windChangeTrackAirTemp'),
+        const airTempData = weatherStore.data.timestamps
+            .map((timestamp, index) => ({
+                timestamp: toMs(timestamp),
+                value: weatherStore.data!.airTemperature[index]!,
+            }))
+            .filter((d) => d.timestamp >= tenDaysAgo);
+
+        tempSeries.push(
+            new Series({
+                id: 'air-temp',
                 type: 'line',
                 color: '#ff5e66',
-                data: weatherStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: weatherStore.data!.airTemperature[index]!,
-                })),
+                data: airTempData,
             }),
         );
     }
 
+    // 2. Water Temperature Track (with Outlier Removal)
     if (lakeStore.data) {
+        const waterTempData = lakeStore.data.timestamps
+            .map((timestamp, index) => ({
+                timestamp: toMs(timestamp),
+                value: lakeStore.data!.surfaceTemperature[index]!,
+            }))
+            .filter((d) => d.timestamp >= tenDaysAgo);
+
+        const waterSeries = new Series({
+            id: 'water-temp',
+            type: 'line',
+            color: '#2b67f0',
+            data: waterTempData,
+        }).slidingWindowOutlierRemoval(5, 5);
+        tempSeries.push(waterSeries);
+    }
+
+    if (tempSeries.length > 0) {
         result.push(
             new Track({
-                title: t('windChangeTrackWaterTemp'),
-                type: 'line',
-                color: '#2b67f0',
-                data: lakeStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: lakeStore.data!.surfaceTemperature[index]!,
-                })),
+                title: t('windChangeTrackTemperature'),
+                series: tempSeries,
             }),
         );
     }
 
+    // 3. Weather Dynamics (Wind & Precipitation)
     if (weatherStore.data) {
         const bucketSizeMs = 8 * 60 * 60 * 1000;
 
-        result.push(
-            Track.buckets(
-                {
-                    title: t('windChangeTrackWindDirection'),
-                    type: 'wind',
-                    color: '#7ed957',
-                },
-                weatherStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: weatherStore.data!.windDirectionDegrees[index]!,
-                })),
-                bucketSizeMs,
-            ),
-        );
+        // Wind Direction
+        const windDirData = weatherStore.data.timestamps
+            .map((timestamp, index) => ({
+                timestamp: toMs(timestamp),
+                value: weatherStore.data!.windDirectionDegrees[index]!,
+            }))
+            .filter((d) => d.timestamp >= tenDaysAgo);
 
         result.push(
-            Track.buckets(
-                {
-                    title: t('windChangeTrackWindSpeed'),
-                    type: 'number',
-                    color: '#7ed957',
-                },
-                weatherStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: weatherStore.data!.windSpeed[index]!,
-                })),
-                bucketSizeMs,
-            ),
+            new Track({
+                title: t('windChangeTrackWindDirection'),
+                series: [
+                    Series.buckets(
+                        { id: 'wind-dir', type: 'wind', color: '#7ed957' },
+                        windDirData,
+                        bucketSizeMs,
+                    ),
+                ],
+            }),
         );
+
+        // Wind Speed
+        const windSpeedData = weatherStore.data.timestamps
+            .map((timestamp, index) => ({
+                timestamp: toMs(timestamp),
+                value: weatherStore.data!.windSpeed[index]!,
+            }))
+            .filter((d) => d.timestamp >= tenDaysAgo);
+
         result.push(
-            Track.buckets(
-                {
-                    title: t('windChangeTrackPrecipitation'),
-                    type: 'bar',
-                    color: '#4db8ff',
-                },
-                weatherStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: weatherStore.data!.precipitation[index]!,
-                })),
-                3 * 60 * 60 * 1000,
-            ),
+            new Track({
+                title: t('windChangeTrackWindSpeed'),
+                series: [
+                    Series.buckets(
+                        { id: 'wind-speed', type: 'number', color: '#7ed957' },
+                        windSpeedData,
+                        bucketSizeMs,
+                    ),
+                ],
+            }),
+        );
+
+        // Precipitation
+        const precipData = weatherStore.data.timestamps
+            .map((timestamp, index) => ({
+                timestamp: toMs(timestamp),
+                value: weatherStore.data!.precipitation[index]!,
+            }))
+            .filter((d) => d.timestamp >= tenDaysAgo);
+
+        result.push(
+            new Track({
+                title: t('windChangeTrackPrecipitation'),
+                series: [
+                    Series.buckets(
+                        { id: 'precip', type: 'bar', color: '#4db8ff' },
+                        precipData,
+                        3 * 60 * 60 * 1000,
+                    ),
+                ],
+            }),
         );
     }
 
+    // 4. Buoy Data
     if (buoyStore.data) {
+        const waveData = buoyStore.data.timestamps
+            .map((timestamp, index) => ({
+                timestamp: toMs(timestamp),
+                value: buoyStore.data!.height[index]!,
+            }))
+            .filter((d) => d.timestamp >= tenDaysAgo);
+
         result.push(
-            Track.buckets(
-                {
-                    title: t('windChangeTrackWaveHeight'),
-                    color: '#c08cff',
-                    type: 'bar',
-                },
-                buoyStore.data.timestamps.map((timestamp, index) => ({
-                    timestamp: toMs(timestamp),
-                    value: buoyStore.data!.height[index]!,
-                })),
-                3 * 60 * 60 * 1000,
-            ),
+            new Track({
+                title: t('windChangeTrackWaveHeight'),
+                series: [
+                    Series.buckets(
+                        { id: 'wave-height', type: 'bar', color: '#c08cff' },
+                        waveData,
+                        3 * 60 * 60 * 1000,
+                    ),
+                ],
+            }),
         );
     }
 
