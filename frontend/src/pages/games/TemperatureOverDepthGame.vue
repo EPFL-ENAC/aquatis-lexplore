@@ -18,7 +18,7 @@
                 <TemperatureOverDepthHeatmap
                     :heatmap="heatmap"
                     :width="heatmapWidth"
-                    :height="280"
+                    :height="480"
                     :color-bar-width="null"
                     x-label=""
                     y-label=""
@@ -105,10 +105,10 @@ const heatmapContainer = useTemplateRef<HTMLElement>('heatmapContainer');
 const sliderIndex = ref(0);
 
 const plotMargins = {
-    top: 16,
-    right: 12,
-    bottom: 16,
-    left: 64,
+    top: 4,
+    right: 0,
+    bottom: 8,
+    left: 32,
 };
 
 const referenceDepths = [0.25, 24, 50, 75, 85];
@@ -153,7 +153,9 @@ onMounted(() => {
 });
 
 const focusWindowWidth = computed(() => {
-    const xValues = heatmap.value?.x ?? [];
+    return 24 * 60 * 60; // 24h in s
+
+    /* const xValues = heatmap.value?.x ?? [];
 
     if (xValues.length < 2) {
         return 1;
@@ -167,7 +169,7 @@ const focusWindowWidth = computed(() => {
 
     const averageStep = totalStep / (xValues.length - 1);
 
-    return averageStep * 500;
+    return averageStep * 500; */
 });
 
 const temperatureAtReferenceDepths = computed(() => {

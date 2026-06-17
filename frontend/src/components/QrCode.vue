@@ -1,7 +1,7 @@
 <template>
     <div class="qr-wrap">
         <div class="qr-card">
-            <q-icon name="qr_code_2" size="60px" color="primary" />
+            <img src="alplakes_qrcode.svg" alt="Alplakes" class="qr-img" />
             <!-- TODO: Replace with actual QR code -->
             <div class="qr-label text-primary">{{ t('qrLabel') }}</div>
         </div>
@@ -22,9 +22,8 @@ const { t } = useI18n();
 }
 
 .qr-card {
-    width: 126px;
-    height: 126px;
-    border-radius: 20px;
+    width: 20rem;
+    border-radius: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: linear-gradient(
         180deg,
@@ -32,6 +31,7 @@ const { t } = useI18n();
         rgba(255, 255, 255, 0.05) 100%
     );
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,8 +39,13 @@ const { t } = useI18n();
     gap: 8px;
 }
 
+.qr-img {
+    width: 100%;
+    aspect-ratio: 1;
+}
+
 .qr-label {
-    font-size: 0.95rem;
+    font-size: 1.25rem;
     font-weight: 500;
 }
 

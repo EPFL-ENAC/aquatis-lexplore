@@ -1,5 +1,15 @@
 import { arrayClamp, clamp, lerp, median } from './math';
 
+interface IndexedValue1D {
+    index: number;
+    value: number;
+}
+
+interface FillCandidate {
+    value: number;
+    confidence: number;
+}
+
 interface ValueWithIndex {
     value: number;
     xIndex: number;
@@ -12,6 +22,13 @@ interface Slice2D {
     minY: number;
     maxX: number;
     maxY: number;
+}
+
+interface FlatFiniteNeighborIndexMaps {
+    left: Int32Array;
+    right: Int32Array;
+    above: Int32Array;
+    below: Int32Array;
 }
 
 export class Array2D {
@@ -407,5 +424,381 @@ export class Array2D {
         }
 
         return interpolatedColumn;
+    }
+
+    private getClampedBounds(
+        startX: number,
+        startY: number,
+        endX: number,
+        endY: number,
+    ): {
+        minX: number;
+        maxX: number;
+        minY: number;
+        maxY: number;
+    } {
+        const clampedStartX = arrayClamp(startX, this.width);
+        const clampedEndX = arrayClamp(endX, this.width);
+        const clampedStartY = arrayClamp(startY, this.height);
+        const clampedEndY = arrayClamp(endY, this.height);
+
+        return {
+            minX: Math.min(clampedStartX, clampedEndX),
+            maxX: Math.max(clampedStartX, clampedEndX),
+            minY: Math.min(clampedStartY, clampedEndY),
+            maxY: Math.max(clampedStartY, clampedEndY),
+        };
+    }
+
+    private flatIndex(x: number, y: number): number {
+        return x * this.height + y;
+    }
+
+    private buildFlatFiniteNeighborIndexMaps(): FlatFiniteNeighborIndexMaps {
+        return {
+            left: this.buildFirstFiniteIndexOnLeftFlatMap(),
+            right: this.buildFirstFiniteIndexOnRightFlatMap(),
+            above: this.buildFirstFiniteIndexAboveFlatMap(),
+            below: this.buildFirstFiniteIndexBelowFlatMap(),
+        };
+    }
+
+    private buildFirstFiniteIndexOnLeftFlatMap(): Int32Array {
+        const left = new Int32Array(this.width * this.height);
+        left.fill(-1);
+
+        const data = this.data;
+        const height = this.height;
+
+        for (let y = 0; y < height; y += 1) {
+            let lastFiniteX = -1;
+
+            for (let x = 0; x < this.width; x += 1) {
+                left[x * height + y] = lastFiniteX;
+
+                if (Number.isFinite(data[x]![y]!)) {
+                    lastFiniteX = x;
+                }
+            }
+        }
+
+        return left;
+    }
+
+    private buildFirstFiniteIndexOnRightFlatMap(): Int32Array {
+        const right = new Int32Array(this.width * this.height);
+        right.fill(-1);
+
+        const data = this.data;
+        const height = this.height;
+
+        for (let y = 0; y < height; y += 1) {
+            let nextFiniteX = -1;
+
+            for (let x = this.width - 1; x >= 0; x -= 1) {
+                right[x * height + y] = nextFiniteX;
+
+                if (Number.isFinite(data[x]![y]!)) {
+                    nextFiniteX = x;
+                }
+            }
+        }
+
+        return right;
+    }
+
+    private buildFirstFiniteIndexAboveFlatMap(): Int32Array {
+        const above = new Int32Array(this.width * this.height);
+        above.fill(-1);
+
+        const data = this.data;
+        const height = this.height;
+
+        for (let x = 0; x < this.width; x += 1) {
+            let lastFiniteY = -1;
+            const base = x * height;
+
+            for (let y = 0; y < height; y += 1) {
+                above[base + y] = lastFiniteY;
+
+                if (Number.isFinite(data[x]![y]!)) {
+                    lastFiniteY = y;
+                }
+            }
+        }
+
+        return above;
+    }
+
+    private buildFirstFiniteIndexBelowFlatMap(): Int32Array {
+        const below = new Int32Array(this.width * this.height);
+        below.fill(-1);
+
+        const data = this.data;
+        const height = this.height;
+
+        for (let x = 0; x < this.width; x += 1) {
+            let nextFiniteY = -1;
+            const base = x * height;
+
+            for (let y = height - 1; y >= 0; y -= 1) {
+                below[base + y] = nextFiniteY;
+
+                if (Number.isFinite(data[x]![y]!)) {
+                    nextFiniteY = y;
+                }
+            }
+        }
+
+        return below;
+    }
+
+    private firstFiniteValueOnLeftFlat(
+        x: number,
+        y: number,
+        maps: FlatFiniteNeighborIndexMaps,
+        minX = 0,
+    ): IndexedValue1D | null {
+        const index = maps.left[this.flatIndex(x, y)]!;
+
+        if (index < minX) {
+            return null;
+        }
+
+        return {
+            index,
+            value: this.data[index]![y]!,
+        };
+    }
+
+    private firstFiniteValueOnRightFlat(
+        x: number,
+        y: number,
+        maps: FlatFiniteNeighborIndexMaps,
+        maxX = this.width - 1,
+    ): IndexedValue1D | null {
+        const index = maps.right[this.flatIndex(x, y)]!;
+
+        if (index === -1 || index > maxX) {
+            return null;
+        }
+
+        return {
+            index,
+            value: this.data[index]![y]!,
+        };
+    }
+
+    private firstFiniteValueAboveFlat(
+        x: number,
+        y: number,
+        maps: FlatFiniteNeighborIndexMaps,
+        minY = 0,
+    ): IndexedValue1D | null {
+        const index = maps.above[this.flatIndex(x, y)]!;
+
+        if (index < minY) {
+            return null;
+        }
+
+        return {
+            index,
+            value: this.data[x]![index]!,
+        };
+    }
+
+    private firstFiniteValueBelowFlat(
+        x: number,
+        y: number,
+        maps: FlatFiniteNeighborIndexMaps,
+        maxY = this.height - 1,
+    ): IndexedValue1D | null {
+        const index = maps.below[this.flatIndex(x, y)]!;
+
+        if (index === -1 || index > maxY) {
+            return null;
+        }
+
+        return {
+            index,
+            value: this.data[x]![index]!,
+        };
+    }
+
+    private getNaNFillCandidateAlongXFlat(
+        x: number,
+        y: number,
+        minX: number,
+        maxX: number,
+        maxSpanX: number,
+        extrapolateEdges: boolean,
+        maps: FlatFiniteNeighborIndexMaps,
+    ): FillCandidate | null {
+        const left = this.firstFiniteValueOnLeftFlat(x, y, maps, minX);
+        const right = this.firstFiniteValueOnRightFlat(x, y, maps, maxX);
+
+        if (left && right) {
+            const span = right.index - left.index;
+
+            if (span > maxSpanX) {
+                return null;
+            }
+
+            return {
+                value: lerp(left.value, right.value, (x - left.index) / span),
+                confidence: 1 / (1 + span * span),
+            };
+        }
+
+        if (!extrapolateEdges) {
+            return null;
+        }
+
+        if (left) {
+            const dist = x - left.index;
+
+            if (dist <= maxSpanX) {
+                return {
+                    value: left.value,
+                    confidence: 0.25 / (1 + dist * dist),
+                };
+            }
+        }
+
+        if (right) {
+            const dist = right.index - x;
+
+            if (dist <= maxSpanX) {
+                return {
+                    value: right.value,
+                    confidence: 0.25 / (1 + dist * dist),
+                };
+            }
+        }
+
+        return null;
+    }
+
+    private getNaNFillCandidateAlongYFlat(
+        x: number,
+        y: number,
+        minY: number,
+        maxY: number,
+        maxSpanY: number,
+        extrapolateEdges: boolean,
+        maps: FlatFiniteNeighborIndexMaps,
+    ): FillCandidate | null {
+        const above = this.firstFiniteValueAboveFlat(x, y, maps, minY);
+        const below = this.firstFiniteValueBelowFlat(x, y, maps, maxY);
+
+        if (above && below) {
+            const span = below.index - above.index;
+
+            if (span > maxSpanY) {
+                return null;
+            }
+
+            return {
+                value: lerp(above.value, below.value, (y - above.index) / span),
+                confidence: 1 / (1 + span * span),
+            };
+        }
+
+        if (!extrapolateEdges) {
+            return null;
+        }
+
+        if (above) {
+            const dist = y - above.index;
+
+            if (dist <= maxSpanY) {
+                return {
+                    value: above.value,
+                    confidence: 0.25 / (1 + dist * dist),
+                };
+            }
+        }
+
+        if (below) {
+            const dist = below.index - y;
+
+            if (dist <= maxSpanY) {
+                return {
+                    value: below.value,
+                    confidence: 0.25 / (1 + dist * dist),
+                };
+            }
+        }
+
+        return null;
+    }
+
+    public fillNaNAdaptive(
+        startX: number = 0,
+        startY: number = 0,
+        endX: number = this.width - 1,
+        endY: number = this.height - 1,
+        params?: {
+            maxSpanX?: number | undefined;
+            maxSpanY?: number | undefined;
+            preferY?: number | undefined;
+            extrapolateEdges?: boolean | undefined;
+        },
+    ): Array2D {
+        const copy = this.copy();
+        console.time('buildFlatFiniteNeighborIndexMaps');
+        const maps = this.buildFlatFiniteNeighborIndexMaps();
+        console.timeEnd('buildFlatFiniteNeighborIndexMaps');
+        const { minX, maxX, minY, maxY } = this.getClampedBounds(startX, startY, endX, endY);
+        const source = this.data;
+        const target = copy.data;
+
+        const maxSpanX = params?.maxSpanX ?? Infinity;
+        const maxSpanY = params?.maxSpanY ?? Infinity;
+        const preferY = params?.preferY ?? 1.25;
+        const extrapolateEdges = params?.extrapolateEdges ?? false;
+
+        for (let x = minX; x <= maxX; x += 1) {
+            for (let y = minY; y <= maxY; y += 1) {
+                if (Number.isFinite(source[x]![y]!)) {
+                    continue;
+                }
+
+                const candidateX = this.getNaNFillCandidateAlongXFlat(
+                    x,
+                    y,
+                    minX,
+                    maxX,
+                    maxSpanX,
+                    extrapolateEdges,
+                    maps,
+                );
+                const candidateY = this.getNaNFillCandidateAlongYFlat(
+                    x,
+                    y,
+                    minY,
+                    maxY,
+                    maxSpanY,
+                    extrapolateEdges,
+                    maps,
+                );
+
+                if (candidateX && candidateY) {
+                    const confidenceX = candidateX.confidence;
+                    const confidenceY = candidateY.confidence * preferY;
+                    const totalConfidence = confidenceX + confidenceY;
+
+                    target[x]![y] =
+                        (candidateX.value * confidenceX + candidateY.value * confidenceY) /
+                        totalConfidence;
+                } else if (candidateY) {
+                    target[x]![y] = candidateY.value;
+                } else if (candidateX) {
+                    target[x]![y] = candidateX.value;
+                }
+            }
+        }
+
+        return copy;
     }
 }

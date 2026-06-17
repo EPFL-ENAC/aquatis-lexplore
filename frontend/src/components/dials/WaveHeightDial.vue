@@ -5,18 +5,17 @@
     >
         <svg
             class="wave-svg"
-            viewBox="0 0 140 140"
+            viewBox="0 0 100 100"
             role="img"
             :aria-label="`Wave height ${displayValue} ${unit}`"
         >
             <defs>
                 <clipPath id="wave-basin-clip">
-                    <path :d="basinInnerPath" />
+                    <path :d="basinContent" />
                 </clipPath>
             </defs>
 
-            <path class="basin-outline" :d="basinOuterPath" />
-            <path class="basin-inner-glow" :d="basinInnerPath" />
+            <path class="basin-outline" :d="basinPath" :stroke-width="BASIN_OUTLINE_WIDTH" />
 
             <g clip-path="url(#wave-basin-clip)">
                 <rect
@@ -33,16 +32,16 @@
 
                 <path class="wave-front" :d="waveFrontPath" :fill="progressColor" opacity="0.6" />
 
-                <circle cx="70" :cy="UNIT_Y + 2" r="15" fill="rgb(7, 50, 58)" />
+                <circle cx="50" :cy="UNIT_Y + 2" :r="fontScale * 12" fill="rgb(7, 50, 58)" />
+
+                <text class="wave-value" x="50" :y="VALUE_Y">
+                    {{ displayValue }}
+                </text>
+
+                <text class="wave-unit" x="50" :y="UNIT_Y">
+                    {{ unit }}
+                </text>
             </g>
-
-            <text class="wave-value" x="70" y="64">
-                {{ displayValue }}
-            </text>
-
-            <text class="wave-unit" x="70" :y="UNIT_Y">
-                {{ unit }}
-            </text>
         </svg>
     </div>
 </template>
@@ -67,37 +66,39 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     size: 120,
-    fontScale: 1.1,
+    fontScale: 1.25,
     unit: 'cm',
     minValue: 0,
     maxValue: 25,
     colorMap: () => ColorMap.stylizedHeatHardStops(),
     topMargin: 10,
-    bottomMargin: 10,
+    bottomMargin: 20,
 });
 
 const { locale } = useI18n();
 
 const DEFAULT_PROGRESS_COLOR = '#5fe3ff';
+const SCALE = 5 / 7;
 
 /*
- Layout
+ Layout normalized to 100x100
+ Original design was 140x140, scaled by 5/7
 */
-const CX = 70;
-const CY = 64;
-const OUTER_RX = 48;
-const OUTER_RY = 48;
+const CX = 50;
+const CY = 50;
+const BASIN_RX = 45;
+const BASIN_RY = 45;
 
-const INNER_RX = 40;
-const INNER_RY = 40;
+const BASIN_OUTLINE_WIDTH = 6;
 
-const BASIN_LEFT = CX - INNER_RX;
-const BASIN_RIGHT = CX + INNER_RX;
-const BASIN_TOP = CY - INNER_RY;
-const BASIN_BOTTOM = CY + INNER_RY;
+const BASIN_LEFT = CX - BASIN_RX;
+const BASIN_RIGHT = CX + BASIN_RX;
+const BASIN_TOP = CY - BASIN_RY;
+const BASIN_BOTTOM = CY + BASIN_RY;
 const BASIN_WIDTH = BASIN_RIGHT - BASIN_LEFT;
 
-const UNIT_Y = 98;
+const VALUE_Y = 48;
+const UNIT_Y = 82;
 
 const clampedValue = computed(() => {
     return Math.max(props.minValue, Math.min(props.value ?? props.minValue, props.maxValue));
@@ -122,11 +123,11 @@ const progressColor = computed(() => {
 });
 
 const effectiveTopMargin = computed(() => {
-    return Math.max(0, props.topMargin);
+    return Math.max(0, props.topMargin) * SCALE;
 });
 
 const effectiveBottomMargin = computed(() => {
-    return Math.max(0, props.bottomMargin);
+    return Math.max(0, props.bottomMargin) * SCALE;
 });
 
 function ellipsePath(cx: number, cy: number, rx: number, ry: number): string {
@@ -165,12 +166,17 @@ function buildWavePath(
     ].join(' ');
 }
 
-const basinOuterPath = computed(() => {
-    return ellipsePath(CX, CY, OUTER_RX, OUTER_RY);
+const basinPath = computed(() => {
+    return ellipsePath(CX, CY, BASIN_RX, BASIN_RY);
 });
 
-const basinInnerPath = computed(() => {
-    return ellipsePath(CX, CY, INNER_RX, INNER_RY);
+const basinContent = computed(() => {
+    return ellipsePath(
+        CX,
+        CY,
+        BASIN_RX - BASIN_OUTLINE_WIDTH * 0.5,
+        BASIN_RY - BASIN_OUTLINE_WIDTH * 0.5,
+    );
 });
 
 const waterTop = computed(() => {
@@ -182,20 +188,20 @@ const waterTop = computed(() => {
 });
 
 const waveBackPath = computed(() => {
-    const y = waterTop.value + 4;
-    return buildWavePath(BASIN_LEFT, BASIN_RIGHT, y, 4, 0);
+    const y = waterTop.value + 4 * SCALE;
+    return buildWavePath(BASIN_LEFT, BASIN_RIGHT, y, 4 * SCALE, 0);
 });
 
 const waveFrontPath = computed(() => {
     const y = waterTop.value;
-    return buildWavePath(BASIN_LEFT, BASIN_RIGHT, y, 6, 1);
+    return buildWavePath(BASIN_LEFT, BASIN_RIGHT, y, 6 * SCALE, 1);
 });
 </script>
 
 <style scoped>
 .wave-height-gauge {
     --size: 120px;
-    --font-scale: 1.1;
+    --font-scale: 1.25;
     display: inline-flex;
     align-items: center;
     color: rgba(255, 255, 255, 0.92);
@@ -209,15 +215,8 @@ const waveFrontPath = computed(() => {
 }
 
 .basin-outline {
-    fill: none;
-    stroke: rgba(120, 232, 255, 0.28);
-    stroke-width: 7;
-}
-
-.basin-inner-glow {
     fill: rgba(95, 227, 255, 0.05);
-    stroke: rgba(95, 227, 255, 0.12);
-    stroke-width: 1.5;
+    stroke: rgba(120, 232, 255, 0.28);
 }
 
 .water-body {
@@ -242,23 +241,10 @@ const waveFrontPath = computed(() => {
 
 .wave-unit {
     fill: #5fe3ff;
-    font-size: calc(var(--font-scale) * 0.9rem);
+    font-size: calc(var(--font-scale) * 0.6rem);
     font-weight: 600;
     text-anchor: middle;
     dominant-baseline: middle;
     letter-spacing: 0.08em;
-}
-
-.wave-mark {
-    fill: rgba(255, 255, 255, 0.5);
-    font-size: 6px;
-    font-weight: 600;
-    text-anchor: middle;
-    dominant-baseline: middle;
-}
-
-.wave-mark-min,
-.wave-mark-max {
-    opacity: 0.9;
 }
 </style>

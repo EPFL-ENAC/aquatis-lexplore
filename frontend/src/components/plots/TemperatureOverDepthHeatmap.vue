@@ -25,23 +25,14 @@
                 }"
             >
                 <div
-                    v-if="focusOverlay.leftShadeWidth > 0"
-                    class="focus-shade"
+                    class="focus-band"
                     :style="{
-                        left: '0px',
+                        left: `${focusOverlay.bandLeft}px`,
                         top: '0px',
-                        width: `${focusOverlay.leftShadeWidth}px`,
+                        width: `${focusOverlay.bandWidth}px`,
                         height: `${plotBounds.height}px`,
-                    }"
-                />
-                <div
-                    v-if="focusOverlay.rightShadeWidth > 0"
-                    class="focus-shade"
-                    :style="{
-                        left: `${focusOverlay.rightShadeLeft}px`,
-                        top: '0px',
-                        width: `${focusOverlay.rightShadeWidth}px`,
-                        height: `${plotBounds.height}px`,
+                        background: props.focusWindowColor,
+                        opacity: props.focusWindowOpacity,
                     }"
                 />
             </div>
@@ -73,6 +64,8 @@ interface Props {
     unit?: string;
     focusWindowCenter?: number | null;
     focusWindowWidth?: number | null;
+    focusWindowColor?: string;
+    focusWindowOpacity?: number;
     plotMargins?: { top: number; right: number; bottom: number; left: number };
 }
 
@@ -86,6 +79,8 @@ const props = withDefaults(defineProps<Props>(), {
     unit: '°C',
     focusWindowCenter: null,
     focusWindowWidth: null,
+    focusWindowColor: '#3b82f6',
+    focusWindowOpacity: 0.25,
     plotMargins: () => ({ top: 16, right: 12, bottom: 16, left: 64 }),
 });
 
@@ -167,9 +162,8 @@ const focusOverlay = computed(() => {
     ) {
         return {
             visible: false,
-            leftShadeWidth: 0,
-            rightShadeLeft: 0,
-            rightShadeWidth: 0,
+            bandLeft: 0,
+            bandWidth: 0,
         };
     }
 
@@ -187,10 +181,9 @@ const focusOverlay = computed(() => {
     const clampedRight = clamp(focusRight, 0, plotWidth);
 
     return {
-        visible: true,
-        leftShadeWidth: Math.max(0, clampedLeft),
-        rightShadeLeft: clampedRight,
-        rightShadeWidth: Math.max(0, plotWidth - clampedRight),
+        visible: clampedRight > clampedLeft,
+        bandLeft: clampedLeft,
+        bandWidth: Math.max(0, clampedRight - clampedLeft),
     };
 });
 
@@ -345,9 +338,8 @@ canvas {
     pointer-events: none;
 }
 
-.focus-shade {
+.focus-band {
     position: absolute;
-    background: rgba(0, 0, 0, 0.5);
 }
 
 .processing-overlay {

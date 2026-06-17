@@ -23,6 +23,8 @@
                 <PulsatingLiveDot :last-measurement-time="weatherStore.data?.timestamps.at(-1)" />
 
                 <div class="stats">
+                    <q-separator vertical class="stats__separator" color="white" />
+
                     <div class="stat">
                         <div class="stat__label">{{ t('headerAirTemp') }}</div>
                         <TemperatureThermometer
@@ -33,6 +35,9 @@
                             unit="°C"
                         />
                     </div>
+
+                    <q-separator vertical class="stats__separator" color="white" />
+
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWaterTemp') }}</div>
                         <TemperatureThermometer
@@ -43,6 +48,9 @@
                             unit="°C"
                         />
                     </div>
+
+                    <q-separator vertical class="stats__separator" color="white" />
+
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWind') }}</div>
                         <div class="stat__row">
@@ -57,6 +65,9 @@
                             />
                         </div>
                     </div>
+
+                    <q-separator vertical class="stats__separator" color="white" />
+
                     <div class="stat">
                         <div class="stat__label">{{ t('headerWave') }}</div>
                         <WaveHeightDial
@@ -182,8 +193,13 @@ const dialSize = 152;
 }
 
 .stat__label {
+    text-align: center;
     opacity: 0.7;
     font-size: 1.25rem;
     font-weight: 600;
+}
+
+.stats__separator {
+    opacity: 0.25;
 }
 </style>

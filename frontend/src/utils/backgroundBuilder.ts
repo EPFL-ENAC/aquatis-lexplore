@@ -15,8 +15,7 @@ export type BackgroundStyle = {
 export type ToCssOptions = {
     direction?: string;
     iconSizePx?: number;
-    totalWidthPx?: number;
-    minEdgeClearancePx?: number;
+    minEdgeClearancePct?: number;
 };
 
 export class BackgroundBuilder {
@@ -57,12 +56,7 @@ export class BackgroundBuilder {
             throw new Error('endX must be greater than startX');
         }
 
-        const {
-            direction = 'to right',
-            iconSizePx,
-            totalWidthPx = 0,
-            minEdgeClearancePx = 0,
-        } = options;
+        const { direction = 'to right', iconSizePx, minEdgeClearancePct = 0 } = options;
 
         const bands = this.clipBands(this.getSortedBands(), startX, endX);
 
@@ -88,9 +82,7 @@ export class BackgroundBuilder {
                     (band.start + band.end) / 2,
                     startX,
                     endX,
-                    totalWidthPx,
-                    iconSizePx,
-                    minEdgeClearancePx,
+                    minEdgeClearancePct,
                 ),
         );
 
@@ -154,19 +146,10 @@ export class BackgroundBuilder {
         x: number,
         startX: number,
         endX: number,
-        totalWidthPx: number,
-        iconSizePx?: number,
-        minEdgeClearancePx = 0,
+        minEdgeClearancePct = 0,
     ): boolean {
-        if (!(totalWidthPx > 0) || iconSizePx == null) {
-            return true;
-        }
-
-        const pct = (x - startX) / (endX - startX);
-        const xPx = pct * totalWidthPx;
-        const edgeClearance = iconSizePx / 2 + minEdgeClearancePx;
-
-        return xPx >= edgeClearance && xPx <= totalWidthPx - edgeClearance;
+        const pct = ((x - startX) / (endX - startX)) * 100;
+        return pct >= minEdgeClearancePct && pct <= 100 - minEdgeClearancePct;
     }
 
     private getSortedBands(): Band[] {

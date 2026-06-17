@@ -5,7 +5,7 @@
     >
         <svg
             class="thermo-svg"
-            viewBox="0 0 140 140"
+            viewBox="0 0 100 100"
             role="img"
             :aria-label="`Temperature ${displayValue} ${unit}`"
         >
@@ -60,25 +60,26 @@ const { locale } = useI18n();
 const DEFAULT_PROGRESS_COLOR = '#f0bf35';
 
 /*
- Layout
+ Layout normalized to 100x100
+ Original design was 140x140, scaled by 5/7
 */
-const CX = 44;
-const TUBE_OUTER_WIDTH = 22;
-const TUBE_INNER_WIDTH = 12;
+const CX = 18;
+const TUBE_OUTER_WIDTH = 15;
+const TUBE_INNER_WIDTH = TUBE_OUTER_WIDTH * 0.6;
 
-const OUTER_TOP_Y = 5;
-const OUTER_BULB_R = 24;
-const OUTER_BULB_CY = 110;
+const OUTER_TOP_Y = 2;
+const OUTER_BULB_R = 15;
+const OUTER_BULB_CY = 82;
 
-const INNER_TOP_Y = 10;
-const INNER_BULB_R = 18;
-const INNER_BULB_CY = 110;
+const INNER_TOP_Y = 5;
+const INNER_BULB_R = 12;
+const INNER_BULB_CY = 82;
 
 const INNER_BOTTOM = INNER_BULB_CY - INNER_BULB_R - 8;
 
-const VALUE_X = 70;
-const VALUE_Y = 64;
-const UNIT_BELOW_Y = VALUE_Y + 20;
+const VALUE_X = 31;
+const VALUE_Y = 50;
+const UNIT_BELOW_Y = VALUE_Y + 18;
 const UNIT_RIGHT_GAP = 4;
 
 const valueTextRef = ref<SVGTextElement | null>(null);
@@ -136,8 +137,8 @@ const outerShapePath = computed(() => {
 });
 
 const innerShapePath = computed(() => {
-    const range = INNER_BOTTOM - INNER_TOP_Y;
-    const progress = range * (1 - valueRatio.value);
+    const tubeRange = INNER_BOTTOM - INNER_TOP_Y;
+    const progress = tubeRange * (1 - valueRatio.value);
 
     return buildThermometerPath(
         CX,
@@ -198,7 +199,7 @@ onMounted(() => {
 }
 
 .thermo-svg {
-    width: calc(var(--size) * 1.15);
+    width: var(--size);
     height: var(--size);
     display: block;
     flex: 0 0 auto;
@@ -220,7 +221,7 @@ onMounted(() => {
 .thermo-body-outline {
     fill: none;
     stroke: rgba(120, 232, 255, 0.28);
-    stroke-width: 4;
+    stroke-width: 2.8571428571;
     stroke-linejoin: round;
     stroke-linecap: round;
 }
@@ -231,7 +232,7 @@ onMounted(() => {
 
 .temp-value {
     fill: #ffffff;
-    font-size: calc(var(--font-scale) * 1.5rem);
+    font-size: calc(var(--font-scale) * 1.75rem);
     font-weight: 700;
     text-anchor: start;
     dominant-baseline: middle;
@@ -239,7 +240,7 @@ onMounted(() => {
 
 .temp-unit {
     fill: #5fe3ff;
-    font-size: calc(var(--font-scale) * 0.9rem);
+    font-size: calc(var(--font-scale) * 0.6rem);
     font-weight: 600;
     text-anchor: start;
     dominant-baseline: middle;

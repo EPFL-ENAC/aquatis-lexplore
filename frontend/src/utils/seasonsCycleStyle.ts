@@ -12,7 +12,7 @@ const displayBySeasonType = {
     },
     autumn: {
         colors: ['#d98b3a'],
-        icon: `url("/icons/pumpkin2.svg")`,
+        icon: `url("/icons/autumn_leaf.svg")`,
     },
     winter: {
         colors: ['#8ecae6'],

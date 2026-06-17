@@ -156,7 +156,7 @@ export const useLakeStore = makeLexploreDatasetStore<LakeData>(
             temperatureOverDepth: new DepthHeatmap({
                 x: data['time'] as number[],
                 y: data['depth'] as number[],
-                z: Array2D.fromTransposed(data['temp'] as number[][]),
+                z: Array2D.fromTransposed(data['temp'] as number[][]).fillNaNAdaptive(),
             }),
         };
     },

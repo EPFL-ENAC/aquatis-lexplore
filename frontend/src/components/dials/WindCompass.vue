@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const CENTER = 50;
-const RING_DEMI_RADIUS = 36;
+const RING_DEMI_RADIUS = 45;
 const LABEL_RADIUS = RING_DEMI_RADIUS;
 
 function quarterRing(multiplier: number) {

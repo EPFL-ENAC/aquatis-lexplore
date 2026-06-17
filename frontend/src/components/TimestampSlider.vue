@@ -1,5 +1,5 @@
 <template>
-    <section class="timestamp-slider">
+    <section class="timestamp-slider" :style="sliderStyle">
         <div class="slider-track-wrap">
             <div class="slider-track" :style="trackStyle"></div>
 
@@ -72,7 +72,6 @@ const props = withDefaults(
 const model = defineModel<number>();
 
 const BADGE_SIZE = 76;
-const BADGE_RADIUS = BADGE_SIZE / 2;
 
 const startSeconds = computed(() => {
     return toUnixSeconds(props.startTimestamp) ?? 0;
@@ -156,7 +155,8 @@ const trackStyle = computed(() => {
 
         return {
             ...backgroundBuilder.toCSS(props.startTimestamp, props.endTimestamp, {
-                iconSizePx: 24,
+                iconSizePx: 32,
+                minEdgeClearancePct: 5,
             }),
         };
     }
@@ -172,14 +172,21 @@ const trackStyle = computed(() => {
 
     return {
         ...backgroundBuilder.toCSS(props.startTimestamp, props.endTimestamp, {
-            iconSizePx: 24,
+            iconSizePx: 32,
+            minEdgeClearancePct: 5,
         }),
     };
 });
 
 const badgeStyle = computed(() => {
     return {
-        left: `clamp(${BADGE_RADIUS}px, ${thumbPercent.value}%, calc(100% - ${BADGE_RADIUS}px))`,
+        left: `${thumbPercent.value}%`,
+    };
+});
+
+const sliderStyle = computed(() => {
+    return {
+        '--badge-size': `${BADGE_SIZE}px`,
     };
 });
 
@@ -240,7 +247,7 @@ function onInput(event: Event) {
 .slider-track-wrap {
     position: relative;
     padding: 1rem 0;
-    overflow-x: hidden;
+    overflow-x: visible;
     touch-action: pan-y;
     min-height: 6rem;
 }
@@ -273,8 +280,8 @@ function onInput(event: Event) {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 76px;
-    height: 76px;
+    width: var(--badge-size);
+    height: var(--badge-size);
     border: 2px solid white;
     border-radius: 999px;
     background: #ff846d;
@@ -318,8 +325,8 @@ function onInput(event: Event) {
 }
 
 .slider-input::-webkit-slider-thumb {
-    width: 76px;
-    height: 76px;
+    width: var(--badge-size);
+    height: var(--badge-size);
     border: 0;
     border-radius: 999px;
     background: transparent;
@@ -334,8 +341,8 @@ function onInput(event: Event) {
 }
 
 .slider-input::-moz-range-thumb {
-    width: 76px;
-    height: 76px;
+    width: var(--badge-size);
+    height: var(--badge-size);
     border: 0;
     border-radius: 999px;
     background: transparent;

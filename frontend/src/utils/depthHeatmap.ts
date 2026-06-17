@@ -49,13 +49,8 @@ export class DepthHeatmap {
     }
 
     slice(params: DepthHeatmapSliceParams): DepthHeatmap {
-        const xStartValue = params.xStart ?? this.x[0] ?? 0;
-        const xEndValue = params.xEnd ?? this.x[this.x.length - 1] ?? 0;
-        const yStartValue = params.yStart ?? this.y[0] ?? 0;
-        const yEndValue = params.yEnd ?? this.y[this.y.length - 1] ?? 0;
-
-        const [minXIndex, maxXIndex] = sortedArrayRange(this.x, xStartValue, xEndValue);
-        const [minYIndex, maxYIndex] = sortedArrayRange(this.y, yStartValue, yEndValue);
+        const { minXIndex, maxXIndex, minYIndex, maxYIndex } =
+            this.getIndexRangeFromValueRange(params);
 
         const slicedX = this.x.slice(minXIndex, maxXIndex);
         const slicedY = this.y.slice(minYIndex, maxYIndex);
@@ -292,8 +287,12 @@ export class DepthHeatmap {
             return null;
         }
 
-        const [minXIndex, maxXIndex] = sortedArrayRange(this.x, startXValue, endXValue);
-        const [minYIndex, maxYIndex] = sortedArrayRange(this.y, startY, endY);
+        const { minXIndex, maxXIndex, minYIndex, maxYIndex } = this.getIndexRangeFromValueRange({
+            xStart: startXValue,
+            xEnd: endXValue,
+            yStart: startY,
+            yEnd: endY,
+        });
 
         if (minXIndex === maxXIndex || minYIndex === maxYIndex) {
             return null;
@@ -356,7 +355,6 @@ export class DepthHeatmap {
                     startY: lastSmallerValueIndex(this.y, valueSlice.startY),
                     endY: lastSmallerValueIndex(this.y, valueSlice.endY) + 1,
                 };
-                console.log({ timestamp: this.x[i], valueSlice, indexSlice });
             }
 
             const { yIndex, value } = this.z.maxAtX(i, indexSlice);
@@ -565,5 +563,45 @@ export class DepthHeatmap {
                 throw new Error(`z[${i}] must have length ${this.y.length} to match y.`);
             }
         }
+    }
+
+    private getIndexRangeFromValueRange(params?: DepthHeatmapSliceParams): {
+        minXIndex: number;
+        maxXIndex: number;
+        minYIndex: number;
+        maxYIndex: number;
+    } {
+        const xStartValue = params?.xStart ?? this.x[0] ?? 0;
+        const xEndValue = params?.xEnd ?? this.x[this.x.length - 1] ?? 0;
+        const yStartValue = params?.yStart ?? this.y[0] ?? 0;
+        const yEndValue = params?.yEnd ?? this.y[this.y.length - 1] ?? 0;
+
+        const [minXIndex, maxXIndex] = sortedArrayRange(this.x, xStartValue, xEndValue);
+        const [minYIndex, maxYIndex] = sortedArrayRange(this.y, yStartValue, yEndValue);
+
+        return { minXIndex, maxXIndex, minYIndex, maxYIndex };
+    }
+
+    public fillNaNAdaptive(
+        params?: DepthHeatmapSliceParams & {
+            maxSpanX?: number;
+            maxSpanY?: number;
+            preferY?: number;
+            extrapolateEdges?: boolean;
+        },
+    ): DepthHeatmap {
+        const { minXIndex, maxXIndex, minYIndex, maxYIndex } =
+            this.getIndexRangeFromValueRange(params);
+
+        return new DepthHeatmap({
+            x: this.x,
+            y: this.y,
+            z: this.z.fillNaNAdaptive(minXIndex, minYIndex, maxXIndex, maxYIndex, {
+                maxSpanX: params?.maxSpanX,
+                maxSpanY: params?.maxSpanY,
+                preferY: params?.preferY,
+                extrapolateEdges: params?.extrapolateEdges,
+            }),
+        });
     }
 }

@@ -6,24 +6,25 @@
             role="img"
             :aria-label="`Wind speed ${displayValue}`"
         >
-            <path class="ring ring-bg" :d="backgroundArcPath" />
+            <path class="ring ring-bg" :d="backgroundArcPath" :stroke-width="BG_THICKNESS" />
 
             <path
                 v-if="valueRatio > 0"
                 class="ring ring-progress"
                 :d="arcPath"
                 :stroke="progressColor"
+                :stroke-width="BG_THICKNESS * 0.66"
             />
 
-            <circle class="inner-disc" cx="50" cy="50" :r="BG_RADIUS * 0.8" />
+            <circle class="inner-disc" cx="50" cy="50" :r="BG_RADIUS - BG_THICKNESS * 0.5" />
 
-            <text class="dial-mark" x="10" y="74">{{ minValue }}</text>
-            <text class="dial-mark" x="90" y="74">{{ maxValue }}</text>
+            <text class="dial-mark" x="10" y="85">{{ minValue }}</text>
+            <text class="dial-mark" x="90" y="85">{{ maxValue }}</text>
 
-            <text class="speed-value" x="50" y="48">
+            <text class="speed-value" x="50" :y="VALUE_Y">
                 {{ displayValue }}
             </text>
-            <text class="speed-unit" x="50" :y="48 + 15 * fontScale">
+            <text class="speed-unit" x="50" :y="UNIT_Y">
                 {{ unit }}
             </text>
         </svg>
@@ -59,7 +60,10 @@ const props = withDefaults(defineProps<Props>(), {
 const { locale } = useI18n();
 
 const CENTER = 50;
-const BG_RADIUS = 36;
+const BG_RADIUS = 45;
+const BG_THICKNESS = 6;
+const VALUE_Y = 50;
+const UNIT_Y = 82;
 const PROGRESS_RADIUS = BG_RADIUS;
 const DEFAULT_PROGRESS_COLOR = '#5fe3ff';
 
@@ -128,11 +132,9 @@ const arcPath = computed(() => {
 
 .ring-bg {
     stroke: rgba(120, 232, 255, 0.24);
-    stroke-width: 8;
 }
 
 .ring-progress {
-    stroke-width: 4.5;
     filter: drop-shadow(0 0 4px rgba(95, 227, 255, 0.2));
 }
 
@@ -142,7 +144,7 @@ const arcPath = computed(() => {
 
 .speed-value {
     fill: #ffffff;
-    font-size: calc(var(--font-scale) * 1rem);
+    font-size: calc(var(--font-scale) * 1.75rem);
     font-weight: 700;
     text-anchor: middle;
     dominant-baseline: middle;
