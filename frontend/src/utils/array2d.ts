@@ -298,10 +298,10 @@ export class Array2D {
     }
 
     public slice2D(startX: number, endX: number, startY: number, endY: number): Slice2D {
-        const clampedStartX = arrayClamp(startX, this.width);
-        const clampedEndX = arrayClamp(endX, this.width);
-        const clampedStartY = arrayClamp(startY, this.height);
-        const clampedEndY = arrayClamp(endY, this.height);
+        const clampedStartX = arrayClamp(startX, this.width + 1);
+        const clampedEndX = arrayClamp(endX, this.width + 1);
+        const clampedStartY = arrayClamp(startY, this.height + 1);
+        const clampedEndY = arrayClamp(endY, this.height + 1);
 
         const minX = Math.min(clampedStartX, clampedEndX);
         const maxX = Math.max(clampedStartX, clampedEndX);

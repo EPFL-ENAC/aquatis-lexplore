@@ -54,7 +54,7 @@ export default {
     tempDepthEyebrow: '01 · LIVE - Température en profondeur',
     tempDepthTitle: "Plus on descend, plus l'eau refroidit.",
     tempDepthAir: 'Air',
-    tempDepthQ1: "Observes-tu une différence entre l'air et l'eau ?",
+    tempDepthQ1: "Observes-tu une différence de température entre l'air et l'eau ?",
     tempDepthQ2: "Est-ce qu'il fait plus froid à 10 m ou à 60 m ?",
 
     // --- Zooplankton Depth (Live) ---
@@ -66,7 +66,7 @@ export default {
 
     // --- Algae Concentration (Live) ---
     algaeConcEyebrow: '01 · LIVE - Concentration des Microalgues',
-    algaeConcTitle: 'Des prairies microscopiques.',
+    algaeConcTitle: 'Des algues microscopiques.',
     algaeConcSubtitle:
         'Les microalgues, ou phytoplancton, ont besoin de la lumière du soleil pour pousser. Elles constituent le premier maillon de la chaine alimentaire. mais quand elles sont trop nombreuses, l’eau du lac verdit et se trouble.',
     algaeConcQ1: 'À quelle profondeur la concentration de plancton est la plus haute ?',
@@ -90,8 +90,8 @@ export default {
     windChangeEyebrow: '02 · Découverte',
     windChangeTitle: "L'effet du vent sur le lac.",
     windChangeTrackTemperature: "Températures de l'air et de l'eau (°C)",
-    windChangeTrackAirTemp: "Température de l'air (°C)",
-    windChangeTrackWaterTemp: "Température de l'eau (°C)",
+    windChangeTrackAirTemp: 'Air',
+    windChangeTrackWaterTemp: 'Eau',
     windChangeTrackWindDirection: 'Direction du vent',
     windChangeTrackWindSpeed: 'Vitesse du vent (km/h)',
     windChangeTrackPrecipitation: 'Précipitations (mm/h)',
@@ -103,8 +103,9 @@ export default {
     chloroChangeEyebrow: '02 · Découverte',
     chloroChangeTitle: 'La lumière et la chlorophylle dans le lac.',
     chloroChangeTrackIrradiance: 'Énergie solaire (W/m²)',
-    chloroChangeTrackAirTemp: "Température de l'air (°C)",
-    chloroChangeTrackWaterTemp: "Température de l'eau (°C)",
+    chloroChangeTrackTemperature: "Températures de l'air et de l'eau (°C)",
+    chloroChangeTrackAirTemp: 'Air',
+    chloroChangeTrackWaterTemp: 'Eau',
     chloroChangeTrackChlorophyll: 'Chlorophylle A moyenne (0–20 m)',
     chloroChangeQ1: 'Est-ce que c’est parce qu’il fait plus chaud qu’il y a plus d’algues?',
 
@@ -120,12 +121,13 @@ export default {
     gameNavPlanctonSubtitle:
         'Suis le zooplancton qui monte et descend dans le lac, heure après heure.',
     gameNavTempTitle: 'Chaud ou Froid?',
+    gameNavTempShort: 'Les saisons du lac',
     gameNavTempSubtitle:
         '3 mois de température, par profondeur. Trouve la zone qui ne se réchauffe jamais.',
 
     // --- Temperature Game ---
     tempGameEyebrow: '02 · Chaud ou Froid?',
-    tempGameTitle: '2 ans de Léman, par profondeur.',
+    tempGameTitle: 'La température du Léman par profondeur cette dernière année',
     tempGameSubtitle: 'Glisse sur la grille pour explorer.',
     tempGameProfileKicker: 'Au curseur → temp par profondeur',
     tempGameLoading: 'Chargement des températures…',
@@ -134,7 +136,7 @@ export default {
 
     // --- Plankton Game ---
     planctonGameEyebrow: "01 · L'aventure du Plancton",
-    planctonGameTitle: 'Bouge le curseur rouge.',
+    planctonGameTitle: 'Observe la migration du Zooplancton sur les derniers 2 jours.',
     planctonGameSubtitle: 'Observe le mouvement du zooplancton à travers la journée.',
     planctonGameQ1: 'Penses-tu que le plancton animal aime la lumière?',
 

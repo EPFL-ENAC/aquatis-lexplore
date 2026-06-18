@@ -154,20 +154,24 @@ const dialSize = 152;
 .header__top {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 1rem;
 }
 
 .header__logo {
     display: flex;
     gap: 1rem;
-    align-items: flex-start;
+    align-items: center;
     color: #00c6df;
 }
 
-.header__logo img {
-    height: 6rem;
+.header__top img {
+    height: 2rem;
     width: auto;
+}
+
+.header__logo img {
+    height: 3rem;
 }
 
 .header-logos {

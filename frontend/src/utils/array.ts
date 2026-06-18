@@ -21,8 +21,14 @@ export function sortedArrayRange(
     startValue: number,
     endValue: number,
 ): [number, number] {
-    const startIndex = array.findIndex((value) => value >= startValue);
-    const endIndex = array.findIndex((value) => value > endValue);
+    let startIndex = array.findIndex((value) => value >= startValue);
+    let endIndex = array.findIndex((value) => value > endValue);
+    if (startIndex === -1) {
+        startIndex = array.length - 1;
+    }
+    if (endIndex === -1) {
+        endIndex = array.length - 1;
+    }
     return [startIndex, endIndex];
 }
 

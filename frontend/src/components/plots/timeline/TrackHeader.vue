@@ -1,6 +1,24 @@
 <template>
-    <div class="timeline-chart__track-title">
-        {{ track.title }}
+    <div class="timeline-chart__track-text">
+        <div class="timeline-chart__track-title">
+            {{ track.title }}
+        </div>
+
+        <div v-if="legendSeries.length > 1" class="timeline-chart__track-legend">
+            <div
+                v-for="series in legendSeries"
+                :key="series.id"
+                class="timeline-chart__track-legend-item"
+            >
+                <span
+                    class="timeline-chart__track-legend-dot"
+                    :style="{ backgroundColor: series.color }"
+                />
+                <span class="timeline-chart__track-legend-label">
+                    {{ series.title ?? series.id }}
+                </span>
+            </div>
+        </div>
     </div>
 
     <svg
@@ -55,9 +73,21 @@ const props = withDefaults(
 
 const { locale } = useI18n();
 
+const legendSeries = computed(() =>
+    props.track.series.filter((series) => series.type !== 'wind' && series.type !== 'number'),
+);
+
+const textBlockHeight = computed(() => {
+    if (legendSeries.value.length > 1) {
+        return 40;
+    }
+
+    return 20;
+});
+
 const valueTicks = computed(() => {
-    const top = props.topMargin;
-    const innerHeight = Math.max(1, props.trackHeight - props.topMargin - props.bottomMargin);
+    const top = props.topMargin + textBlockHeight.value;
+    const innerHeight = Math.max(1, props.trackHeight - top - props.bottomMargin);
 
     const rangeRaw = props.track.getValueRange();
 
@@ -115,17 +145,52 @@ function formatValueTick(value: number): string {
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.timeline-chart__track-title {
+.timeline-chart__track-text {
     position: absolute;
-    max-width: calc(100% - 64px);
-    left: 12px;
     top: 10px;
+    left: 12px;
     right: 12px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: calc(100% - 24px);
+    pointer-events: none;
+}
+
+.timeline-chart__track-title {
     color: #d8deea;
     font-size: 13px;
     font-weight: 600;
     line-height: 1.2;
-    z-index: 1;
+}
+
+.timeline-chart__track-legend {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+}
+
+.timeline-chart__track-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.timeline-chart__track-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    flex: 0 0 auto;
+}
+
+.timeline-chart__track-legend-label {
+    color: rgba(216, 222, 234, 0.8);
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 .timeline-chart__track-scale {

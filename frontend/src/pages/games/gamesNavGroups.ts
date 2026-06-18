@@ -29,7 +29,7 @@ export const gamesNavGroups: NavMenuItem[] = [
     },
     {
         id: '02',
-        shortLabel: 'gameNavPlanctonShort',
+        shortLabel: 'gameNavTempShort',
         label: 'gameNavTempTitle',
         title: 'gameNavTempTitle',
         subtitle: 'gameNavTempSubtitle',

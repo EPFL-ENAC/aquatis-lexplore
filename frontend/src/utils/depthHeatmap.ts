@@ -52,9 +52,9 @@ export class DepthHeatmap {
         const { minXIndex, maxXIndex, minYIndex, maxYIndex } =
             this.getIndexRangeFromValueRange(params);
 
-        const slicedX = this.x.slice(minXIndex, maxXIndex);
-        const slicedY = this.y.slice(minYIndex, maxYIndex);
-        const slicedZ = this.z.slice2D(minXIndex, maxXIndex, minYIndex, maxYIndex).slice;
+        const slicedX = this.x.slice(minXIndex, maxXIndex + 1);
+        const slicedY = this.y.slice(minYIndex, maxYIndex + 1);
+        const slicedZ = this.z.slice2D(minXIndex, maxXIndex + 1, minYIndex, maxYIndex + 1).slice;
 
         return new DepthHeatmap({
             x: slicedX,
@@ -575,6 +575,13 @@ export class DepthHeatmap {
         const xEndValue = params?.xEnd ?? this.x[this.x.length - 1] ?? 0;
         const yStartValue = params?.yStart ?? this.y[0] ?? 0;
         const yEndValue = params?.yEnd ?? this.y[this.y.length - 1] ?? 0;
+
+        console.log('getIndexRangeFromValueRange', params, {
+            xStartValue,
+            xEndValue,
+            yStartValue,
+            yEndValue,
+        });
 
         const [minXIndex, maxXIndex] = sortedArrayRange(this.x, xStartValue, xEndValue);
         const [minYIndex, maxYIndex] = sortedArrayRange(this.y, yStartValue, yEndValue);

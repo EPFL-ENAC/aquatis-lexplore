@@ -57,6 +57,7 @@ const tracks = computed(() => {
         tempSeries.push(
             new Series({
                 id: 'air-temp',
+                title: t('windChangeTrackAirTemp'),
                 type: 'line',
                 color: '#ff5e66',
                 data: airTempData,
@@ -75,6 +76,7 @@ const tracks = computed(() => {
 
         const waterSeries = new Series({
             id: 'water-temp',
+            title: t('windChangeTrackWaterTemp'),
             type: 'line',
             color: '#2b67f0',
             data: waterTempData,

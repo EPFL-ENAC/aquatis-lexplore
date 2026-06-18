@@ -44,12 +44,15 @@ const chlorophyll0to20 = computed(() => {
         return [];
     }
 
+    const tenDaysAgo = Date.now() - 10 * 24 * 60 * 60 * 1000;
+
     const sliced = algaeStore.data.chlorophyllAOverDepth.slice({
         yStart: 0,
         yEnd: 20,
     });
 
     return algaeStore.data.timestamps
+        .filter((timestamp) => toMs(timestamp) >= tenDaysAgo)
         .map((timestamp) => {
             const value = sliced.averageOverDepthAtTimestamp(timestamp);
 
@@ -67,6 +70,7 @@ const chlorophyll0to20 = computed(() => {
 
 const tracks = computed(() => {
     const result: Track[] = [];
+    const tenDaysAgo = Date.now() - 10 * 24 * 60 * 60 * 1000;
 
     if (weatherStore.data) {
         result.push(
@@ -75,49 +79,60 @@ const tracks = computed(() => {
                 series: [
                     Series.buckets(
                         { id: 'irradiance', type: 'bar', color: '#ffd54a' },
-                        weatherStore.data.timestamps.map((timestamp, index) => ({
-                            timestamp: toMs(timestamp),
-                            value: weatherStore.data!.irradiance[index]!,
-                        })),
+                        weatherStore.data.timestamps
+                            .map((timestamp, index) => ({
+                                timestamp: toMs(timestamp),
+                                value: weatherStore.data!.irradiance[index]!,
+                            }))
+                            .filter((d) => d.timestamp >= tenDaysAgo),
                         3 * 60 * 60 * 1000,
                     ),
                 ],
             }),
         );
+    }
 
-        result.push(
-            new Track({
+    const tempSeries: Series[] = [];
+
+    if (weatherStore.data) {
+        tempSeries.push(
+            new Series({
+                id: 'air-temp',
                 title: t('chloroChangeTrackAirTemp'),
-                series: [
-                    new Series({
-                        id: 'air-temp',
-                        type: 'line',
-                        color: '#ff5e66',
-                        data: weatherStore.data.timestamps.map((timestamp, index) => ({
-                            timestamp: toMs(timestamp),
-                            value: weatherStore.data!.airTemperature[index]!,
-                        })),
-                    }),
-                ],
-            }),
+                type: 'line',
+                color: '#ff5e66',
+                data: weatherStore.data.timestamps
+                    .map((timestamp, index) => ({
+                        timestamp: toMs(timestamp),
+                        value: weatherStore.data!.airTemperature[index]!,
+                    }))
+                    .filter((d) => d.timestamp >= tenDaysAgo),
+            }).slidingWindowOutlierRemoval(5, 5),
         );
     }
 
     if (lakeStore.data) {
+        tempSeries.push(
+            new Series({
+                id: 'water-temp',
+                title: t('chloroChangeTrackWaterTemp'),
+                type: 'line',
+                color: '#2b67f0',
+                data: lakeStore.data.timestamps
+                    .map((timestamp, index) => ({
+                        timestamp: toMs(timestamp),
+                        value: lakeStore.data!.surfaceTemperature[index]!,
+                    }))
+                    .filter((d) => d.timestamp >= tenDaysAgo),
+            }),
+        );
+    }
+
+    if (tempSeries.length > 0) {
         result.push(
             new Track({
-                title: t('chloroChangeTrackWaterTemp'),
-                series: [
-                    new Series({
-                        id: 'water-temp',
-                        type: 'line',
-                        color: '#4db8ff',
-                        data: lakeStore.data.timestamps.map((timestamp, index) => ({
-                            timestamp: toMs(timestamp),
-                            value: lakeStore.data!.surfaceTemperature[index]!,
-                        })),
-                    }),
-                ],
+                title: t('windChangeTrackTemperature'),
+                series: tempSeries,
             }),
         );
     }

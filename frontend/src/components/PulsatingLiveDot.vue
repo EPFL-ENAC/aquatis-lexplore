@@ -45,6 +45,10 @@ h1 {
     font-weight: bold;
 }
 
+.last-measurement {
+    font-size: 1.5rem;
+}
+
 .dot-container {
     isolation: isolate;
     position: relative;

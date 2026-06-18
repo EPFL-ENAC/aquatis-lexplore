@@ -37,7 +37,7 @@ export const liveDataNavGroups: NavMenuItem[] = [
     },
     {
         id: '03',
-        shortLabel: 'liveNavZooDepthShort',
+        shortLabel: 'liveNavAlgaeConc',
         label: 'liveNavAlgaeConc',
         title: 'liveNavAlgaeConc',
         subtitle: '',

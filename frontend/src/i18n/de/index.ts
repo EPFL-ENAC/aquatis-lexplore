@@ -22,25 +22,24 @@ export default {
     homeEyebrow: 'WILLKOMMEN',
     homeTitle: 'Der Genfersee, live vor deinen Augen.',
     homeSubtitle:
-        'Tauche bis zu 100 Meter tief ab, beobachte das Plankton Stunde um Stunde und entdecke die Verbindung zwischen Luft und Wasser mit den echten Daten der Forschungsplattform LéXPLORE.',
+        'Tauche ab auf 100 Meter, verfolge das Plankton Stunde für Stunde und beobachte die Verbindung zwischen Luft und Wasser mit den Realdaten der Forschungsplattform LéXPLORE.',
 
     // --- Home nav cards ---
     homeLiveLabel: 'LIVE',
-    homeLiveTitle: 'Mehr LIVE-Daten',
+    homeLiveTitle: 'Weitere LIVE-Daten',
     homeLiveSubtitle:
-        'Wassertemperatur in allen Tiefen, Standort des tierischen Planktons, Mikroalgen – alles live gemessen.',
+        'Wassertemperatur in allen Tiefen, Ortung des Zooplanktons und der Mikroalgen, live gemessen.',
     homeDiscoveryLabel: 'ENTDECKUNG',
-    homeDiscoveryTitle: 'Die letzten 10 Tage am Genfersee',
-    homeDiscoverySubtitle:
-        'Wie sich Wasser, Luft und Wellen in den letzten 10 Tagen verändert haben.',
+    homeDiscoveryTitle: 'Die letzten 10 Tage des Genfersees',
+    homeDiscoverySubtitle: 'Wie sich Wasser, Luft und Wellen in den letzten 10 Tagen bewegt haben.',
     homeGamesLabel: 'SPIELE',
-    homeGamesTitle: 'Werde ein Léxplorer',
+    homeGamesTitle: 'Werde zum Léxplorer',
     homeGamesSubtitle:
-        'Das Abenteuer des Planktons und Heiß-oder-Kalt: zwei Spiele, um den See zu verstehen.',
+        'Das Plankton-Abenteuer und Heiss-oder-Kalt: zwei Spiele, um den See zu verstehen.',
 
     // --- Live Data Picker ---
     livePickerEyebrow: '01 · LIVE',
-    livePickerTitle: 'Entdecke weitere Live-Daten!',
+    livePickerTitle: 'Teste andere Live-Daten!',
     livePickerSubtitle:
         'Wähle aus, was du im See beobachten möchtest. Alle Werte werden aktuell von der LéXPLORE-Plattform gemessen.',
 
@@ -53,23 +52,23 @@ export default {
 
     // --- Temperature Over Depth (Live) ---
     tempDepthEyebrow: '01 · LIVE - Temperatur in der Tiefe',
-    tempDepthTitle: 'Je tiefer man kommt, desto kälter wird das Wasser.',
+    tempDepthTitle: 'Je tiefer man abtaucht, desto kälter wird das Wasser.',
     tempDepthAir: 'Luft',
-    tempDepthQ1: 'Bemerkst du einen Unterschied zwischen Luft und Wasser?',
+    tempDepthQ1: 'Beobachtest du einen Temperaturunterschied zwischen Luft und Wasser?',
     tempDepthQ2: 'Ist es in 10 m oder in 60 m Tiefe kälter?',
 
     // --- Zooplankton Depth (Live) ---
     zooDepthEyebrow: '01 · LIVE - Tiefe des Zooplanktons',
     zooDepthTitle: 'Nachts steigt es auf, tagsüber sinkt es ab.',
     zooDepthSubtitle:
-        'Das tierische Plankton wandert jeden Tag: vom Grund, um sich vor Fischen zu verstecken, bis zur Oberfläche, um nachts Mikroalgen zu fressen.',
+        'Das tierische Plankton wandert jeden Tag: vom Grund, um sich vor Fischen zu verstecken, bis zur Oberfläche in der Nacht, um Mikroalgen zu fressen.',
     zooDepthQ1: 'In welcher Tiefe siehst du das Plankton gerade?',
 
     // --- Algae Concentration (Live) ---
     algaeConcEyebrow: '01 · LIVE - Konzentration der Mikroalgen',
-    algaeConcTitle: 'Mikroskopische Wiesen.',
+    algaeConcTitle: 'Mikroskopisch kleine Algen.',
     algaeConcSubtitle:
-        'Mikroalgen, auch Phytoplankton genannt, benötigen Sonnenlicht zum Wachsen. Sie bilden das erste Glied der Nahrungskette. Wenn sie jedoch zu zahlreich sind, wird das Seewasser grün und trüb.',
+        'Mikroalgen, oder Phytoplankton, brauchen Sonnenlicht zum Wachsen. Sie sind das erste Glied der Nahrungskette. Aber wenn sie zu zahlreich sind, wird das Seewasser grün und trüb.',
     algaeConcQ1: 'In welcher Tiefe ist die Planktonkonzentration am höchsten?',
 
     // --- Changes Picker ---
@@ -81,7 +80,7 @@ export default {
     changesNavWindTitle: 'Der Einfluss des Windes auf den See',
     changesNavWindShort: 'Wind',
     changesNavWindSubtitle:
-        'Erfahre, wie der Wind die Wasserbewegungen an der Oberfläche des Genfersees beeinflusst.',
+        'Entdecke, wie der Wind die Wasserbewegungen an der Oberfläche des Genfersees beeinflusst.',
     changesNavGrowthTitle: 'Wächst es?',
     changesNavGrowthShort: 'Wachstum',
     changesNavGrowthSubtitle:
@@ -91,8 +90,8 @@ export default {
     windChangeEyebrow: '02 · Entdeckung',
     windChangeTitle: 'Der Einfluss des Windes auf den See.',
     windChangeTrackTemperature: 'Luft- und Wassertemperaturen (°C)',
-    windChangeTrackAirTemp: 'Lufttemperatur (°C)',
-    windChangeTrackWaterTemp: 'Wassertemperatur (°C)',
+    windChangeTrackAirTemp: 'Luft',
+    windChangeTrackWaterTemp: 'Wasser',
     windChangeTrackWindDirection: 'Windrichtung',
     windChangeTrackWindSpeed: 'Windgeschwindigkeit (km/h)',
     windChangeTrackPrecipitation: 'Niederschlag (mm/h)',
@@ -104,45 +103,47 @@ export default {
     chloroChangeEyebrow: '02 · Entdeckung',
     chloroChangeTitle: 'Licht und Chlorophyll im See.',
     chloroChangeTrackIrradiance: 'Sonnenenergie (W/m²)',
-    chloroChangeTrackAirTemp: 'Lufttemperatur (°C)',
-    chloroChangeTrackWaterTemp: 'Wassertemperatur (°C)',
+    chloroChangeTrackTemperature: 'Luft- und Wassertemperaturen (°C)',
+    chloroChangeTrackAirTemp: 'Luft',
+    chloroChangeTrackWaterTemp: 'Wasser',
     chloroChangeTrackChlorophyll: 'Durchschnittliches Chlorophyll A (0–20 m)',
-    chloroChangeQ1: 'Gibt es mehr Algen, weil es wärmer ist?',
+    chloroChangeQ1: 'Gibt es mehr Algen, nur weil es wärmer ist?',
 
     // --- Game Picker ---
     gamePickerEyebrow: '03 · SPIELE',
-    gamePickerTitle: 'Spiel über das Leben im Genfersee',
+    gamePickerTitle: 'Spiele über das Leben im Genfersee',
     gamePickerSubtitle:
         'Wähle aus, was du im See beobachten möchtest. Alle Werte werden aktuell von der LéXPLORE-Plattform gemessen.',
 
     // --- Game nav ---
-    gameNavPlanctonTitle: 'Das Abenteuer des Planktons',
+    gameNavPlanctonTitle: 'Das Plankton-Abenteuer',
     gameNavPlanctonShort: 'Tag/Nacht-Wanderung',
     gameNavPlanctonSubtitle:
-        'Verfolge das Zooplankton, wie es Stunde für Stunde im See auf- und absteigt.',
-    gameNavTempTitle: 'Heiß oder Kalt?',
-    gameNavTempSubtitle: '3 Monate Temperatur nach Tiefe. Finde den Bereich, der sich nie erwärmt.',
+        'Folge dem Zooplankton, wie es Stunde für Stunde im See auf- und absteigt.',
+    gameNavTempTitle: 'Heiss oder Kalt?',
+    gameNavTempShort: 'Die Jahreszeiten des Sees',
+    gameNavTempSubtitle: '3 Monate Temperatur pro Tiefe. Finde den Bereich, der sich nie erwärmt.',
 
     // --- Temperature Game ---
-    tempGameEyebrow: '02 · Heiß oder Kalt?',
-    tempGameTitle: '2 Jahre Genfersee nach Tiefe.',
-    tempGameSubtitle: 'Bewege den Schieberegler auf dem Raster, um zu erkunden.',
+    tempGameEyebrow: '02 · Heiss oder Kalt?',
+    tempGameTitle: 'Die Temperatur des Genfersees nach Tiefe im letzten Jahr',
+    tempGameSubtitle: 'Bewege den Schieberegler über das Gitter, um den See zu erkunden.',
     tempGameProfileKicker: 'Am Cursor → Temp. nach Tiefe',
     tempGameLoading: 'Temperaturen werden geladen…',
-    tempGameQ1: 'Bis in welche Tiefe erwärmt die Sonnenenergie das Wasser im Genfersee?',
-    tempGameQ2: 'In welcher Tiefe bleibt das Wasser immer kälter als 10°C?',
+    tempGameQ1: 'Bis in welche Tiefe erwärmt die Sonnenenergie das Wasser des Genfersees?',
+    tempGameQ2: 'Ab welcher Tiefe bleibt das Wasser immer kälter als 10°C?',
 
     // --- Plankton Game ---
-    planctonGameEyebrow: '01 · Das Abenteuer des Planktons',
-    planctonGameTitle: 'Bewege den roten Schieberegler.',
-    planctonGameSubtitle: 'Beobachte die Bewegung des Zooplanktons im Tagesverlauf.',
+    planctonGameEyebrow: '01 · Das Plankton-Abenteuer',
+    planctonGameTitle: 'Beobachte die Wanderung des Zooplanktons der letzten 2 Tage.',
+    planctonGameSubtitle: 'Beobachte die Bewegung des Zooplanktons über den Tag verteilt.',
     planctonGameQ1: 'Glaubst du, dass tierisches Plankton Licht mag?',
 
     // --- Plots ---
     plotDepthProfileAria: 'Tiefenprofil-Diagramm',
     plotPlanktonAria: 'Tiefe des Zooplanktons',
     plotSurface: 'Oberfläche',
-    plotNoHeatmapData: 'Keine Daten für die Heatmap vorhanden',
+    plotNoHeatmapData: 'Keine Heatmap-Daten verfügbar',
     plotDepthLabel: 'Tiefe',
     plotTemperatureLabel: 'Temperatur',
 
