@@ -32,6 +32,7 @@
                                 :value="weatherStore.data?.airTemperature.at(-1)"
                                 unit="°C"
                                 :force-height="dialSize"
+                                :fade-end-percent="50"
                             >
                                 <TemperatureThermometer
                                     :value="weatherStore.data?.airTemperature.at(-1)"
@@ -54,6 +55,7 @@
                                 :value="lakeStore.data?.surfaceTemperature.at(-1)"
                                 unit="°C"
                                 :force-height="dialSize"
+                                :fade-end-percent="50"
                             >
                                 <TemperatureThermometer
                                     :value="lakeStore.data?.surfaceTemperature.at(-1)"
@@ -135,7 +137,7 @@ const logos = [
     { name: 'EPFL', src: '/logos/epfl_blue.svg' },
 ];
 
-const dialSize = 152;
+const dialSize = 176;
 </script>
 
 <style scoped lang="scss">
@@ -160,7 +162,7 @@ const dialSize = 152;
 
 .header__logo {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     align-items: center;
     color: #00c6df;
 }
@@ -178,7 +180,7 @@ const dialSize = 152;
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
     flex-wrap: wrap;
 }
 
@@ -202,10 +204,11 @@ const dialSize = 152;
 
 .header__stats {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 2rem;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .stats {

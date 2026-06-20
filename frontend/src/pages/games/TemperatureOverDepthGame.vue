@@ -225,6 +225,7 @@ const questions = computed(() => [
 
 .timeline-panel {
     position: relative;
+    padding-top: 0.5rem;
     margin-left: var(--plot-margin-left, 64px);
     margin-right: var(--plot-margin-right, 12px);
 }
@@ -249,7 +250,7 @@ const questions = computed(() => [
 .profile-depth {
     margin-bottom: 4px;
     color: rgba(197, 223, 229, 0.72);
-    font-size: 13px;
+    font-size: 1rem;
     font-weight: 700;
 }
 
@@ -260,7 +261,7 @@ const questions = computed(() => [
 }
 
 .profile-number {
-    font-size: 28px;
+    font-size: 2.5rem;
     line-height: 1;
     font-weight: 800;
 }

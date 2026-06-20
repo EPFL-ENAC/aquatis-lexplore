@@ -35,29 +35,29 @@ const formattedTime = computed(() => {
 .wrapper {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
 }
 
 h1 {
     margin: 0 0 1rem 0;
-    font-size: 3rem;
+    font-size: 4rem;
     line-height: 1;
     font-weight: bold;
 }
 
 .last-measurement {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
 }
 
 .dot-container {
     isolation: isolate;
     position: relative;
-    width: 10rem;
+    width: 14rem;
     aspect-ratio: 1;
 
     color: white;
     font-weight: bold;
-    font-size: 2rem;
+    font-size: 3rem;
 
     display: flex;
     justify-content: center;

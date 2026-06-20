@@ -28,16 +28,19 @@ const leftDrawerOpen = ref(false);
 
 <style scoped lang="scss">
 .leman-page {
-    min-height: 100vh;
     background:
         radial-gradient(circle at top center, rgba(0, 210, 255, 0.14), transparent 38%),
         linear-gradient(180deg, #073640 0%, #03161b 55%, #00090c 100%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .layout-content {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
 }
 
 .page-shell {

@@ -32,13 +32,13 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     unit: '',
-    valueFontSize: '6rem',
-    unitFontSize: '2rem',
+    valueFontSize: '8rem',
+    unitFontSize: '3rem',
     contentOffsetLeft: '4rem',
     fallback: '—',
     label: 'Value',
     fadeStartPercent: 10,
-    fadeEndPercent: 50,
+    fadeEndPercent: 40,
     fadeToOpacity: 0,
 });
 

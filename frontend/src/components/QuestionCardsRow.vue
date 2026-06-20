@@ -52,7 +52,7 @@ const props = withDefaults(
 
 .question-title {
     margin: 0;
-    font-size: clamp(1.4rem, 2vw, 2rem);
+    font-size: 2.5rem;
     font-weight: 800;
     line-height: 1.05;
 }

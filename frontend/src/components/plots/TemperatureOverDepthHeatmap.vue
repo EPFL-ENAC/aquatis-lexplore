@@ -2,9 +2,10 @@
     <div class="temperature-over-depth-heatmap">
         <div class="color-bar-container">
             <div class="color-bar" :style="{ '--gradient': colorBarGradient }"></div>
-            <div class="min-max" v-if="minMax">
-                <span class="min">{{ formatNumber(minMax.min, locale) }} {{ props.unit }}</span>
-                <span class="max">{{ formatNumber(minMax.max, locale) }} {{ props.unit }}</span>
+            <div class="markers" v-if="colorBarMarkers.length">
+                <span v-for="marker in colorBarMarkers" :key="marker.value" class="marker">
+                    {{ formatNumber(marker.value, locale) }} {{ props.unit }}
+                </span>
             </div>
         </div>
 
@@ -94,6 +95,17 @@ const temperatureColorMap = ColorMap.heat();
 const heatmapRaster = new HeatmapRaster(temperatureColorMap);
 
 const colorBarGradient = computed(() => temperatureColorMap.toCssGradient());
+
+const colorBarMarkers = computed(() => {
+    if (!minMax.value) {
+        return [];
+    }
+
+    const { min, max } = minMax.value;
+    const step = (max - min) / 3;
+
+    return [{ value: min }, { value: min + step }, { value: min + step * 2 }, { value: max }];
+});
 
 const plotBounds = computed(() => ({
     left: props.plotMargins.left,
@@ -356,19 +368,36 @@ canvas {
 
 .color-bar-container {
     width: 50%;
-    margin-left: auto;
 }
 
 .color-bar {
-    height: 2rem;
+    height: 1rem;
     background: var(--gradient);
-    border-radius: 1rem;
 }
 
-.min-max {
+.markers {
     display: flex;
     justify-content: space-between;
     margin-top: 0.25rem;
     color: white;
+    gap: 0.5rem;
+}
+
+.marker {
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.marker:nth-child(1) {
+    text-align: left;
+}
+
+.marker:nth-child(2),
+.marker:nth-child(3) {
+    text-align: center;
+}
+
+.marker:nth-child(4) {
+    text-align: right;
 }
 </style>

@@ -71,7 +71,8 @@ const props = withDefaults(
 
 const model = defineModel<number>();
 
-const BADGE_SIZE = 76;
+const BADGE_SIZE = 96;
+const TRACK_HEIGHT = 60;
 
 const startSeconds = computed(() => {
     return toUnixSeconds(props.startTimestamp) ?? 0;
@@ -187,6 +188,7 @@ const badgeStyle = computed(() => {
 const sliderStyle = computed(() => {
     return {
         '--badge-size': `${BADGE_SIZE}px`,
+        '--track-height': `${TRACK_HEIGHT}px`,
     };
 });
 
@@ -254,7 +256,7 @@ function onInput(event: Event) {
 
 .slider-track {
     position: relative;
-    height: 52px;
+    height: var(--track-height);
     border-radius: 999px;
     box-shadow:
         inset 0 1px 0 rgb(255 255 255 / 12%),
@@ -275,7 +277,7 @@ function onInput(event: Event) {
 
 .slider-badge {
     position: absolute;
-    top: 4px;
+    top: calc((var(--track-height) - var(--badge-size)) / 2 + var(--vertical-padding));
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -309,7 +311,7 @@ function onInput(event: Event) {
     inset: 0;
     top: var(--vertical-padding);
     width: 100%;
-    height: 52px;
+    height: var(--track-height);
     margin: 0;
     background: transparent;
     appearance: none;
@@ -320,7 +322,7 @@ function onInput(event: Event) {
 }
 
 .slider-input::-webkit-slider-runnable-track {
-    height: 52px;
+    height: var(--track-height);
     background: transparent;
 }
 
@@ -334,7 +336,7 @@ function onInput(event: Event) {
 }
 
 .slider-input::-moz-range-track {
-    height: 52px;
+    height: var(--track-height);
     border: 0;
     border-radius: 999px;
     background: transparent;

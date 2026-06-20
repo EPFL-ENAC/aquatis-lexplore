@@ -17,7 +17,7 @@
                     @click="locale = option.value"
                 >
                     <img
-                        :src="`/flags/${option.value}.png`"
+                        :src="`/flags/${option.value}.svg`"
                         :alt="option.value"
                         class="footer__flag"
                     />

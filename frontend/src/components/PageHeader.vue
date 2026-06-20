@@ -39,9 +39,9 @@ const titleScale = computed(() => (props.level === 1 ? 1 : 0.8));
 
 .hero-title {
     margin: 0;
-    max-width: 720px;
+    max-width: 1200px;
     font-size: calc(var(--title-scale, 1) * clamp(3rem, 7vw, 5.4rem));
-    line-height: 0.95;
+    line-height: 1;
     font-weight: 800;
     letter-spacing: -0.04em;
 }
