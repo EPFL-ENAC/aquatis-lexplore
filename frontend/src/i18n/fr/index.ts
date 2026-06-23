@@ -54,22 +54,22 @@ export default {
     tempDepthEyebrow: '01 · LIVE - Température en profondeur',
     tempDepthTitle: "Plus on descend, plus l'eau refroidit.",
     tempDepthAir: 'Air',
-    tempDepthQ1: "Observes-tu une différence de température entre l'air et l'eau ?",
-    tempDepthQ2: "Est-ce qu'il fait plus froid à 10 m ou à 60 m ?",
+    tempDepthQ1: "Observes-tu une différence de température entre l'air et l'eau?",
+    tempDepthQ2: "Est-ce qu'il fait plus froid à 10m ou à 60m?",
 
     // --- Zooplankton Depth (Live) ---
     zooDepthEyebrow: '01 · LIVE - Profondeur du Zooplancton',
     zooDepthTitle: 'Il monte la nuit, il descend le jour.',
     zooDepthSubtitle:
         'Le plancton animal migre chaque jour, entre le fond, pour se cacher des poissons, vers la surface, pour se nourrir des microalgues la nuit.',
-    zooDepthQ1: 'À quelle profondeur vois-tu le plancton maintenant ?',
+    zooDepthQ1: 'À quelle profondeur vois-tu le plancton maintenant?',
 
     // --- Algae Concentration (Live) ---
     algaeConcEyebrow: '01 · LIVE - Concentration des Microalgues',
     algaeConcTitle: 'Des algues microscopiques.',
     algaeConcSubtitle:
         'Les microalgues, ou phytoplancton, ont besoin de la lumière du soleil pour pousser. Elles constituent le premier maillon de la chaine alimentaire. mais quand elles sont trop nombreuses, l’eau du lac verdit et se trouble.',
-    algaeConcQ1: 'À quelle profondeur la concentration de plancton est la plus haute ?',
+    algaeConcQ1: 'À quelle profondeur la concentration de plancton est la plus haute?',
 
     // --- Changes Picker ---
     changesPickerEyebrow: '02 · CHANGEMENTS',
@@ -97,7 +97,7 @@ export default {
     windChangeTrackPrecipitation: 'Précipitations (mm/h)',
     windChangeTrackWaveHeight: 'Hauteur des vagues (m)',
     windChangeQ1: 'Quel est l’effet des coups de vent sur la surface du lac?',
-    windChangeQ2: "L'air est-il plus chaud ou plus froid que l'eau ?",
+    windChangeQ2: "L'air est-il plus chaud ou plus froid que l'eau?",
 
     // --- Chlorophyll Change Page ---
     chloroChangeEyebrow: '02 · Découverte',
@@ -129,7 +129,7 @@ export default {
     tempGameEyebrow: '02 · Chaud ou Froid?',
     tempGameTitle: 'La température du Léman par profondeur cette dernière année',
     tempGameSubtitle: 'Glisse sur la grille pour explorer.',
-    tempGameProfileKicker: 'Au curseur → temp par profondeur',
+    tempGameProfileKicker: 'Au curseur → température par profondeur',
     tempGameLoading: 'Chargement des températures…',
     tempGameQ1: 'Jusqu’à quelle profondeur l’énergie solaire réchauffe-t-elle l’eau du Léman?',
     tempGameQ2: "À quelle profondeur l'eau reste toujours plus froide que 10°C?",

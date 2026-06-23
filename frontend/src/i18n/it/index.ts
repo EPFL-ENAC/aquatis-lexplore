@@ -127,7 +127,7 @@ export default {
     tempGameEyebrow: '02 · Caldo o Freddo?',
     tempGameTitle: 'La temperatura del Lemano per profondità nell’ultimo anno',
     tempGameSubtitle: 'Scorri sulla griglia per esplorare.',
-    tempGameProfileKicker: 'Al cursore → temp per profondità',
+    tempGameProfileKicker: 'Al cursore → temperatura per profondità',
     tempGameLoading: 'Caricamento delle temperature…',
     tempGameQ1: 'Fino a che profondità l’energia solare riscalda l’acqua del Lemano?',
     tempGameQ2: 'A quale profondità l’acqua resta sempre sotto i 10°C?',

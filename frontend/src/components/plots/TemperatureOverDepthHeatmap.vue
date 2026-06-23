@@ -51,7 +51,7 @@ import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 import { formatNumber } from 'src/utils/format';
 import { HeatmapRaster } from 'src/utils/heatmapRaster';
 import { clamp } from 'src/utils/math';
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
@@ -300,6 +300,12 @@ function redrawPlot(): Promise<void> {
             loading.value = false;
         });
 }
+
+onMounted(async () => {
+    await nextTick();
+    resizeCanvases();
+    await redrawPlot();
+});
 
 watch(
     () => [props.width, props.height],

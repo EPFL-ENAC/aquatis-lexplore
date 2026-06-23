@@ -16,6 +16,7 @@
         >
             <div ref="heatmapContainer" class="heatmap-stage">
                 <TemperatureOverDepthHeatmap
+                    v-if="shouldRenderHeatmap"
                     :heatmap="heatmap"
                     :width="heatmapWidth"
                     :height="480"
@@ -27,6 +28,10 @@
                     :focus-window-width="focusWindowWidth"
                     :plot-margins="plotMargins"
                 />
+
+                <div v-else class="heatmap-stage__loader">
+                    {{ t('tempGameLoading') }}
+                </div>
             </div>
 
             <div class="timeline-panel">
@@ -70,11 +75,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
+import {
+    computed,
+    defineAsyncComponent,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    useTemplateRef,
+    watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import PageHeader from 'src/components/PageHeader.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
-import TemperatureOverDepthHeatmap from 'src/components/plots/TemperatureOverDepthHeatmap.vue';
 import TimestampSlider from 'src/components/TimestampSlider.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
 import ChartContainer from 'src/components/ChartContainer.vue';
@@ -83,6 +96,9 @@ import { useLakeStore } from 'src/stores/lexplore';
 
 const { t } = useI18n();
 const lakeStore = useLakeStore();
+const TemperatureOverDepthHeatmap = defineAsyncComponent(
+    () => import('src/components/plots/TemperatureOverDepthHeatmap.vue'),
+);
 
 const heatmap = computed<DepthHeatmap | null>(() => {
     return (lakeStore.data?.temperatureOverDepth ?? null) as DepthHeatmap | null;
@@ -102,6 +118,8 @@ const lastMeasurement = computed(() => {
 });
 
 const heatmapContainer = useTemplateRef<HTMLElement>('heatmapContainer');
+const heatmapContainerWidth = ref(0);
+const canRenderHeatmap = ref(false);
 const sliderIndex = ref(0);
 
 const plotMargins = {
@@ -113,16 +131,22 @@ const plotMargins = {
 
 const referenceDepths = [0.25, 24, 50, 75, 85];
 
-const heatmapWidth = computed(() => {
-    if (!heatmapContainer.value) {
-        return 0;
+function updateHeatmapContainerWidth(): void {
+    const container = heatmapContainer.value;
+    if (!container) {
+        heatmapContainerWidth.value = 0;
+        return;
     }
 
-    const containerWidth = heatmapContainer.value?.clientWidth ?? 0;
-    const computedStyle = getComputedStyle(heatmapContainer.value);
+    const computedStyle = getComputedStyle(container);
     const horizontalPadding =
         parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
-    return Math.max(0, containerWidth - horizontalPadding);
+    heatmapContainerWidth.value = Math.max(0, container.clientWidth - horizontalPadding);
+}
+
+const heatmapWidth = computed(() => heatmapContainerWidth.value);
+const shouldRenderHeatmap = computed(() => {
+    return canRenderHeatmap.value && heatmapWidth.value > plotMargins.left + plotMargins.right;
 });
 
 watch(
@@ -147,10 +171,50 @@ const endTimestamp = computed(() => {
     return heatmap.value ? Math.max(...heatmap.value.x) : 0;
 });
 const currentTimestamp = ref(Date.now());
+let heatmapContainerObserver: ResizeObserver | null = null;
 
-onMounted(() => {
+function observeHeatmapContainer(container: HTMLElement | null): void {
+    heatmapContainerObserver?.disconnect();
+    heatmapContainerObserver = null;
+
+    if (!container) {
+        heatmapContainerWidth.value = 0;
+        return;
+    }
+
+    updateHeatmapContainerWidth();
+    heatmapContainerObserver = new ResizeObserver(() => {
+        updateHeatmapContainerWidth();
+    });
+    heatmapContainerObserver.observe(container);
+}
+
+onMounted(async () => {
     currentTimestamp.value = (startTimestamp.value + endTimestamp.value) / 2;
+
+    await nextTick();
+    observeHeatmapContainer(heatmapContainer.value);
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            updateHeatmapContainerWidth();
+            canRenderHeatmap.value = true;
+        });
+    });
 });
+
+onBeforeUnmount(() => {
+    heatmapContainerObserver?.disconnect();
+    heatmapContainerObserver = null;
+});
+
+watch(
+    () => heatmapContainer.value,
+    (container) => {
+        observeHeatmapContainer(container);
+    },
+    { flush: 'post' },
+);
 
 const focusWindowWidth = computed(() => {
     return 24 * 60 * 60; // 24h in s
@@ -219,8 +283,19 @@ const questions = computed(() => [
 <style scoped>
 .heatmap-stage {
     position: relative;
-    display: inline-block;
+    display: block;
     width: 100%;
+    min-height: 480px;
+}
+
+.heatmap-stage__loader {
+    height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 1rem;
+    font-weight: 700;
 }
 
 .timeline-panel {

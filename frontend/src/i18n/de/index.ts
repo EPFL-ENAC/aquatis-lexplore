@@ -128,7 +128,7 @@ export default {
     tempGameEyebrow: '02 · Heiss oder Kalt?',
     tempGameTitle: 'Die Temperatur des Genfersees nach Tiefe im letzten Jahr',
     tempGameSubtitle: 'Bewege den Schieberegler über das Gitter, um den See zu erkunden.',
-    tempGameProfileKicker: 'Am Cursor → Temp. nach Tiefe',
+    tempGameProfileKicker: 'Am Cursor → Temperatur nach Tiefe',
     tempGameLoading: 'Temperaturen werden geladen…',
     tempGameQ1: 'Bis in welche Tiefe erwärmt die Sonnenenergie das Wasser des Genfersees?',
     tempGameQ2: 'Ab welcher Tiefe bleibt das Wasser immer kälter als 10°C?',

@@ -1,7 +1,14 @@
 <template>
     <section class="timestamp-slider" :style="sliderStyle">
         <div class="slider-track-wrap">
-            <div class="slider-track" :style="trackStyle"></div>
+            <DecoratedTrack
+                :start-timestamp="props.startTimestamp"
+                :end-timestamp="props.endTimestamp"
+                :dynamic-background="props.dynamicBackground"
+                :height-px="TRACK_HEIGHT"
+                :text-markers="decoratedTrackTextMarkers"
+                :marker-min-edge-clearance-pct="props.markerMinEdgeClearancePct"
+            />
 
             <div class="slider-badge" :style="badgeStyle">
                 <div class="slider-badge-time">
@@ -38,15 +45,11 @@
 <script setup lang="ts">
 import { computed, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import DecoratedTrack from 'src/components/DecoratedTrack.vue';
+import type { TrackTextMarker } from 'src/components/DecoratedTrack.vue';
 import { formatDateShort, formatTime } from 'src/utils/format';
 import { clamp } from 'src/utils/math';
-import { SWITZERLAND_LATITUDE, SWITZERLAND_LONGITUDE } from 'src/utils/countries';
 import { toUnixSeconds } from 'src/utils/datetime';
-import { getDaynightCyclePeriodsBetween } from 'src/utils/daynightCycle';
-import { daynightCyclePeriodsToBands } from 'src/utils/daynightCycleStyle';
-import { BackgroundBuilder } from 'src/utils/backgroundBuilder';
-import { getSeasonPeriodsBetween } from 'src/utils/seasonsCycle';
-import { seasonPeriodsToBands } from 'src/utils/seasonsCycleStyle';
 
 const { locale, t } = useI18n();
 
@@ -59,6 +62,8 @@ const props = withDefaults(
         dynamicBackground?: 'daynight' | 'seasons' | 'none';
         showTicks?: boolean;
         infoText?: boolean;
+        textMarkers?: TrackTextMarker[];
+        markerMinEdgeClearancePct?: number;
     }>(),
     {
         stepSeconds: 60,
@@ -66,6 +71,8 @@ const props = withDefaults(
         dynamicBackground: 'daynight',
         showTicks: true,
         infoText: true,
+        textMarkers: () => [],
+        markerMinEdgeClearancePct: 5,
     },
 );
 
@@ -73,6 +80,7 @@ const model = defineModel<number>();
 
 const BADGE_SIZE = 96;
 const TRACK_HEIGHT = 60;
+const MONTHS_PER_SEASON = 3;
 
 const startSeconds = computed(() => {
     return toUnixSeconds(props.startTimestamp) ?? 0;
@@ -140,49 +148,52 @@ const selectedBottomLabel = computed(() => {
     return formatDateShort(sliderValue.value, locale.value);
 });
 
-const trackStyle = computed(() => {
-    if (props.dynamicBackground === 'none') {
-        return {
-            backgroundImage: `linear-gradient(to right, #0b1020 0%, #0b1020 100%)`,
-        };
-    }
-
-    const backgroundBuilder = new BackgroundBuilder();
-
-    if (props.dynamicBackground === 'seasons') {
-        const periods = getSeasonPeriodsBetween(props.startTimestamp, props.endTimestamp, 'north');
-
-        backgroundBuilder.addBand(seasonPeriodsToBands(periods));
-
-        return {
-            ...backgroundBuilder.toCSS(props.startTimestamp, props.endTimestamp, {
-                iconSizePx: 32,
-                minEdgeClearancePct: 5,
-            }),
-        };
-    }
-
-    const periods = getDaynightCyclePeriodsBetween(
-        props.startTimestamp,
-        props.endTimestamp,
-        SWITZERLAND_LATITUDE,
-        SWITZERLAND_LONGITUDE,
-    );
-
-    backgroundBuilder.addBand(daynightCyclePeriodsToBands(periods));
-
-    return {
-        ...backgroundBuilder.toCSS(props.startTimestamp, props.endTimestamp, {
-            iconSizePx: 32,
-            minEdgeClearancePct: 5,
-        }),
-    };
-});
-
 const badgeStyle = computed(() => {
     return {
         left: `${thumbPercent.value}%`,
     };
+});
+
+const seasonalMonthMarkers = computed<TrackTextMarker[]>(() => {
+    if (props.dynamicBackground !== 'seasons') {
+        return [];
+    }
+
+    const start = Math.min(props.startTimestamp, props.endTimestamp);
+    const end = Math.max(props.startTimestamp, props.endTimestamp);
+
+    if (!Number.isFinite(start) || !Number.isFinite(end) || start >= end) {
+        return [];
+    }
+
+    const monthFormatter = new Intl.DateTimeFormat(locale.value, {
+        month: 'short',
+        timeZone: 'Europe/Zurich',
+    });
+
+    const cursor = new Date(start);
+    cursor.setUTCDate(1);
+    cursor.setUTCHours(0, 0, 0, 0);
+
+    if (cursor.getTime() < start) {
+        cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+    }
+
+    const markers: TrackTextMarker[] = [];
+    while (cursor.getTime() < end) {
+        markers.push({
+            timestamp: cursor.getTime(),
+            text: monthFormatter.format(cursor),
+        });
+
+        cursor.setUTCMonth(cursor.getUTCMonth() + MONTHS_PER_SEASON);
+    }
+
+    return markers;
+});
+
+const decoratedTrackTextMarkers = computed(() => {
+    return [...seasonalMonthMarkers.value, ...props.textMarkers];
 });
 
 const sliderStyle = computed(() => {
@@ -252,27 +263,6 @@ function onInput(event: Event) {
     overflow-x: visible;
     touch-action: pan-y;
     min-height: 6rem;
-}
-
-.slider-track {
-    position: relative;
-    height: var(--track-height);
-    border-radius: 999px;
-    box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 12%),
-        0 8px 24px rgb(0 0 0 / 18%);
-}
-
-.track-icon {
-    position: absolute;
-    top: 50%;
-    font-size: 18px;
-    color: rgb(255 208 0 / 70%);
-    transform: translate(-50%, -50%);
-}
-
-.track-icon--night {
-    color: rgb(0 181 215 / 80%);
 }
 
 .slider-badge {

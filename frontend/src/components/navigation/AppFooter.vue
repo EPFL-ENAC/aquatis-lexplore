@@ -8,7 +8,7 @@
                 <q-btn
                     v-for="option in languageOptions"
                     :key="option.value"
-                    size="xl"
+                    size="2rem"
                     flat
                     round
                     dense
@@ -64,7 +64,7 @@ const languageOptions = [{ value: 'fr' }, { value: 'en-GB' }, { value: 'de' }, {
 
 .footer__flag {
     border-radius: 50%;
-    width: 3rem;
+    width: 4rem;
     aspect-ratio: 1 / 1;
     object-fit: cover;
 }

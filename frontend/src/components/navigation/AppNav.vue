@@ -4,7 +4,7 @@
             :flat="'/' !== activeHref"
             rounded
             no-caps
-            size="lg"
+            size="xl"
             icon="home"
             :label="t('backToHome')"
             class="back-btn"
@@ -19,7 +19,7 @@
             :flat="parentMenu.href !== activeHref"
             rounded
             no-caps
-            size="lg"
+            size="xl"
             :icon="parentMenu.icon"
             :label="t(parentMenu.label)"
             class="back-btn"
@@ -38,7 +38,7 @@
                 :key="tab.href"
                 rounded
                 no-caps
-                size="lg"
+                size="xl"
                 :unelevated="tab.href === activeHref"
                 :flat="tab.href !== activeHref"
                 :icon="tab.icon"
