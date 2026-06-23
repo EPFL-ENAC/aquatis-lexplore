@@ -420,6 +420,9 @@ export class Array2D {
             const valueA = this.at(xInterpolationA, y)!;
             const valueB = this.at(xInterpolationB, y)!;
             const newValue = interpolationFunction(valueA, valueB, t);
+            if (newValue === 0) {
+                // console.log({ xInterpolationA, xInterpolationB, y, height: this.height, t, valueA, valueB, newValue });
+            }
             interpolatedColumn.push(newValue);
         }
 

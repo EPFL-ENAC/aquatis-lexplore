@@ -225,7 +225,7 @@ export const useZooplanctonDepthStore = defineStore('zooplancton-depth', () => {
 
     const processedBackscatterHeatmap = computed(() => {
         if (!heatmapShallow.data || !heatmapDeep.data) return null;
-        const shallowSliced = heatmapShallow.data.slice({ yEnd: 24.45 }); // Data returns null deeper that this
+        const shallowSliced = heatmapShallow.data.slice({ yEnd: 24.2 }); // Data returns null deeper that this
         const deepSliced = heatmapDeep.data.slice({ yStart: 31.08, yEnd: 90.08 }); // Artifacts start there
 
         const bridgeY = [25.08, 26.08, 27.08, 28.08, 29.08, 30.08];

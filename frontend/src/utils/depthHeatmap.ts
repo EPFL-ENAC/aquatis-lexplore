@@ -425,15 +425,14 @@ export class DepthHeatmap {
                 throw new Error(`Unexpected interpolation t value ${tx} for newX=${newX}.`);
             }
 
-            newZ.setColumn(
-                i,
-                this.z.getInterpolatedColumn(
-                    closestBelow.index,
-                    closestAbove.index,
-                    tx,
-                    interpolationFunction,
-                ),
+            const newColumn = this.z.getInterpolatedColumn(
+                closestBelow.index,
+                closestAbove.index,
+                tx,
+                interpolationFunction,
             );
+
+            newZ.setColumn(i, newColumn);
         }
 
         return new DepthHeatmap({
