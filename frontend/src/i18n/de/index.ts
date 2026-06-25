@@ -54,6 +54,8 @@ export default {
     tempDepthEyebrow: '01 · LIVE - Temperatur in der Tiefe',
     tempDepthTitle: 'Je tiefer man abtaucht, desto kälter wird das Wasser.',
     tempDepthAir: 'Luft',
+    tempDepthLoading:
+        'Das Diagramm zur Temperatur in der Tiefe wird vorbereitet. Das kann einige Sekunden dauern…',
     tempDepthQ1: 'Beobachtest du einen Temperaturunterschied zwischen Luft und Wasser?',
     tempDepthQ2: 'Ist es in 10 m oder in 60 m Tiefe kälter?',
 
@@ -62,6 +64,8 @@ export default {
     zooDepthTitle: 'Nachts steigt es auf, tagsüber sinkt es ab.',
     zooDepthSubtitle:
         'Das tierische Plankton wandert jeden Tag: vom Grund, um sich vor Fischen zu verstecken, bis zur Oberfläche in der Nacht, um Mikroalgen zu fressen.',
+    zooDepthLoading:
+        'Das Diagramm zur Zooplanktontiefe wird vorbereitet. Das kann einige Sekunden dauern…',
     zooDepthQ1: 'In welcher Tiefe siehst du das Plankton gerade?',
 
     // --- Algae Concentration (Live) ---
@@ -69,6 +73,8 @@ export default {
     algaeConcTitle: 'Mikroskopisch kleine Algen.',
     algaeConcSubtitle:
         'Mikroalgen, oder Phytoplankton, brauchen Sonnenlicht zum Wachsen. Sie sind das erste Glied der Nahrungskette. Aber wenn sie zu zahlreich sind, wird das Seewasser grün und trüb.',
+    algaeConcLoading:
+        'Das Diagramm zur Mikroalgenkonzentration wird vorbereitet. Das kann einige Sekunden dauern…',
     algaeConcQ1: 'In welcher Tiefe ist die Planktonkonzentration am höchsten?',
 
     // --- Changes Picker ---
@@ -137,6 +143,8 @@ export default {
     planctonGameEyebrow: '01 · Das Plankton-Abenteuer',
     planctonGameTitle: 'Beobachte die Wanderung des Zooplanktons der letzten 2 Tage.',
     planctonGameSubtitle: 'Beobachte die Bewegung des Zooplanktons über den Tag verteilt.',
+    planctonGameLoading:
+        'Das Diagramm zur Planktonwanderung wird vorbereitet. Das kann einige Sekunden dauern…',
     planctonGameQ1: 'Glaubst du, dass tierisches Plankton Licht mag?',
 
     // --- Plots ---

@@ -9,16 +9,12 @@
         </template>
     </PageHeader>
 
-    <PlanctonDepthPlot
-        v-if="zooplanktonDepthStore.lastRecordedDepth !== null"
-        :plancton-depth="zooplanktonDepthStore.lastRecordedDepth"
-        :maxPlotDepth="80"
-        :depth-axis-x="132"
-    />
-    <ChartContainer v-else>
-        <div class="loading">
-            <q-circular-progress indeterminate rounded size="50px" color="white" class="q-ma-md" />
-        </div>
+    <ChartContainer borderless :is-loading="isLoading" :loading-text="t('zooDepthLoading')">
+        <PlanctonDepthPlot
+            :plancton-depth="zooplanktonDepthStore.lastRecordedDepth ?? 0"
+            :maxPlotDepth="80"
+            :depth-axis-x="132"
+        />
     </ChartContainer>
     <PlotAppendix :measured-at="zooplanktonDepthStore.lastAvailableTimestamp" />
 
@@ -37,6 +33,7 @@ import { useZooplanctonDepthStore } from 'src/stores/lexplore';
 
 const { t } = useI18n();
 const zooplanktonDepthStore = useZooplanctonDepthStore();
+const isLoading = computed(() => zooplanktonDepthStore.lastRecordedDepth === null);
 
 const questionCards = computed(() => [
     {
@@ -46,12 +43,3 @@ const questionCards = computed(() => [
     },
 ]);
 </script>
-
-<style scoped>
-.loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-}
-</style>

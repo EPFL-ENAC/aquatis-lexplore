@@ -1,9 +1,17 @@
 <template>
-    <section class="chart-stage" :style="props.style">
+    <section
+        class="chart-stage"
+        :class="{ 'chart-stage--borderless': props.borderless }"
+        :style="props.style"
+    >
         <div class="chart-stage__glow" />
 
         <div class="chart-card">
             <slot />
+
+            <div v-if="props.isLoading" class="chart-card__loader">
+                {{ props.loadingText }}
+            </div>
 
             <div
                 v-if="props.legendItems && props.legendItems.length > 0"
@@ -33,6 +41,9 @@ interface LegendItem {
 
 const props = defineProps<{
     legendItems?: LegendItem[];
+    borderless?: boolean;
+    isLoading?: boolean;
+    loadingText?: string;
     style?: Record<string, string>;
 }>();
 </script>
@@ -70,6 +81,40 @@ const props = defineProps<{
         0 18px 46px rgba(0, 0, 0, 0.28);
 }
 
+.chart-stage--borderless {
+    margin-top: 0;
+}
+
+.chart-stage--borderless .chart-stage__glow {
+    display: none;
+}
+
+.chart-stage--borderless .chart-card {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.chart-card__loader {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    border-radius: inherit;
+    background: rgba(0, 0, 0, 0.8);
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+    pointer-events: none;
+}
+
 .chart-card__legend {
     margin-top: 18px;
     display: flex;
@@ -99,6 +144,11 @@ const props = defineProps<{
     .chart-card {
         padding: 18px 14px 16px;
         border-radius: 20px;
+    }
+
+    .chart-stage--borderless .chart-card {
+        padding: 0;
+        border-radius: 0;
     }
 
     .chart-card__legend {

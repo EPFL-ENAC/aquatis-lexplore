@@ -53,6 +53,8 @@ export default {
     tempDepthEyebrow: '01 · LIVE - Temperatura in profondità',
     tempDepthTitle: "Più si scende, più l'acqua si raffredda.",
     tempDepthAir: 'Aria',
+    tempDepthLoading:
+        'Preparazione del grafico della temperatura in profondità. Potrebbe richiedere alcuni secondi…',
     tempDepthQ1: 'Osservi una differenza di temperatura tra l’aria e l’acqua?',
     tempDepthQ2: 'Fa più freddo a 10 m o a 60 m?',
 
@@ -61,6 +63,8 @@ export default {
     zooDepthTitle: 'Sale la notte, scende il giorno.',
     zooDepthSubtitle:
         'Lo zooplancton migra ogni giorno: scende sul fondo per nascondersi dai pesci e sale in superficie di notte per nutrirsi di microalghe.',
+    zooDepthLoading:
+        'Preparazione del grafico della profondità dello zooplancton. Potrebbe richiedere alcuni secondi…',
     zooDepthQ1: 'A che profondità vedi il plancton in questo momento?',
 
     // --- Algae Concentration (Live) ---
@@ -68,6 +72,8 @@ export default {
     algaeConcTitle: 'Alghe microscopiche.',
     algaeConcSubtitle:
         'Le microalghe, o fitoplancton, hanno bisogno della luce solare per crescere. Sono il primo anello della catena alimentare, ma quando sono troppe, l’acqua del lago diventa verde e torbida.',
+    algaeConcLoading:
+        'Preparazione del grafico della concentrazione di microalghe. Potrebbe richiedere alcuni secondi…',
     algaeConcQ1: 'A quale profondità la concentrazione di plancton è più alta?',
 
     // --- Changes Picker ---
@@ -137,6 +143,8 @@ export default {
     planctonGameEyebrow: "01 · L'avventura del Plancton",
     planctonGameTitle: 'Osserva la migrazione dello Zooplancton negli ultimi 2 giorni.',
     planctonGameSubtitle: 'Osserva il movimento dello zooplancton durante la giornata.',
+    planctonGameLoading:
+        'Preparazione del grafico della migrazione del plancton. Potrebbe richiedere alcuni secondi…',
     planctonGameQ1: 'Pensi che lo zooplancton ami la luce?',
 
     // --- Plots ---

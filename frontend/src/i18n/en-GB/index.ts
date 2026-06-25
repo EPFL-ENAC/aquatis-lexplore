@@ -53,6 +53,7 @@ export default {
     tempDepthEyebrow: '01 · LIVE - Temperature at depth',
     tempDepthTitle: 'The deeper you go, the colder the water gets.',
     tempDepthAir: 'Air',
+    tempDepthLoading: 'Preparing the temperature depth plot. This may take a few seconds...',
     tempDepthQ1: 'Do you notice a temperature difference between the air and the water?',
     tempDepthQ2: 'Is it colder at 10 m or at 60 m?',
 
@@ -61,6 +62,7 @@ export default {
     zooDepthTitle: 'It rises at night, it descends by day.',
     zooDepthSubtitle:
         'Animal plankton migrates every day, moving from the bottom to hide from fish, toward the surface at night to feed on microalgae.',
+    zooDepthLoading: 'Preparing the zooplankton depth plot. This may take a few seconds...',
     zooDepthQ1: 'At what depth do you see the plankton right now?',
 
     // --- Algae Concentration (Live) ---
@@ -68,6 +70,7 @@ export default {
     algaeConcTitle: 'Microscopic algae.',
     algaeConcSubtitle:
         'Microalgae, or phytoplankton, need sunlight to grow. They are the first link in the food chain, but when they are too numerous, the lake water turns green and cloudy.',
+    algaeConcLoading: 'Preparing the microalgae concentration plot. This may take a few seconds...',
     algaeConcQ1: 'At what depth is the plankton concentration highest?',
 
     // --- Changes Picker ---
@@ -136,6 +139,7 @@ export default {
     planctonGameEyebrow: '01 · Plankton Adventure',
     planctonGameTitle: 'Observe Zooplankton migration over the last 2 days.',
     planctonGameSubtitle: 'Observe the movement of zooplankton throughout the day.',
+    planctonGameLoading: 'Preparing the plankton migration plot. This may take a few seconds...',
     planctonGameQ1: 'Do you think animal plankton likes light?',
 
     // --- Plots ---

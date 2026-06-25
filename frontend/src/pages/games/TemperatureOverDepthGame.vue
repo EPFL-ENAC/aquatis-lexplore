@@ -7,49 +7,43 @@
         <template #subtitle> {{ t('tempGameSubtitle') }} </template>
     </PageHeader>
 
-    <template v-if="heatmap">
-        <ChartContainer
-            :style="{
-                '--plot-margin-left': `${plotMargins.left}px`,
-                '--plot-margin-right': `${plotMargins.right}px`,
-            }"
-        >
-            <div ref="heatmapContainer" class="heatmap-stage">
-                <TemperatureOverDepthHeatmap
-                    v-if="shouldRenderHeatmap"
-                    :heatmap="heatmap"
-                    :width="heatmapWidth"
-                    :height="heatmapHeight"
-                    :color-bar-width="null"
-                    x-label=""
-                    y-label=""
-                    z-label="Temp."
-                    :focus-window-center="currentTimestamp"
-                    :focus-window-width="focusWindowWidth"
-                    :plot-margins="plotMargins"
-                    @processing-change="heatmapProcessing = $event"
-                />
+    <ChartContainer
+        :is-loading="isLoading"
+        :loading-text="t('tempGameLoading')"
+        :style="{
+            '--plot-margin-left': `${plotMargins.left}px`,
+            '--plot-margin-right': `${plotMargins.right}px`,
+        }"
+    >
+        <div ref="heatmapContainer" class="heatmap-stage">
+            <TemperatureOverDepthHeatmap
+                v-if="shouldRenderLoadedHeatmap"
+                :heatmap="heatmap"
+                :width="heatmapWidth"
+                :height="heatmapHeight"
+                :color-bar-width="null"
+                x-label=""
+                y-label=""
+                z-label="Temp."
+                :focus-window-center="currentTimestamp"
+                :focus-window-width="focusWindowWidth"
+                :plot-margins="plotMargins"
+                @processing-change="heatmapProcessing = $event"
+            />
+        </div>
 
-                <div
-                    v-if="isLoading"
-                    class="heatmap-stage__loader heatmap-stage__loader--overlay"
-                    :style="{ minHeight: `${heatmapHeight}px` }"
-                >
-                    {{ t('tempGameLoading') }}
-                </div>
-            </div>
+        <div v-if="!isLoading" class="timeline-panel">
+            <TimestampSlider
+                v-model="currentTimestamp"
+                :start-timestamp="startTimestamp * 1000"
+                :end-timestamp="endTimestamp * 1000"
+                :dynamic-background="'seasons'"
+                :show-ticks="false"
+            />
+        </div>
+    </ChartContainer>
 
-            <div class="timeline-panel">
-                <TimestampSlider
-                    v-model="currentTimestamp"
-                    :start-timestamp="startTimestamp * 1000"
-                    :end-timestamp="endTimestamp * 1000"
-                    :dynamic-background="'seasons'"
-                    :show-ticks="false"
-                />
-            </div>
-        </ChartContainer>
-
+    <template v-if="!isLoading">
         <ChartContainer>
             <div class="profile-kicker">{{ t('tempGameProfileKicker') }}</div>
 
@@ -75,23 +69,6 @@
 
         <QuestionCardsRow :items="questions" kickerClass="text-negative" />
     </template>
-
-    <ChartContainer
-        v-else
-        :style="{
-            '--plot-margin-left': `${plotMargins.left}px`,
-            '--plot-margin-right': `${plotMargins.right}px`,
-            'min-height': `${heatmapHeight}px`,
-        }"
-    >
-        <div
-            v-if="isLoading"
-            class="heatmap-stage__loader heatmap-stage__loader--overlay"
-            :style="{ minHeight: `${heatmapHeight}px` }"
-        >
-            {{ t('tempGameLoading') }}
-        </div>
-    </ChartContainer>
 </template>
 
 <script setup lang="ts">
@@ -140,12 +117,9 @@ const lastMeasurement = computed(() => {
 const heatmapContainer = useTemplateRef<HTMLElement>('heatmapContainer');
 const heatmapContainerWidth = ref(0);
 const canRenderHeatmap = ref(false);
+const heatmapDataLayoutReady = ref(false);
 const heatmapProcessing = ref(true);
 const sliderIndex = ref(0);
-
-const isLoading = computed(
-    () => !shouldRenderHeatmap.value || (shouldRenderHeatmap.value && heatmapProcessing.value),
-);
 
 const plotMargins = {
     top: 4,
@@ -175,6 +149,28 @@ const heatmapWidth = computed(() => heatmapContainerWidth.value);
 const shouldRenderHeatmap = computed(() => {
     return canRenderHeatmap.value && heatmapWidth.value > plotMargins.left + plotMargins.right;
 });
+const shouldRenderLoadedHeatmap = computed(
+    () => heatmap.value != null && heatmapDataLayoutReady.value && shouldRenderHeatmap.value,
+);
+const isLoading = computed(
+    () => !heatmap.value || !shouldRenderLoadedHeatmap.value || heatmapProcessing.value,
+);
+
+watch(
+    () => heatmap.value != null,
+    async (hasHeatmap) => {
+        heatmapDataLayoutReady.value = false;
+
+        if (!hasHeatmap) {
+            return;
+        }
+
+        await nextTick();
+        updateHeatmapContainerWidth();
+        heatmapDataLayoutReady.value = true;
+    },
+    { immediate: true, flush: 'post' },
+);
 
 watch(
     () => heatmap.value?.x.length ?? 0,
@@ -313,26 +309,6 @@ const questions = computed(() => [
     display: block;
     width: 100%;
     min-height: 480px;
-}
-
-.heatmap-stage__loader {
-    height: 480px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 24px;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.4;
-    text-align: center;
-}
-
-.heatmap-stage__loader--overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.8);
-    pointer-events: none;
 }
 
 .timeline-panel {

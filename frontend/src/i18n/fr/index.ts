@@ -54,6 +54,8 @@ export default {
     tempDepthEyebrow: '01 · LIVE - Température en profondeur',
     tempDepthTitle: "Plus on descend, plus l'eau refroidit.",
     tempDepthAir: 'Air',
+    tempDepthLoading:
+        'Préparation du graphique de température en profondeur. Cela peut prendre quelques secondes…',
     tempDepthQ1: "Observes-tu une différence de température entre l'air et l'eau?",
     tempDepthQ2: "Est-ce qu'il fait plus froid à 10m ou à 60m?",
 
@@ -62,6 +64,8 @@ export default {
     zooDepthTitle: 'Il monte la nuit, il descend le jour.',
     zooDepthSubtitle:
         'Le plancton animal migre chaque jour, entre le fond, pour se cacher des poissons, vers la surface, pour se nourrir des microalgues la nuit.',
+    zooDepthLoading:
+        'Préparation du graphique de profondeur du zooplancton. Cela peut prendre quelques secondes…',
     zooDepthQ1: 'À quelle profondeur vois-tu le plancton maintenant?',
 
     // --- Algae Concentration (Live) ---
@@ -69,6 +73,8 @@ export default {
     algaeConcTitle: 'Des algues microscopiques.',
     algaeConcSubtitle:
         'Les microalgues, ou phytoplancton, ont besoin de la lumière du soleil pour pousser. Elles constituent le premier maillon de la chaine alimentaire. mais quand elles sont trop nombreuses, l’eau du lac verdit et se trouble.',
+    algaeConcLoading:
+        'Préparation du graphique de concentration des microalgues. Cela peut prendre quelques secondes…',
     algaeConcQ1: 'À quelle profondeur la concentration de plancton est la plus haute?',
 
     // --- Changes Picker ---
@@ -139,6 +145,8 @@ export default {
     planctonGameEyebrow: "01 · L'aventure du Plancton",
     planctonGameTitle: 'Observe la migration du Zooplancton sur les derniers 2 jours.',
     planctonGameSubtitle: 'Observe le mouvement du zooplancton à travers la journée.',
+    planctonGameLoading:
+        'Préparation du graphique de migration du plancton. Cela peut prendre quelques secondes…',
     planctonGameQ1: 'Penses-tu que le plancton animal aime la lumière?',
 
     // --- Plots ---

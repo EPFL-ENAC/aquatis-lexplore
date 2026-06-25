@@ -9,14 +9,15 @@
         </template>
     </PageHeader>
 
-    <ChlorophyllOverDepthPlot
-        v-if="dataPoints.length > 0"
-        :rows="dataPoints"
-        :value-end="maxX"
-        :margin-top="10"
-        :depth-axis-x="132"
-        unit="µg/L"
-    />
+    <ChartContainer borderless :is-loading="isLoading" :loading-text="t('algaeConcLoading')">
+        <ChlorophyllOverDepthPlot
+            :rows="dataPoints"
+            :value-end="maxX"
+            :margin-top="10"
+            :depth-axis-x="132"
+            unit="µg/L"
+        />
+    </ChartContainer>
     <PlotAppendix :measured-at="measuredAt" />
 
     <QuestionCardsRow :items="questionCards" :columns="1" />
@@ -30,18 +31,23 @@ import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import { computed } from 'vue';
 import { useAlgaeStore } from 'src/stores/lexplore';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
+import ChartContainer from 'src/components/ChartContainer.vue';
 
 const { t } = useI18n();
 const algaeStore = useAlgaeStore();
+const depthLevels = [2, 10, 20, 30, 40, 50, 60, 70, 80];
+const isLoading = computed(() => !algaeStore.data);
 
 const dataPoints = computed(() => {
     if (!algaeStore.data) {
-        return [];
+        return depthLevels.map((level) => ({
+            label: `${level}m`,
+            depth: level,
+            value: 0,
+        }));
     }
 
-    const levels = [2, 10, 20, 30, 40, 50, 60, 70, 80];
-
-    return levels.map((level) => ({
+    return depthLevels.map((level) => ({
         label: `${level}m`,
         depth: level,
         value: (algaeStore.data!.chlorophyllAOverDepth.at('rightmost', level) as number) ?? 0,
@@ -49,6 +55,10 @@ const dataPoints = computed(() => {
 });
 
 const maxX = computed(() => {
+    if (isLoading.value) {
+        return 25;
+    }
+
     const maxValue = Math.max(...dataPoints.value.map((p) => p.value));
     return Math.ceil(maxValue);
 });

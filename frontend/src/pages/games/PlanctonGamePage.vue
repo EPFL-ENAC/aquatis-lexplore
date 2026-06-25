@@ -7,16 +7,12 @@
         </template>
     </PageHeader>
 
-    <PlanctonDepthPlot
-        v-if="zooplanktonDepthStore.lastRecordedDepth !== null"
-        :plancton-depth="planctonDepth?.y ?? 0"
-        :maxPlotDepth="80"
-        :depth-axis-x="132"
-    />
-    <ChartContainer v-else>
-        <div class="loading">
-            <q-circular-progress indeterminate rounded size="50px" color="white" class="q-ma-md" />
-        </div>
+    <ChartContainer borderless :is-loading="isLoading" :loading-text="t('planctonGameLoading')">
+        <PlanctonDepthPlot
+            :plancton-depth="planctonDepth?.y ?? 0"
+            :maxPlotDepth="80"
+            :depth-axis-x="132"
+        />
     </ChartContainer>
 
     <TimestampSlider
@@ -50,6 +46,7 @@ const zooplanktonDepthStore = useZooplanctonDepthStore();
 
 const selectedTimestamp = ref<number>(Date.now() / 1000);
 const range = computed(() => zooplanktonDepthStore.lastFullDayOfDataTimestampRange);
+const isLoading = computed(() => zooplanktonDepthStore.lastRecordedDepth === null);
 
 const planctonDepth = computed(() => {
     const remapedSine = remap(daySine(selectedTimestamp.value * 1000), -1, 1, 80, 0);
@@ -71,12 +68,3 @@ const questions = computed(() => [
     },
 ]);
 </script>
-
-<style scoped>
-.loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-}
-</style>

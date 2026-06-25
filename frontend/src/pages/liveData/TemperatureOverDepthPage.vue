@@ -5,7 +5,9 @@
         </template>
     </PageHeader>
 
-    <TemperatureOverDepthPlot :rows="temperatureRows" />
+    <ChartContainer borderless :is-loading="isLoading" :loading-text="t('tempDepthLoading')">
+        <TemperatureOverDepthPlot :rows="temperatureRows" />
+    </ChartContainer>
     <PlotAppendix :measured-at="lakeStore.data?.timestamps.at(-1)" />
 
     <QuestionCardsRow :items="questionCards" />
@@ -17,12 +19,14 @@ import PageHeader from 'src/components/PageHeader.vue';
 import TemperatureOverDepthPlot from 'src/components/plots/waterDepth/TemperatureOverDepthPlot.vue';
 import QuestionCardsRow from 'src/components/QuestionCardsRow.vue';
 import PlotAppendix from 'src/components/plots/PlotAppendix.vue';
+import ChartContainer from 'src/components/ChartContainer.vue';
 import { useWeatherStore, useLakeStore } from 'src/stores/lexplore';
 import { computed } from 'vue';
 
 const { t } = useI18n();
 const weatherStore = useWeatherStore();
 const lakeStore = useLakeStore();
+const isLoading = computed(() => !weatherStore.data || !lakeStore.data);
 
 const temperatureRows = computed(() => [
     {
