@@ -129,7 +129,7 @@ export default {
     tempGameTitle: 'Die Temperatur des Genfersees nach Tiefe im letzten Jahr',
     tempGameSubtitle: 'Bewege den Schieberegler über das Gitter, um den See zu erkunden.',
     tempGameProfileKicker: 'Am Cursor → Temperatur nach Tiefe',
-    tempGameLoading: 'Temperaturen werden geladen…',
+    tempGameLoading: 'Das Temperaturdiagramm wird vorbereitet. Das kann einige Sekunden dauern…',
     tempGameQ1: 'Bis in welche Tiefe erwärmt die Sonnenenergie das Wasser des Genfersees?',
     tempGameQ2: 'Ab welcher Tiefe bleibt das Wasser immer kälter als 10°C?',
 

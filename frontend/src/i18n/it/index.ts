@@ -128,7 +128,8 @@ export default {
     tempGameTitle: 'La temperatura del Lemano per profondità nell’ultimo anno',
     tempGameSubtitle: 'Scorri sulla griglia per esplorare.',
     tempGameProfileKicker: 'Al cursore → temperatura per profondità',
-    tempGameLoading: 'Caricamento delle temperature…',
+    tempGameLoading:
+        'Preparazione del grafico delle temperature. Potrebbe richiedere alcuni secondi…',
     tempGameQ1: 'Fino a che profondità l’energia solare riscalda l’acqua del Lemano?',
     tempGameQ2: 'A quale profondità l’acqua resta sempre sotto i 10°C?',
 

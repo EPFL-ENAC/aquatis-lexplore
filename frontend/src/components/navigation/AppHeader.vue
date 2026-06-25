@@ -23,8 +23,6 @@
                 <PulsatingLiveDot :last-measurement-time="weatherStore.data?.timestamps.at(-1)" />
 
                 <div class="stats">
-                    <q-separator vertical class="stats__separator" color="white" />
-
                     <div class="stat">
                         <div class="stat__label">{{ t('headerAirTemp') }}</div>
                         <div class="stat__row">
@@ -147,7 +145,7 @@ const dialSize = 176;
 }
 
 .header__inner {
-    padding: 2rem;
+    padding: 4rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;

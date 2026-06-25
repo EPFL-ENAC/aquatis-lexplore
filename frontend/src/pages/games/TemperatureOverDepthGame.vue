@@ -19,7 +19,7 @@
                     v-if="shouldRenderHeatmap"
                     :heatmap="heatmap"
                     :width="heatmapWidth"
-                    :height="480"
+                    :height="heatmapHeight"
                     :color-bar-width="null"
                     x-label=""
                     y-label=""
@@ -27,9 +27,14 @@
                     :focus-window-center="currentTimestamp"
                     :focus-window-width="focusWindowWidth"
                     :plot-margins="plotMargins"
+                    @processing-change="heatmapProcessing = $event"
                 />
 
-                <div v-else class="heatmap-stage__loader">
+                <div
+                    v-if="isLoading"
+                    class="heatmap-stage__loader heatmap-stage__loader--overlay"
+                    :style="{ minHeight: `${heatmapHeight}px` }"
+                >
                     {{ t('tempGameLoading') }}
                 </div>
             </div>
@@ -71,7 +76,22 @@
         <QuestionCardsRow :items="questions" kickerClass="text-negative" />
     </template>
 
-    <ChartContainer v-else>{{ t('tempGameLoading') }}</ChartContainer>
+    <ChartContainer
+        v-else
+        :style="{
+            '--plot-margin-left': `${plotMargins.left}px`,
+            '--plot-margin-right': `${plotMargins.right}px`,
+            'min-height': `${heatmapHeight}px`,
+        }"
+    >
+        <div
+            v-if="isLoading"
+            class="heatmap-stage__loader heatmap-stage__loader--overlay"
+            :style="{ minHeight: `${heatmapHeight}px` }"
+        >
+            {{ t('tempGameLoading') }}
+        </div>
+    </ChartContainer>
 </template>
 
 <script setup lang="ts">
@@ -120,7 +140,12 @@ const lastMeasurement = computed(() => {
 const heatmapContainer = useTemplateRef<HTMLElement>('heatmapContainer');
 const heatmapContainerWidth = ref(0);
 const canRenderHeatmap = ref(false);
+const heatmapProcessing = ref(true);
 const sliderIndex = ref(0);
+
+const isLoading = computed(
+    () => !shouldRenderHeatmap.value || (shouldRenderHeatmap.value && heatmapProcessing.value),
+);
 
 const plotMargins = {
     top: 4,
@@ -128,6 +153,8 @@ const plotMargins = {
     bottom: 8,
     left: 32,
 };
+
+const heatmapHeight = 480;
 
 const referenceDepths = [0.25, 24, 50, 75, 85];
 
@@ -293,9 +320,19 @@ const questions = computed(() => [
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0 24px;
     color: rgba(255, 255, 255, 0.72);
     font-size: 1rem;
     font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.heatmap-stage__loader--overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    pointer-events: none;
 }
 
 .timeline-panel {

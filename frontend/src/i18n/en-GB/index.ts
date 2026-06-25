@@ -128,7 +128,7 @@ export default {
     tempGameTitle: "Lake Geneva's temperature by depth over the past year",
     tempGameSubtitle: 'Slide across the grid to explore.',
     tempGameProfileKicker: 'At cursor → temperature by depth',
-    tempGameLoading: 'Loading temperatures...',
+    tempGameLoading: 'Preparing the temperature plot. This may take a few seconds...',
     tempGameQ1: 'To what depth does solar energy warm the water in Lake Geneva?',
     tempGameQ2: 'At what depth does the water always stay colder than 10°C?',
 

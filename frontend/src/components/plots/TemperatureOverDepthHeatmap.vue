@@ -38,10 +38,6 @@
                 />
             </div>
         </div>
-
-        <div class="processing-overlay" v-if="loading">
-            <q-circular-progress indeterminate rounded size="50px" color="white" class="q-ma-md" />
-        </div>
     </div>
 </template>
 
@@ -51,7 +47,7 @@ import type { DepthHeatmap } from 'src/utils/depthHeatmap';
 import { formatNumber } from 'src/utils/format';
 import { HeatmapRaster } from 'src/utils/heatmapRaster';
 import { clamp } from 'src/utils/math';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
@@ -85,14 +81,18 @@ const props = withDefaults(defineProps<Props>(), {
     plotMargins: () => ({ top: 16, right: 12, bottom: 16, left: 64 }),
 });
 
+const emit = defineEmits<{
+    'processing-change': [processing: boolean];
+}>();
+
 const { locale } = useI18n();
 
 const plotCanvas = ref<HTMLCanvasElement | null>(null);
-const loading = ref(true);
 const minMax = ref<{ min: number; max: number } | null>(null);
 
 const temperatureColorMap = ColorMap.heat();
 const heatmapRaster = new HeatmapRaster(temperatureColorMap);
+let pendingRedraws = 0;
 
 const colorBarGradient = computed(() => temperatureColorMap.toCssGradient());
 
@@ -285,8 +285,15 @@ function resizeCanvases(): void {
     }
 }
 
+function setProcessing(processing: boolean): void {
+    emit('processing-change', processing);
+}
+
 function redrawPlot(): Promise<void> {
-    loading.value = true;
+    pendingRedraws += 1;
+    if (pendingRedraws === 1) {
+        setProcessing(true);
+    }
 
     function wait(ms: number): Promise<void> {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -297,7 +304,10 @@ function redrawPlot(): Promise<void> {
             drawHeatmap();
         })
         .finally(() => {
-            loading.value = false;
+            pendingRedraws = Math.max(0, pendingRedraws - 1);
+            if (pendingRedraws === 0) {
+                setProcessing(false);
+            }
         });
 }
 
@@ -305,6 +315,11 @@ onMounted(async () => {
     await nextTick();
     resizeCanvases();
     await redrawPlot();
+});
+
+onBeforeUnmount(() => {
+    pendingRedraws = 0;
+    setProcessing(false);
 });
 
 watch(
@@ -358,18 +373,6 @@ canvas {
 
 .focus-band {
     position: absolute;
-}
-
-.processing-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: 700;
-    color: #0f172a;
 }
 
 .color-bar-container {

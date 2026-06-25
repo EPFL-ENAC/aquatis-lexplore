@@ -130,7 +130,8 @@ export default {
     tempGameTitle: 'La température du Léman par profondeur cette dernière année',
     tempGameSubtitle: 'Glisse sur la grille pour explorer.',
     tempGameProfileKicker: 'Au curseur → température par profondeur',
-    tempGameLoading: 'Chargement des températures…',
+    tempGameLoading:
+        'Préparation du graphique des températures. Cela peut prendre quelques secondes…',
     tempGameQ1: 'Jusqu’à quelle profondeur l’énergie solaire réchauffe-t-elle l’eau du Léman?',
     tempGameQ2: "À quelle profondeur l'eau reste toujours plus froide que 10°C?",
 
