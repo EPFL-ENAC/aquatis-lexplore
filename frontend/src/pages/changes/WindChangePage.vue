@@ -68,9 +68,9 @@ const tracks = computed(() => {
     // 2. Water Temperature Track (with Outlier Removal)
     if (lakeStore.data) {
         const waterTempData = lakeStore.data.timestamps
-            .map((timestamp, index) => ({
+            .map((timestamp) => ({
                 timestamp: toMs(timestamp),
-                value: lakeStore.data!.surfaceTemperature[index]!,
+                value: lakeStore.data!.temperatureOverDepth.at(timestamp, 2)!,
             }))
             .filter((d) => d.timestamp >= tenDaysAgo);
 

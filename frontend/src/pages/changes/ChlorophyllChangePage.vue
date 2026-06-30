@@ -119,9 +119,9 @@ const tracks = computed(() => {
                 type: 'line',
                 color: '#2b67f0',
                 data: lakeStore.data.timestamps
-                    .map((timestamp, index) => ({
+                    .map((timestamp) => ({
                         timestamp: toMs(timestamp),
-                        value: lakeStore.data!.surfaceTemperature[index]!,
+                        value: lakeStore.data!.temperatureOverDepth.at(timestamp, 2)!,
                     }))
                     .filter((d) => d.timestamp >= tenDaysAgo),
             }),

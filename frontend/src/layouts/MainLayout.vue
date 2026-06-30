@@ -20,10 +20,24 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import AppHeader from 'src/components/navigation/AppHeader.vue';
 import AppFooter from 'src/components/navigation/AppFooter.vue';
+import { useInactivityTimer } from 'src/composables/useInactivityTimer';
 
 const leftDrawerOpen = ref(false);
+const router = useRouter();
+const route = useRoute();
+
+const { onInactivityThresholdReached } = useInactivityTimer({
+    timeoutMs: 60_000,
+});
+
+onInactivityThresholdReached(() => {
+    if (route.path !== '/') {
+        void router.push('/');
+    }
+});
 </script>
 
 <style scoped lang="scss">
